@@ -67,3 +67,9 @@
         @apply bg-background text-foreground;
     }
 }
+
+.custom-shadow {
+    -webkit-box-shadow: 46px -51px 0px 14px #e7a61a;
+    -moz-box-shadow: 46px -51px 0px 14px #e7a61a;
+    box-shadow: 46px -51px 0px 14px #e7a61a;
+}

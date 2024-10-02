@@ -1,25 +1,30 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, Dashboard, Signin } from "@/pages";
+import Layout from "./layouts/Layout";
+
 function App() {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Home />,
-        },
-        {
-            path: "/dashboard",
-            element: <Dashboard />,
+            element: <Home />, // No sidebar for Home
         },
         {
             path: "/signin",
-            element: <Signin />,
+            element: <Signin />, // No sidebar for Signin
+        },
+        {
+            path: "/dashboard",
+            element: <Layout />,
+            children: [
+                {
+                    path: "/dashboard",
+                    element: <Dashboard />,
+                },
+            ],
         },
     ]);
-    return (
-        <div className="flex min-h-screen  max-w-screen overflow-x-hidden ">
-            <RouterProvider router={router} />
-        </div>
-    );
+
+    return <RouterProvider router={router} />;
 }
 
 export default App;
