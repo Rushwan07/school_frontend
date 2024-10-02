@@ -1,0 +1,19 @@
+{
+    "semi": true,
+    "tabWidth": 4,
+    "singleQuote": false,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "printWidth": 100,
+    "spaces": 4,
+    "endOfLine": "auto",
+    "overrides": [
+        {
+            "files": "*.js",
+            "options": {
+                "singleQuote": false
+            }
+        }
+    ]
+}
