@@ -19,9 +19,12 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-const CreateAssignment = ({ classes, data, setData }) => {
+import { DatePickerWithRange } from "./DateRangePicker";
+
+const CreateAssignment = ({ subjects, classes, data, setData }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [dates, setDates] = useState({});
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -39,24 +42,31 @@ const CreateAssignment = ({ classes, data, setData }) => {
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            {" "}
             <DialogTrigger>
                 <Plus />
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create Announcement</DialogTitle>
+                    <DialogTitle>Create Assignment</DialogTitle>
                 </DialogHeader>
-                <Input
-                    placeholder="Title"
-                    value={data.title}
-                    onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
-                />
-                <Textarea
-                    placeholder="Enter description here"
-                    rows="5"
-                    value={data.description}
-                    onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
-                />
+                <Select
+                    value={data.subjectId}
+                    onValue
+                    onValueChange={(e) => setData((prev) => ({ ...prev, subjectId: e }))}
+                >
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value=" ">Select all</SelectItem>
+                        {subjects?.map((value) => (
+                            <SelectItem key={value?._id} value={value?._id}>
+                                {value?.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>{" "}
                 <Select
                     value={data.classId}
                     onValue
@@ -74,7 +84,18 @@ const CreateAssignment = ({ classes, data, setData }) => {
                         ))}
                     </SelectContent>
                 </Select>
-
+                {/* <Input
+                    placeholder="Title"
+                    value={data.title}
+                    onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
+                /> */}
+                <Textarea
+                    placeholder="Enter description here"
+                    rows="5"
+                    value={data.description}
+                    onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
+                />
+                <DatePickerWithRange setData={setData} />
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
                         {loading ? "Saving..." : "Save"}

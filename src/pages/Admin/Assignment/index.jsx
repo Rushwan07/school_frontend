@@ -22,7 +22,6 @@ const Assignments = () => {
             class: "Class A",
             startDate: "2023-10-01",
             teacherName: "teacher one",
-
             duedate: "2023-10-01",
         },
         {
@@ -34,6 +33,20 @@ const Assignments = () => {
             teacherName: "teacher one",
 
             duedate: "2023-10-01",
+        },
+    ]);
+    const [subjects, setSubjects] = useState([
+        {
+            _id: "abcd",
+            name: "Maths",
+        },
+        {
+            _id: "abcd2",
+            name: "Maths",
+        },
+        {
+            _id: "abcddfd",
+            name: "Maths",
         },
     ]);
 
@@ -57,14 +70,15 @@ const Assignments = () => {
     ]);
 
     const [data, setData] = useState({
-        title: "",
+        subjectId: "",
         description: "",
         classId: "",
+        startDate: "",
+        dueDate: "",
     });
 
     const columns = [
         { header: "subjectName", accessor: "subjectName" },
-
         { header: "class", accessor: "class" },
         { header: "startDate", accessor: "startDate" },
         { header: "Due Date", accessor: "Due Date", style: "hidden md:table-cell" },
@@ -113,7 +127,12 @@ const Assignments = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateAssignment classes={classes} setData={setData} data={data} />
+                        <CreateAssignment
+                            subjects={subjects}
+                            classes={classes}
+                            setData={setData}
+                            data={data}
+                        />
                     </div>
                 </div>
             </div>
