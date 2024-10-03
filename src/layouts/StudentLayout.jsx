@@ -1,12 +1,14 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/StudentSidebar";
 import { Button } from "@/components/ui/button";
 
 function Layout() {
     return (
         <section>
             <div className="min-h-screen max-w-screen overflow-x-hidden flex">
-                <Sidebar />
+                <div className="sticky top-0  bottom-0 left-0    bg-secondary">
+                    <Sidebar />
+                </div>
                 <div className="flex-1">
                     <header className=" px-5 py-2 shadow-md ">
                         <nav className="flex justify-between items-center">
@@ -14,7 +16,9 @@ function Layout() {
                             <Button>Get start</Button>
                         </nav>
                     </header>
-                    <Outlet />
+                    <div className="p-1 md:p-5">
+                        <Outlet />
+                    </div>
                 </div>
             </div>
         </section>

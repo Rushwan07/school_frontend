@@ -21,99 +21,85 @@ import {
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-const Sidebar = () => {
+const TeacherSidebar = () => {
     const links = [
         {
-            text: "Dashboard",
-            link: "/admin/dashboard",
+            text: "Profile",
+            link: "/staffs/profile",
             icon: <Home />,
         },
         {
             text: "Anouncements",
-            link: "/admin/anouncement",
+            link: "/staffs/anouncement",
             icon: <MicVocal />,
         },
         {
             text: "Assignments",
-            link: "/admin/assignment",
+            link: "/staffs/assignment",
             icon: <ClipboardList />,
         },
         {
             text: "Attendance",
-            link: "/admin/attendance",
+            link: "/staffs/attendance", // Corrected from 'attendences' to 'attendance'
             icon: <CheckSquare />,
         },
         {
             text: "Class",
-            link: "/admin/class",
+            link: "/staffs/class", // Corrected from 'classes' to 'class'
             icon: <Calendar />,
         },
         {
             text: "Events",
-            link: "/admin/events",
+            link: "/staffs/events",
             icon: <CalendarDays />,
         },
         {
             text: "Exams",
-            link: "/admin/exams",
+            link: "/staffs/exams", // Corrected from 'Exams' to 'exams' (lowercase)
             icon: <Clipboard />,
         },
         {
             text: "Extracurricular Activities",
-            link: "/admin/extracurricular-activities",
+            link: "/staffs/extracurricular-activities",
             icon: <Activity />,
         },
         {
-            text: "Fees details",
-            link: "/admin/fees",
-            icon: <DollarSign />,
-        },
-        {
-            text: "Grade details",
-            link: "/admin/grade",
-            icon: <BarChart />,
-        },
-        {
             text: "Lessons",
-            link: "/admin/lessons",
+            link: "/staffs/lessons", // Corrected from 'lessions' to 'lessons'
             icon: <BookOpen />,
         },
         {
             text: "Parents",
-            link: "/admin/parents",
+            link: "/staffs/parents",
             icon: <Users />,
         },
         {
             text: "Results",
-            link: "/admin/results",
+            link: "/staffs/results",
             icon: <Award />,
         },
         {
             text: "Students",
-            link: "/admin/students",
+            link: "/staffs/students",
             icon: <User />,
         },
         {
             text: "Subjects",
-            link: "/admin/subjects",
+            link: "/staffs/subjects",
             icon: <ClipboardList />,
         },
         {
-            text: "Teachers",
-            link: "/admin/teachers",
-            icon: <Users />,
-        },
-        {
             text: "Transportations",
-            link: "/admin/transportations",
+            link: "/staffs/transportations",
             icon: <Bus />,
         },
     ];
+
     return (
         <div className="bg-secondary  flex flex-col gap-1 p-2 px-5">
-            <div className="w-fit px-2 md:w-full md:px-5 py-3 text-xl font-bold text-primary flex justify-center items-center gap-2">
+            <div className="w-fit px-2 md:w-full md:px-5 py-3 text-xl font-bold text-primary  flex gap-2">
                 <LayoutDashboard />
-                <span className="hidden md:inline">Admin Dashboard</span>
+                <span className="hidden md:inline">Staff Dashboard</span>
             </div>
             {links.map((link) => (
                 <TooltipProvider>
@@ -128,7 +114,7 @@ const Sidebar = () => {
                                     `flex items-center space-x-2 rounded-md w-fit px-2 md:w-full md:px-5 py-2 duration-100 ${
                                         isActive
                                             ? "bg-primary text-white"
-                                            : "hover:bg-primary  text-slate-700 hover:text-white"
+                                            : "hover:bg-primary hover:text-white"
                                     }`
                                 }
                             >
@@ -146,4 +132,4 @@ const Sidebar = () => {
     );
 };
 
-export default Sidebar;
+export default TeacherSidebar;

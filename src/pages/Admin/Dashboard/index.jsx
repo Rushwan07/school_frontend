@@ -2,23 +2,16 @@ import React from "react";
 import BarChart from "./BarChart";
 import PieChartComponent from "./PieChart";
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Dashboard = () => {
     return (
         <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pb-5">
                 <BarChart />
                 <PieChartComponent />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <Card className="shadow-lg border">
                     <CardHeader className="text-center">
                         <CardTitle className="text-xl font-semibold tracking-wide text-gray-800">

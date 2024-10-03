@@ -21,91 +21,71 @@ import {
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-const Sidebar = () => {
+const StudentSidebar = () => {
     const links = [
         {
-            text: "Dashboard",
-            link: "/admin/dashboard",
+            text: "Profile",
+            link: "/student/profile", // Corrected to match the route
             icon: <Home />,
         },
         {
             text: "Anouncements",
-            link: "/admin/anouncement",
+            link: "/student/anouncement", // Corrected to match the route
             icon: <MicVocal />,
         },
         {
             text: "Assignments",
-            link: "/admin/assignment",
+            link: "/student/assignment", // Corrected to match the route
             icon: <ClipboardList />,
         },
         {
             text: "Attendance",
-            link: "/admin/attendance",
+            link: "/student/attendance", // Corrected to match the route
             icon: <CheckSquare />,
         },
         {
             text: "Class",
-            link: "/admin/class",
+            link: "/student/class", // Corrected to match the route
             icon: <Calendar />,
         },
         {
             text: "Events",
-            link: "/admin/events",
+            link: "/student/events", // Corrected to match the route
             icon: <CalendarDays />,
         },
         {
             text: "Exams",
-            link: "/admin/exams",
+            link: "/student/exams", // Corrected from 'Exams' to 'exams' (lowercase)
             icon: <Clipboard />,
         },
         {
             text: "Extracurricular Activities",
-            link: "/admin/extracurricular-activities",
+            link: "/student/extracurricular-activities", // Corrected to match the route
             icon: <Activity />,
         },
         {
             text: "Fees details",
-            link: "/admin/fees",
+            link: "/student/fees", // Corrected to match the route
             icon: <DollarSign />,
         },
         {
-            text: "Grade details",
-            link: "/admin/grade",
-            icon: <BarChart />,
-        },
-        {
-            text: "Lessons",
-            link: "/admin/lessons",
+            text: "Lessions",
+            link: "/student/lessons", // Corrected from 'lessions' to 'lessons'
             icon: <BookOpen />,
         },
         {
-            text: "Parents",
-            link: "/admin/parents",
-            icon: <Users />,
-        },
-        {
             text: "Results",
-            link: "/admin/results",
+            link: "/student/results", // Corrected to match the route
             icon: <Award />,
         },
         {
-            text: "Students",
-            link: "/admin/students",
-            icon: <User />,
-        },
-        {
             text: "Subjects",
-            link: "/admin/subjects",
+            link: "/student/subjects", // Corrected to match the route
             icon: <ClipboardList />,
         },
         {
-            text: "Teachers",
-            link: "/admin/teachers",
-            icon: <Users />,
-        },
-        {
             text: "Transportations",
-            link: "/admin/transportations",
+            link: "/student/transportations", // Corrected to match the route
             icon: <Bus />,
         },
     ];
@@ -113,7 +93,7 @@ const Sidebar = () => {
         <div className="bg-secondary  flex flex-col gap-1 p-2 px-5">
             <div className="w-fit px-2 md:w-full md:px-5 py-3 text-xl font-bold text-primary flex justify-center items-center gap-2">
                 <LayoutDashboard />
-                <span className="hidden md:inline">Admin Dashboard</span>
+                <span className="hidden md:inline">Student Dashboard</span>
             </div>
             {links.map((link) => (
                 <TooltipProvider>
@@ -128,7 +108,7 @@ const Sidebar = () => {
                                     `flex items-center space-x-2 rounded-md w-fit px-2 md:w-full md:px-5 py-2 duration-100 ${
                                         isActive
                                             ? "bg-primary text-white"
-                                            : "hover:bg-primary  text-slate-700 hover:text-white"
+                                            : "hover:bg-primary hover:text-white"
                                     }`
                                 }
                             >
@@ -146,4 +126,4 @@ const Sidebar = () => {
     );
 };
 
-export default Sidebar;
+export default StudentSidebar;

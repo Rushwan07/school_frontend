@@ -9,7 +9,10 @@ const Home = () => {
             <header className=" px-5 py-2 shadow-md ">
                 <nav className="flex justify-between items-center">
                     <span className="font-bold text-xl">Little Bees</span>
-                    <Button>Get start</Button>
+                    <Button>
+                        {" "}
+                        <Link to="/admin/dashboard">Get Started</Link>
+                    </Button>
                 </nav>
             </header>
             <div className="h-[90vh]   flex justify-center items-center gap-20">
@@ -22,7 +25,7 @@ const Home = () => {
                     <p className="text-xl">Efficiently manage daycare operations </p>
                     <br />
                     <Button className="px-5">
-                        <Link to="/dashboard">Get Started</Link>
+                        <Link to="/admin/dashboard">Get Started</Link>
                     </Button>
                 </div>
                 <div className="w-[40vw] rounded-md overflow-hidden relative custom-shadow ">
