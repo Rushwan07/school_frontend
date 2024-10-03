@@ -73,3 +73,12 @@
     -moz-box-shadow: 46px -51px 0px 14px #e7a61a;
     box-shadow: 46px -51px 0px 14px #e7a61a;
 }
+
+.multiSelectContainer li:hover {
+    background-color: orange;
+}
+
+.chip,
+.highlightOption {
+    background-color: orange;
+}
