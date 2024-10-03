@@ -24,7 +24,6 @@ import { DatePickerWithRange } from "./DateRangePicker";
 const CreateAssignment = ({ subjects, classes, data, setData }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [dates, setDates] = useState({});
 
     const handleSubmit = async () => {
         setLoading(true);
