@@ -56,7 +56,7 @@ const Profile = () => {
                         <img
                             src="https://images.pexels.com/photos/16094046/pexels-photo-16094046/free-photo-of-man-using-chatgpt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             alt="Preview"
-                            className="mb-4 w-full h-full object-cover rounded-full"
+                            className="mb-4 w-full h-full object-cover rounded-full hover:cursor-pointer"
                         />
                     </div>
                     <div className="">
@@ -165,8 +165,7 @@ const Profile = () => {
                                 </div>
                                 <div className="flex gap-2  mb-1">
                                     <h1 className="text-[1.2rem] font-semibold">Address:</h1>
-                                    <h2>
-                                    {teacher.address}                                    </h2>
+                                    <h2>{teacher.address} </h2>
                                 </div>
                                 <div className="flex gap-2 items-center mb-1">
                                     <h1 className="text-[1.2rem] font-semibold">BloodType:</h1>
