@@ -50,7 +50,7 @@ const Lessions = () => {
     const [assignments, setAssignments] = useState([
         {
             id: 1,
-            title: "Unit test",
+            title: "Integrations and Derivatives",
             subjectName: "Maths",
             description: " This is an important update for Class AThis is  ",
             class: "Class A",
@@ -63,7 +63,7 @@ const Lessions = () => {
         },
         {
             id: 1,
-            title: "Unit test",
+            title: "Integrations and Derivatives",
             time: "11:30 to 12:30",
 
             subjectName: "Maths",
@@ -77,7 +77,7 @@ const Lessions = () => {
         },
         {
             id: 1,
-            title: "Unit test",
+            title: "Integrations and Derivatives",
             duration: "60",
 
             subjectName: "Maths",
