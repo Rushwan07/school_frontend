@@ -165,13 +165,22 @@ const index = () => {
                                     </Select>
 
                                     <Input
-                                        label="Birthday"
+                                        label="Date"
                                         type="date"
-                                        name="birthday"
+                                        name="Date"
                                         onChange={handleChange}
                                         required
                                         className="mb-3"
                                     />
+                                    <Input
+                                        label="Time"
+                                        type="time"
+                                        name="time"
+                                        onChange={handleChange}
+                                        required
+                                        className="mb-3"
+                                    />
+
                                     <DialogFooter>
                                         <Button type="submit">Create</Button>
                                     </DialogFooter>

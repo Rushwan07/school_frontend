@@ -58,11 +58,11 @@ const TeacherSidebar = () => {
             link: "/staffs/exams", // Corrected from 'Exams' to 'exams' (lowercase)
             icon: <Clipboard />,
         },
-        {
-            text: "Extracurricular Activities",
-            link: "/staffs/extracurricular-activities",
-            icon: <Activity />,
-        },
+        // {
+        //     text: "Extracurricular Activities",
+        //     link: "/staffs/extracurricular-activities",
+        //     icon: <Activity />,
+        // },
         {
             text: "Lessons",
             link: "/staffs/lessons", // Corrected from 'lessions' to 'lessons'
