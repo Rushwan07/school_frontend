@@ -128,7 +128,7 @@ const Lessions = () => {
     return (
         <div>
             <div className="flex items-center justify-between mb-5">
-                <h1 className="text-lg font-semibold hidden md:block">Exams</h1>
+                <h1 className="text-lg font-semibold hidden md:block">Lessons</h1>
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                     <Input
                         type="text"
