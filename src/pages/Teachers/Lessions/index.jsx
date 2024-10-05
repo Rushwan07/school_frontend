@@ -132,7 +132,7 @@ const Lessions = () => {
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                     <Input
                         type="text"
-                        placeholder="Search Exam"
+                        placeholder="Search Lesson"
                         className="border rounded px-3 py-2"
                     />
                     <div className="flex items-center gap-4 self-end ">
