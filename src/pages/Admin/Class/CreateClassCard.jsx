@@ -24,6 +24,7 @@ const CreateClassCard = () => {
     const [selectedStaff, setSelectedStaff] = useState("");
     const [capacity, setCapacity] = useState(0);
     const [name, setName] = useState();
+    const [fees, setFees] = useState(0);
 
     const staffMembers = [
         { id: 1, name: "John Doe" },
@@ -86,6 +87,7 @@ const CreateClassCard = () => {
                             onChange={(e) => setCapacity(e.target.value)}
                         />
                     </div>
+
                     <div>
                         <Label>Subjects</Label>
                         <Multiselect
@@ -111,6 +113,15 @@ const CreateClassCard = () => {
                                 ))}
                             </SelectContent>
                         </Select>
+                    </div>
+                    <div>
+                        <Label>Fees</Label>
+                        <Input
+                            type="number"
+                            placeholder="Fees"
+                            value={fees}
+                            onChange={(e) => setFees(e.target.value)}
+                        />
                     </div>
                 </div>
                 <DialogFooter className="sm:justify-end">

@@ -68,11 +68,7 @@ const Sidebar = () => {
             link: "/admin/fees",
             icon: <DollarSign />,
         },
-        {
-            text: "Grade details",
-            link: "/admin/grade",
-            icon: <BarChart />,
-        },
+
         {
             text: "Lessons",
             link: "/admin/lessons",

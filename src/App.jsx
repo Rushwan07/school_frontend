@@ -11,7 +11,6 @@ import {
     AdminExams,
     AdminExtracurricularActivities,
     AdminFees,
-    AdminGrade,
     AdminLessions,
     AdminParents,
     AdminProfile,
@@ -106,10 +105,7 @@ function App() {
                     path: "fees",
                     element: <AdminFees />,
                 },
-                {
-                    path: "grade",
-                    element: <AdminGrade />,
-                },
+
                 {
                     path: "lessons",
                     element: <AdminLessions />,

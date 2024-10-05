@@ -14,6 +14,7 @@ const Class = () => {
             capacity: " 5",
             supravisor: "Class A",
             attendanceForToday: true,
+            fees: 200,
         },
         {
             id: 2,
@@ -21,6 +22,7 @@ const Class = () => {
             capacity: " 5",
             supravisor: "Class A",
             attendanceForToday: false,
+            fees: 200,
         },
         {
             id: 3,
@@ -28,6 +30,7 @@ const Class = () => {
             capacity: " 5",
             supravisor: "Class A",
             attendanceForToday: true,
+            fees: 200,
         },
         {
             id: 3,
@@ -35,6 +38,7 @@ const Class = () => {
             capacity: " 5",
             supravisor: "Class A",
             attendanceForToday: false,
+            fees: 200,
         },
         {
             id: 3,
@@ -42,6 +46,7 @@ const Class = () => {
             capacity: " 5",
             supravisor: "Class A",
             attendanceForToday: false,
+            fees: 200,
         },
         {
             id: 3,
@@ -49,6 +54,7 @@ const Class = () => {
             capacity: " 5",
             supravisor: "Class A",
             attendanceForToday: false,
+            fees: 200,
         },
         {
             id: 3,
@@ -56,6 +62,7 @@ const Class = () => {
             capacity: " 5",
             supravisor: "Class A",
             attendanceForToday: false,
+            fees: 200,
         },
     ]);
 
@@ -63,7 +70,7 @@ const Class = () => {
         { header: "Class", accessor: "Class" },
         { header: "Capacity", accessor: "Capacity" },
         { header: "	Supervisor", accessor: "	Supervisor" },
-
+        { header: "Fees", accessor: "Fees" },
         { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
 
@@ -77,6 +84,7 @@ const Class = () => {
             <td className="text-center py-4">{item?.class}</td>
             <td className="text-center">{item?.capacity}</td>
             <td className="text-center">{item?.supravisor}</td>
+            <td className="text-center">{item?.fees}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
                 <StudentList classId={item?.class} />
