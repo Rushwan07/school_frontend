@@ -49,7 +49,7 @@ const index = () => {
         { header: "subjectName", accessor: "subjectName" },
         { header: "class", accessor: "class" },
         { header: "startDate", accessor: "startDate" },
-        // { header: "Due Date", accessor: "Due Date", style: "hidden md:table-cell" },
+        { header: "Time", accessor: "time", style: "hidden md:table-cell" },
         // { header: "teacherName", accessor: "teacherName", style: "hidden md:table-cell" },
         { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
@@ -62,6 +62,7 @@ const index = () => {
             class: "Class A",
             startDate: "2023-10-01",
             teacherName: "teacher one",
+            time:"1:30",
 
             duedate: "2023-10-01",
         },
@@ -72,6 +73,8 @@ const index = () => {
             class: "Class A",
             startDate: "2023-10-01",
             teacherName: "teacher one",
+            time:"1:30",
+
             duedate: "2023-10-01",
         },
         {
@@ -81,7 +84,7 @@ const index = () => {
             class: "Class A",
             startDate: "2023-10-01",
             teacherName: "teacher one",
-
+            time:"14:30",
             duedate: "2023-10-01",
         },
     ]);
@@ -99,7 +102,7 @@ const index = () => {
             </td>
             <td className="text-center">{item?.class}</td>
             <td className="hidden md:table-cell text-center">{item?.startDate}</td>
-            {/* <td className="hidden md:table-cell text-center">{item?.duedate}</td> */}
+            <td className="hidden md:table-cell text-center">{item?.time}</td>
             {/* <td className="hidden md:table-cell text-center">{item?.teacherName}</td> */}
             <td className="flex items-center justify-center gap-2 text-center">
                 <button className="btn btn-sm btn-outline-primary rounded-full ">
