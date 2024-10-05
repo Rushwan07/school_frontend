@@ -78,14 +78,13 @@ const Profile = () => {
                                             name="profile"
                                             type="file"
                                             onChange={handleChange}
-                                            
                                             className="mb-3"
                                         />
-                                        {teacher.profile && (
-                                            <div>
+                                        {/* {teacher.profile && (
+                                            <div className="w-[100px]">
                                                 <p>Selected file: {teacher.profile}</p>
                                             </div>
-                                        )}
+                                        )} */}
 
                                         <Input
                                             label="Username"
