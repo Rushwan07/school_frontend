@@ -199,9 +199,9 @@ const Exams = () => {
                                         className="mb-3"
                                     />
 
-                                    <div className="flex items-center gap-5 justify-center mb-3">
-                                        <div className="flex  items-center">
-                                            <h1 className="w-[50px]">Start:</h1>
+                                    <div className="">
+                                        <div className="">
+                                            <h1 className="font-semibold mb-1">Start Time:</h1>
                                             <Input
                                                 label="Time"
                                                 type="time"
@@ -211,8 +211,8 @@ const Exams = () => {
                                                 className=""
                                             />
                                         </div>
-                                        <div className="flex  items-center">
-                                            <h1 className="w-[50px]">End:</h1>
+                                        <div className="">
+                                            <h1 className="font-semibold mb-1">End Time:</h1>
                                             <Input
                                                 label="Time"
                                                 type="time"
