@@ -22,6 +22,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 
 const Profile = () => {
     const [teacher, setTeacher] = useState({
+        profile:
+            "https://images.pexels.com/photos/16094046/pexels-photo-16094046/free-photo-of-man-using-chatgpt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
         username: "teacher123",
         name: "John Doe",
         email: "johndoe@example.com",
@@ -54,7 +56,7 @@ const Profile = () => {
                 <div className="flex gap-4 flex-wrap">
                     <div className="w-[250px] h-[250px]">
                         <img
-                            src="https://images.pexels.com/photos/16094046/pexels-photo-16094046/free-photo-of-man-using-chatgpt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            src={teacher.profile}
                             alt="Preview"
                             className="mb-4 w-full h-full object-cover rounded-full hover:cursor-pointer"
                         />
@@ -71,6 +73,20 @@ const Profile = () => {
                                         <DialogTitle>Edit Profile</DialogTitle>
                                     </DialogHeader>
                                     <form onSubmit={handleSubmit}>
+                                        <Input
+                                            label="Profile"
+                                            name="profile"
+                                            type="file"
+                                            onChange={handleChange}
+                                            
+                                            className="mb-3"
+                                        />
+                                        {teacher.profile && (
+                                            <div>
+                                                <p>Selected file: {teacher.profile}</p>
+                                            </div>
+                                        )}
+
                                         <Input
                                             label="Username"
                                             name="username"
