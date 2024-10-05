@@ -1,65 +1,69 @@
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
-import CreateActivity from "./CreateActivity";
+import ConfirmationAlert from "./ConfirmationAlert";
+
 const Fees = () => {
     const [activities, setActivities] = useState([
         {
             id: 1,
+            regNo: 342,
             name: "Subin",
 
             class: "Class A",
             date: "2023-10-01",
             fees: "50",
+            isPaid: false,
         },
-    ]);
+        {
+            id: 1,
+            regNo: 342,
+            name: "Subin",
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
+            class: "Class A",
+            date: "2023-10-01",
+            fees: "50",
+            isPaid: true,
         },
     ]);
 
     const columns = [
+        { header: "Reg no", accessor: "Reg no" },
         { header: "Student name", accessor: "Student name" },
-        { header: "Class", accessor: "Class" },
-        { header: "Fees", accessor: "Fees" },
+
+        { header: "Class", accessor: "Class", style: "hidden md:table-cell" },
+        { header: "Fees", accessor: "Fees", style: "hidden md:table-cell" },
         { header: "Due date", accessor: "Due date", style: "hidden md:table-cell" },
 
-        { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
+        { header: "Status", accessor: "Status" },
     ];
     const renderRow = (item) => (
         <tr
             key={item.id}
-            className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
+            className={`border-b border-gray-200  shadow-md rounded  text-sm   ${
+                item?.isPaid ? " bg-green-200 hover:bg-green-100" : "bg-red-200 hover:bg-red-100"
+            }`}
         >
-            <td className="flex items-center gap-4 py-4 px-6">
-                <p className="font-semibold">{item?.name}</p>
-            </td>
-            <td className="text-center">{item?.class}</td>
-            <td className=" text-center">{item?.fees}</td>
+            <td className="text-center">{item?.regNo}</td>
+            <td className=" gap-4 py-4 px-6 text-center">{item?.name}</td>
+            <td className="text-center hidden flex md:table-cell">{item?.class}</td>
+            <td className=" text-center hidden flex md:table-cell">{item?.fees}</td>
             <td className="hidden md:table-cell text-center">{item?.date}</td>
 
-            <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
+            <td className="flex md:table-cell items-center justify-center gap-2 text-center">
+                {item?.isPaid ? (
+                    <>
+                        <i className="fa fa-edit" aria-hidden="true"></i> Paid
+                    </>
+                ) : (
+                    <ConfirmationAlert
+                        name={item?.name}
+                        regNo={item?.regNo}
+                        fees={item?.fees}
+                        className={item?.class}
+                    />
+                )}
             </td>
         </tr>
     );
@@ -80,7 +84,6 @@ const Fees = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateActivity classes={classes} />
                     </div>
                 </div>
             </div>
