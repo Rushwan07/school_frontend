@@ -28,11 +28,11 @@ const TeacherSidebar = () => {
             link: "/staffs/profile",
             icon: <Home />,
         },
-        {
-            text: "Anouncements",
-            link: "/staffs/anouncement",
-            icon: <MicVocal />,
-        },
+        // {
+        //     text: "Anouncements",
+        //     link: "/staffs/anouncement",
+        //     icon: <MicVocal />,
+        // },
         {
             text: "Assignments",
             link: "/staffs/assignment",
@@ -44,15 +44,15 @@ const TeacherSidebar = () => {
             icon: <CheckSquare />,
         },
         {
-            text: "Class",
+            text: "Special Class",
             link: "/staffs/class", // Corrected from 'classes' to 'class'
             icon: <Calendar />,
         },
-        {
-            text: "Events",
-            link: "/staffs/events",
-            icon: <CalendarDays />,
-        },
+        // {
+        //     text: "Events",
+        //     link: "/staffs/events",
+        //     icon: <CalendarDays />,
+        // },
         {
             text: "Exams",
             link: "/staffs/exams", // Corrected from 'Exams' to 'exams' (lowercase)
