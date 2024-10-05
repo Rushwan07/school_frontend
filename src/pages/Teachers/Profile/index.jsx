@@ -78,7 +78,6 @@ const Profile = () => {
                                             name="profile"
                                             type="file"
                                             onChange={handleChange}
-                                            
                                             className="mb-3"
                                         />
                                         {teacher.profile && (
