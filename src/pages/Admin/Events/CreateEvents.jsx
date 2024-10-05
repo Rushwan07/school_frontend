@@ -20,15 +20,24 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { DatePickerWithRange } from "./DateRangePicker";
+import { Label } from "@/components/ui/label";
 
-const CreateAssignment = ({ subjects, classes, data, setData }) => {
+const CreateAssignment = ({ classes }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
+    const [eventName, setEventName] = useState("");
+    const [description, setDescription] = useState("");
+    const [classId, setClassId] = useState("");
+    const [date, setDate] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+
     const handleSubmit = async () => {
+        console.log({ eventName, description, classId, date, startTime, endTime });
+
         setLoading(true);
         try {
-            console.log(data);
             await new Promise((resolve) => setTimeout(resolve, 2000));
 
             setDialogOpen(false);
@@ -47,30 +56,17 @@ const CreateAssignment = ({ subjects, classes, data, setData }) => {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create Assignment</DialogTitle>
+                    <DialogTitle>Create Event</DialogTitle>
                 </DialogHeader>
-                <Select
-                    value={data.subjectId}
-                    onValue
-                    onValueChange={(e) => setData((prev) => ({ ...prev, subjectId: e }))}
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Subject" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
-                        {subjects?.map((value) => (
-                            <SelectItem key={value?._id} value={value?._id}>
-                                {value?.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>{" "}
-                <Select
-                    value={data.classId}
-                    onValue
-                    onValueChange={(e) => setData((prev) => ({ ...prev, classId: e }))}
-                >
+                <Label>Event name</Label>
+                <Input
+                    type="text"
+                    placeholder="Event name"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                />
+                <Label>Class</Label>
+                <Select value={classId} onValue onValueChange={(e) => setClassId(e)}>
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
@@ -88,13 +84,29 @@ const CreateAssignment = ({ subjects, classes, data, setData }) => {
                     value={data.title}
                     onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
                 /> */}
+                <Label>Description</Label>
                 <Textarea
                     placeholder="Enter description here"
                     rows="5"
-                    value={data.description}
-                    onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                 />
-                <DatePickerWithRange setData={setData} />
+                <Label>Date</Label>
+                <DatePickerWithRange setData={setDate} />
+                <Label>Start time</Label>
+                <Input
+                    aria-label="Time"
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                />
+                <Label>End time</Label>
+                <Input
+                    aria-label="Time"
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                />
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
                         {loading ? "Saving..." : "Save"}

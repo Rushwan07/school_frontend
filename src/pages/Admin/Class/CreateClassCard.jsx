@@ -19,8 +19,12 @@ import Multiselect from "multiselect-react-dropdown";
 const CreateClassCard = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [selectedStaff, setSelectedStaff] = useState("");
+    const [capacity, setCapacity] = useState(0);
+    const [name, setName] = useState();
+
     const staffMembers = [
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Smith" },
@@ -40,6 +44,9 @@ const CreateClassCard = () => {
         setLoading(true);
         try {
             console.log(selectedStaff);
+            console.log(capacity);
+            console.log(name);
+            console.log(selectedSubjects);
             await new Promise((resolve) => setTimeout(resolve, 2000));
 
             setDialogOpen(false);
@@ -63,11 +70,21 @@ const CreateClassCard = () => {
                 <div className="space-y-5">
                     <div>
                         <Label>Name</Label>
-                        <Input type="text" placeholder="Name" />
+                        <Input
+                            type="text"
+                            placeholder="Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
                     </div>
                     <div>
                         <Label>Capacity</Label>
-                        <Input type="text" placeholder="Capacity" />
+                        <Input
+                            type="number"
+                            placeholder="Capacity"
+                            value={capacity}
+                            onChange={(e) => setCapacity(e.target.value)}
+                        />
                     </div>
                     <div>
                         <Label>Subjects</Label>
