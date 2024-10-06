@@ -69,26 +69,27 @@ const Sidebar = () => {
             icon: <DollarSign />,
         },
 
+        // {
+        //     text: "Lessons",
+        //     link: "/admin/lessons",
+        //     icon: <BookOpen />,
+        // },
+        // {
+        //     text: "Parents",
+        //     link: "/admin/parents",
+        //     icon: <Users />,
+        // },
         {
-            text: "Lessons",
-            link: "/admin/lessons",
-            icon: <BookOpen />,
-        },
-        {
-            text: "Parents",
-            link: "/admin/parents",
-            icon: <Users />,
+            text: "Students",
+            link: "/admin/students",
+            icon: <User />,
         },
         {
             text: "Results",
             link: "/admin/results",
             icon: <Award />,
         },
-        {
-            text: "Students",
-            link: "/admin/students",
-            icon: <User />,
-        },
+
         {
             text: "Subjects",
             link: "/admin/subjects",
