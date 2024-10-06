@@ -8,8 +8,9 @@ const Exams = () => {
             id: 1,
             examname: "Maths",
             description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            date: "2023-10-01",
+            class: "first class",
+            startDate: "2023-10-06",
+            endDate: "2023-10-01",
             subject: "subject",
         },
     ]);
@@ -50,8 +51,8 @@ const Exams = () => {
     const columns = [
         { header: "Exam name", accessor: "Exam name" },
         { header: "class", accessor: "class" },
-        { header: "Subject", accessor: "Subject" },
-        { header: "Date", accessor: "Date" },
+        { header: "Start Date", accessor: "Start Date" },
+        { header: "End Date", accessor: "End Date" },
 
         { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
@@ -67,8 +68,8 @@ const Exams = () => {
                 </div>
             </td>
             <td className="text-center">{item?.class}</td>
-            <td className=" text-center">{item?.subject}</td>
-            <td className="hidden md:table-cell text-center">{item?.date}</td>
+            <td className=" text-center">{item?.startDate}</td>
+            <td className="hidden md:table-cell text-center">{item?.endDate}</td>
 
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
                 <button className="btn btn-sm btn-outline-primary rounded-full ">

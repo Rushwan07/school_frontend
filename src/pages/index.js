@@ -10,6 +10,7 @@ export { default as AdminEvents } from "./Admin/Events";
 export { default as AdminExams } from "./Admin/Exams";
 export { default as AdminExtracurricularActivities } from "./Admin/ExtracurricularActivities";
 export { default as AdminFees } from "./Admin/Fees";
+export { default as AdminSingleExam } from "./Admin/SingleExamResult";
 
 export { default as AdminLessions } from "./Admin/Lessions";
 export { default as AdminParents } from "./Admin/Parents";

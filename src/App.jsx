@@ -19,6 +19,7 @@ import {
     AdminTeachers,
     AdminTransportations,
     AdminStudents,
+    AdminSingleExam,
 
     // Staff pges
     StaffAnouncement,
@@ -96,6 +97,10 @@ function App() {
                 {
                     path: "exams",
                     element: <AdminExams />,
+                },
+                {
+                    path: "results/:examId",
+                    element: <AdminSingleExam />,
                 },
                 {
                     path: "extracurricular-activities",
