@@ -48,11 +48,11 @@ const TeacherSidebar = () => {
             link: "/staffs/class", // Corrected from 'classes' to 'class'
             icon: <Calendar />,
         },
-        // {
-        //     text: "Events",
-        //     link: "/staffs/events",
-        //     icon: <CalendarDays />,
-        // },
+        {
+            text: "Events",
+            link: "/staffs/events",
+            icon: <CalendarDays />,
+        },
         {
             text: "Exams",
             link: "/staffs/exams", // Corrected from 'Exams' to 'exams' (lowercase)
@@ -68,11 +68,11 @@ const TeacherSidebar = () => {
             link: "/staffs/lessons", // Corrected from 'lessions' to 'lessons'
             icon: <BookOpen />,
         },
-        {
-            text: "Parents",
-            link: "/staffs/parents",
-            icon: <Users />,
-        },
+        // {
+        //     text: "Parents",
+        //     link: "/staffs/parents",
+        //     icon: <Users />,
+        // },
         {
             text: "Results",
             link: "/staffs/results",
