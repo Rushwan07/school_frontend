@@ -20,6 +20,7 @@ import {
     AdminTransportations,
     AdminStudents,
     AdminSingleExam,
+    AdminGrade,
 
     // Staff pges
     StaffAnouncement,
@@ -109,6 +110,10 @@ function App() {
                 {
                     path: "fees",
                     element: <AdminFees />,
+                },
+                {
+                    path: "grade",
+                    element: <AdminGrade />,
                 },
 
                 {

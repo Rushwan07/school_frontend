@@ -18,6 +18,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 const CreateAnouncementDialog = ({ classes, data, setData }) => {
     const [loading, setLoading] = useState(false);
@@ -46,17 +47,20 @@ const CreateAnouncementDialog = ({ classes, data, setData }) => {
                 <DialogHeader>
                     <DialogTitle>Create Announcement</DialogTitle>
                 </DialogHeader>
+                <Label>Title</Label>
                 <Input
                     placeholder="Title"
                     value={data.title}
                     onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
                 />
+                <Label>Description</Label>
                 <Textarea
                     placeholder="Enter description here"
                     rows="5"
                     value={data.description}
                     onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
                 />
+                <Label>Class</Label>
                 <Select
                     value={data.classId}
                     onValue

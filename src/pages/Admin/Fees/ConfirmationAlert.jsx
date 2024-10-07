@@ -16,6 +16,7 @@ const ConfirmationAlert = ({ name, regNo, fees, className }) => {
     const [loading, setLoading] = useState(false);
 
     const handleConfirm = () => {
+        //studentId, regNo,baseFees, transportationFees, totalFees
         try {
             setLoading(true);
 

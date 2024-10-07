@@ -57,7 +57,7 @@ const CreateAssignment = ({ classes }) => {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create Exam</DialogTitle>
+                    <DialogTitle>Create Activity</DialogTitle>
                 </DialogHeader>
                 <Label>Activity name</Label>
                 <Input
@@ -94,7 +94,7 @@ const CreateAssignment = ({ classes }) => {
                     value={fees}
                     onChange={(e) => setFees(e.target.value)}
                 />
-                <Label>Date</Label>
+                <Label>Due Date</Label>
                 <DatePicker date={date} setDate={setDate} />
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>

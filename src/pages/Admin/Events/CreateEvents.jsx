@@ -64,6 +64,13 @@ const CreateAssignment = ({ classes }) => {
                     placeholder="Event name"
                     value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
+                />{" "}
+                <Label>Description</Label>
+                <Textarea
+                    placeholder="Enter description here"
+                    rows="5"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                 />
                 <Label>Class</Label>
                 <Select value={classId} onValue onValueChange={(e) => setClassId(e)}>
@@ -84,13 +91,6 @@ const CreateAssignment = ({ classes }) => {
                     value={data.title}
                     onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
                 /> */}
-                <Label>Description</Label>
-                <Textarea
-                    placeholder="Enter description here"
-                    rows="5"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
                 <Label>Date</Label>
                 <DatePickerWithRange setData={setDate} />
                 <Label>Start time</Label>

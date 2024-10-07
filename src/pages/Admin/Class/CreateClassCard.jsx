@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { Pencil, Plus } from "lucide-react";
 import {
     Select,
@@ -68,6 +75,9 @@ const CreateClassCard = () => {
                 </button>
             </DialogTrigger>
             <DialogContent className="max-h-[80vh] overflow-x-hidden overflow-y-auto">
+                <DialogHeader>
+                    <DialogTitle>Create Class</DialogTitle>
+                </DialogHeader>{" "}
                 <div className="space-y-5">
                     <div>
                         <Label>Name</Label>

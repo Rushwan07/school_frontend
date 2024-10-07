@@ -69,11 +69,11 @@ const Sidebar = () => {
             icon: <DollarSign />,
         },
 
-        // {
-        //     text: "Lessons",
-        //     link: "/admin/lessons",
-        //     icon: <BookOpen />,
-        // },
+        {
+            text: "Grade",
+            link: "/admin/grade",
+            icon: <BookOpen />,
+        },
         // {
         //     text: "Parents",
         //     link: "/admin/parents",

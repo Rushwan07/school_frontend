@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { Pencil } from "lucide-react";
 import {
     Select,
@@ -19,79 +26,46 @@ const StudentList = ({ classId }) => {
     const [students, setStudents] = useState([
         {
             _id: "adfs",
-            regNo: "123",
-            name: "student 1",
-            present: true,
-        },
-        {
-            _id: "aasdfadfs",
-            regNo: "123",
-            name: "student 1",
-            present: true,
-        },
-        {
-            _id: "adasdfafs",
-            regNo: "123",
-            name: "student 1",
-            present: true,
-        },
-        {
-            _id: "arewrdfs",
-            regNo: "123",
+            regNo: "1",
             name: "student 1",
             present: true,
         },
         {
             _id: "adfs",
-            regNo: "123",
-            name: "student 1",
-            present: true,
-        },
-        {
-            _id: "aasdfadfs",
-            regNo: "123",
-            name: "student 1",
-            present: true,
-        },
-        {
-            _id: "adasdfafs",
-            regNo: "123",
-            name: "student 1",
-            present: true,
-        },
-        {
-            _id: "arewrdfs",
-            regNo: "123",
+            regNo: "2",
             name: "student 1",
             present: true,
         },
         {
             _id: "adfs",
-            regNo: "123",
+            regNo: "3",
             name: "student 1",
             present: true,
         },
         {
-            _id: "aasdfadfs",
-            regNo: "123",
+            _id: "adfs",
+            regNo: "4",
             name: "student 1",
             present: true,
         },
         {
-            _id: "adasdfafs",
-            regNo: "123",
+            _id: "adfs",
+            regNo: "5",
             name: "student 1",
             present: true,
         },
         {
-            _id: "arewrdfs",
-            regNo: "123",
+            _id: "adfs",
+            regNo: "6",
             name: "student 1",
             present: true,
         },
     ]);
 
     const handleSubmit = async () => {
+        console.log(classId);
+        console.log(students);
+        return;
         setLoading(true);
         try {
             await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -108,10 +82,13 @@ const StudentList = ({ classId }) => {
             <DialogTrigger>
                 <button className="btn btn-sm btn-outline-primary rounded-full flex justify-center items-center gap-1">
                     <Pencil size={18} />
-                    Edit
+                    Add attendance
                 </button>
             </DialogTrigger>
             <DialogContent className="max-h-[80vh] overflow-x-hidden overflow-y-auto">
+                <DialogHeader>
+                    <DialogTitle>Attendance</DialogTitle>
+                </DialogHeader>{" "}
                 <table className="w-full border-separate border-spacing-y-3">
                     {" "}
                     {/* Adds vertical spacing */}
@@ -137,7 +114,22 @@ const StudentList = ({ classId }) => {
                                 <td className="p-3">{student?.name}</td>
                                 <td className="p-3">{student?.regNo}</td>
                                 <td className="p-3">
-                                    <Select>
+                                    <Select
+                                        onValueChange={(e) => {
+                                            setStudents((prev) => {
+                                                let tempArr = prev;
+                                                tempArr = tempArr.map((val) =>
+                                                    val.regNo == student.regNo
+                                                        ? { ...val, present: e }
+                                                        : val,
+                                                );
+                                                console.log(tempArr);
+                                                return tempArr;
+                                            });
+                                            console.log(e);
+                                        }}
+                                        value={student?.present?.toString() || "true"}
+                                    >
                                         <SelectTrigger className="">
                                             <SelectValue placeholder="Present" />
                                         </SelectTrigger>

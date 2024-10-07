@@ -72,7 +72,7 @@ const CreateAssignment = ({ classes }) => {
             </DialogTrigger>
             <DialogContent className="max-h-[80vh] overflow-auto">
                 <DialogHeader>
-                    <DialogTitle>Create Exam</DialogTitle>
+                    <DialogTitle>Create Transportation</DialogTitle>
                 </DialogHeader>
                 <Label>Driver name</Label>
                 <Input
