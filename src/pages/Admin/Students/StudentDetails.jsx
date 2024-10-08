@@ -62,7 +62,32 @@ const StudentForm = ({ onSubmit, loading }) => {
         console.log(studentData);
         console.log(date);
         console.log(parentData);
-        // onSubmit(studentData);
+
+        //data should send in this format
+        // {
+        //     "student":{
+        //          "regno": "101",
+        //          "name": "student",
+        //          "address": "123 Main Street, Anytown, USA",
+        //          "img": "https://example.com/student.jpg",
+        //          "bloodType": "A+",
+        //          "sex": "MALE",
+        //          "classId": "6704ec91fee39a5e6ebd0162",
+        //          "birthday": "2024-10-04"
+        //      },
+        //      "parent":{
+        //          "address":"address for the parent",
+        //          "email":"parent@gmail.com",
+        //          "name":"test parent",
+        //          "phone": "8973927483"
+        //      },
+        //      "transport":{
+        //          "pickupLocation":"",
+        //          "dropOffLocation":"",
+        //          "busId":"",
+        //          "fees":500
+        //      }
+        //    }
     };
 
     return (
