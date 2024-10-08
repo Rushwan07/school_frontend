@@ -27,7 +27,6 @@ import {
     StaffProfile,
     StaffAssignment,
     StaffAttendance,
-    StaffClass,
     StaffEvents,
     StaffExams,
     StaffExtracurricularActivities,
@@ -37,6 +36,7 @@ import {
     StaffStudents,
     StaffSubjects,
     StaffTransportations,
+    StaffSingleExamResult,
 
     // Student pages
     StudentAnouncement,
@@ -170,10 +170,10 @@ function App() {
                     path: "attendance",
                     element: <StaffAttendance />,
                 },
-                {
-                    path: "class",
-                    element: <StaffClass />,
-                },
+                // {
+                //     path: "class",
+                //     element: <StaffClass />,
+                // },
                 {
                     path: "events",
                     element: <StaffEvents />,
@@ -213,6 +213,10 @@ function App() {
                 {
                     path: "transportations",
                     element: <StaffTransportations />,
+                },
+                {
+                    path: "results/:examId",
+                    element: <StaffSingleExamResult />,
                 },
             ],
         },

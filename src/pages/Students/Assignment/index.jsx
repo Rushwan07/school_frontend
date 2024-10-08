@@ -1,50 +1,96 @@
 import React, { useState } from "react";
+import BigCalendar from "./BigCalendar";
+import EventCalendar from "./EventCalendar";
 
 const Assignments = () => {
     const assignments = [
         {
-            id: 1,
-            subject: "Class 9th-A result is published.",
-            class: "9th",
-            date: "2024-10-01",
-            teacher: "Me",
+            _id: "670509f30283e5ca5122723c",
+            title: "Write about someone",
+            startDate: "2024-10-03T18:30:00.000Z",
+            dueDate: "2024-10-18T00:00:00.000Z",
+            description: "Description about the assignment",
+            classId: "6704ec91fee39a5e6ebd0162",
+            subjectId: "6704ea5418b730aed6cc5089",
+        },
+        {
+            _id: "670509f30283e5ca51227214",
+            title: "Write about someone2",
+            startDate: "2024-10-03T18:30:00.000Z",
+            dueDate: "2024-10-18T00:00:00.000Z",
+            description: "Description about the assignment",
+            classId: "6704ec91fee39a5e6ebd0162",
+            subjectId: "6704ea5418b730aed6cc5089",
+        },
+        {
+            _id: "670509f30283e5ca51227214",
+            title: "Write about someone2",
+            startDate: "2024-10-03T18:30:00.000Z",
+            dueDate: "2024-10-18T00:00:00.000Z",
+            description: "Description about the assignment",
+            classId: "6704ec91fee39a5e6ebd0162",
+            subjectId: "6704ea5418b730aed6cc5089",
+        },
+        {
+            _id: "670509f30283e5ca51227214",
+            title: "Write about someone2",
+            startDate: "2024-10-03T18:30:00.000Z",
+            dueDate: "2024-10-18T00:00:00.000Z",
+            description: "Description about the assignment",
+            classId: "6704ec91fee39a5e6ebd0162",
+            subjectId: "6704ea5418b730aed6cc5089",
+        },
+        {
+            _id: "670509f30283e5ca51227214",
+            title: "Write about someone2",
+            startDate: "2024-10-03T18:30:00.000Z",
+            dueDate: "2024-10-18T00:00:00.000Z",
+            description: "Description about the assignment",
+            classId: "6704ec91fee39a5e6ebd0162",
+            subjectId: "6704ea5418b730aed6cc5089",
+        },
+        {
+            _id: "670509f30283e5ca51227214",
+            title: "Write about someone2",
+            startDate: "2024-10-03T18:30:00.000Z",
+            dueDate: "2024-10-18T00:00:00.000Z",
+            description: "Description about the assignment",
+            classId: "6704ec91fee39a5e6ebd0162",
+            subjectId: "6704ea5418b730aed6cc5089",
+        },
+
+        {
+            _id: "670509f30283e5ca51227232",
+            title: "Write about someone2",
+            startDate: "2024-10-03T18:30:00.000Z",
+            dueDate: "2024-10-18T00:00:00.000Z",
+            description: "Description about the assignment",
+            classId: "6704ec91fee39a5e6ebd0162",
+            subjectId: "6704ea5418b730aed6cc5089",
         },
     ];
 
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+    // Function to handle date click from EventCalendar
+    const handleDateClick = (date) => {
+        setSelectedDate(date);
+    };
+
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Assignments</h1>
-            <table className="min-w-full bg-white border border-gray-300">
-                <thead>
-                    <tr className="bg-gray-100">
-                        <th className="py-2 px-4 border-b border-gray-300 text-left">Subject</th>
-                        <th className="py-2 px-4 border-b border-gray-300 text-left">Class</th>
-                        <th className="py-2 px-4 border-b border-gray-300 text-left">Date</th>
-                        <th className="py-2 px-4 border-b border-gray-300 text-left hidden md:table-cell">Teacher</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {assignments.map((assignment) => (
-                        <tr key={assignment.id} className="hover:bg-gray-50">
-                            <td className="py-4 px-4 border-b border-gray-300">
-                                {assignment.subject}
-                            </td>
-                            {/* <td className="py-4 px-4 border-b border-gray-300">
-                            {announcement.class}
-                        </td> */}
-                            <td className="py-4 px-4 border-b border-gray-300">
-                                {assignment.class}
-                            </td>
-                            <td className="py-4 px-4 border-b border-gray-300">
-                                {assignment.date}
-                            </td>
-                            <td className="py-4 px-4 border-b border-gray-300 hidden md:table-cell">
-                                {assignment.teacher}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="p-4 flex gap-4 flex-col xl:flex-row">
+            <div className="w-full xl:w-2/3">
+                <div className="h-full bg-white p-4 rounded-md">
+                    <h1 className="text-xl font-semibold">Schedule (4A)</h1>
+                    {/* Pass assignments and selectedDate to BigCalendar */}
+                    <BigCalendar assignments={assignments} selectedDate={selectedDate} />
+                </div>
+            </div>
+
+            <div className="w-full xl:w-1/3 flex flex-col gap-8">
+                {/* Pass assignments and date click handler to EventCalendar */}
+                <EventCalendar assignments={assignments} onDateClick={handleDateClick} />
+            </div>
         </div>
     );
 };

@@ -92,7 +92,6 @@ const Exams = () => {
         { header: "subjectName", accessor: "subjectName" },
         { header: "startDate", accessor: "startDate" },
         { header: "Time", accessor: "time", style: "hidden md:table-cell" },
-        { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
 
     const renderRow = (item) => (
@@ -110,14 +109,6 @@ const Exams = () => {
             <td className="hidden md:table-cell text-center">{item?.subjectName}</td>
             <td className="hidden md:table-cell text-center">{item?.startDate}</td>
             <td className="hidden md:table-cell text-center">{item?.time}</td>
-            <td className="flex items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
-            </td>
         </tr>
     );
 
@@ -138,98 +129,6 @@ const Exams = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                            <DialogTrigger asChild>
-                                <div>
-                                    {" "}
-                                    <MdAdd size={30} className="cursor-pointer" />{" "}
-                                </div>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Add Exam</DialogTitle>
-                                </DialogHeader>
-                                <form onSubmit={handleSubmit}>
-                                    <Input
-                                        label="Title"
-                                        name="title"
-                                        onChange={handleChange}
-                                        required
-                                        className="mb-3"
-                                        placeholder="Title"
-                                    />
-                                    <Textarea
-                                        label="Address"
-                                        name="address"
-                                        onChange={handleChange}
-                                        className="mb-3"
-                                        placeholder="Description"
-                                        required
-                                    />
-                                    <Select label="Sex" className="mb-3">
-                                        <SelectTrigger className="mb-3">
-                                            <SelectValue placeholder="Select Subject" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="MALE">MAths</SelectItem>
-                                            <SelectItem value="2">Science</SelectItem>
-                                            <SelectItem value="3">Physics</SelectItem>
-                                            <SelectItem value="4">Chemistry</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-
-                                    <Select label="Sex" className="mb-3">
-                                        <SelectTrigger className="mb-3">
-                                            <SelectValue placeholder="Select Class" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="MALE">Class 9-A</SelectItem>
-                                            <SelectItem value="2">Class 10-A</SelectItem>
-                                            <SelectItem value="3">Class 10-B</SelectItem>
-                                            <SelectItem value="4">Class 10-C</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-
-                                    <Input
-                                        label="Date"
-                                        type="date"
-                                        name="Date"
-                                        onChange={handleChange}
-                                        required
-                                        className="mb-3"
-                                    />
-
-                                    <div className="">
-                                        <div className="">
-                                            <h1 className="font-semibold mb-1">Start Time:</h1>
-                                            <Input
-                                                label="Time"
-                                                type="time"
-                                                name="time"
-                                                onChange={handleChange}
-                                                required
-                                                className=""
-                                            />
-                                        </div>
-                                        <div className="">
-                                            <h1 className="font-semibold mb-1">End Time:</h1>
-                                            <Input
-                                                label="Time"
-                                                type="time"
-                                                name="time"
-                                                onChange={handleChange}
-                                                required
-                                                className=""
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <DialogFooter>
-                                        <Button type="submit">Create</Button>
-                                    </DialogFooter>
-                                </form>
-                            </DialogContent>
-                        </Dialog>
                     </div>
                 </div>
             </div>

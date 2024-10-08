@@ -22,11 +22,11 @@ export { default as AdminTeachers } from "./Admin/Teachers";
 export { default as AdminTransportations } from "./Admin/Transportations";
 export { default as AdminStudents } from "./Admin/Students";
 
-export { default as StaffAnouncement } from "./Teachers/Announcement";
+export { default as StaffAnouncement } from "./Teachers/Announcements";
 export { default as StaffProfile } from "./Teachers/Profile";
 export { default as StaffAssignment } from "./Teachers/Assignment";
 export { default as StaffAttendance } from "./Teachers/Attendance";
-export { default as StaffClass } from "./Teachers/Class";
+export { default as StaffSingleExamResult } from "./Teachers/SingleExamResult";
 export { default as StaffEvents } from "./Teachers/Events";
 export { default as StaffExams } from "./Teachers/Exams";
 export { default as StaffExtracurricularActivities } from "./Teachers/ExtracurricularActivities";

@@ -57,7 +57,6 @@ const Events = () => {
         { header: "Due Date", accessor: "Due Date", style: "hidden md:table-cell" },
         { header: "Start time", accessor: "Start time", style: "hidden md:table-cell" },
         { header: "End time", accessor: "End time", style: "hidden md:table-cell" },
-        { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
     const renderRow = (item) => (
         <tr
@@ -75,15 +74,6 @@ const Events = () => {
             <td className="hidden md:table-cell text-center">{item?.duedate}</td>
             <td className="hidden md:table-cell text-center">{item?.startTime}</td>
             <td className="hidden md:table-cell text-center">{item?.endTime}</td>
-
-            <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
-            </td>
         </tr>
     );
     return (
