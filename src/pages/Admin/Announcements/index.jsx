@@ -4,8 +4,13 @@ import React, { useEffect, useState } from "react";
 import CreateAnouncementDialog from "./CreateAnouncementDialog";
 import EditAnouncementDialog from "./EditAnouncementDialog";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const AnnouncementListPage = () => {
+    const { toast } = useToast();
+    const [loading, setLoading] = useState(false);
     const [anouncements, setAnounceMents] = useState([
         {
             id: 1,
@@ -31,7 +36,33 @@ const AnnouncementListPage = () => {
     ];
 
     useEffect(() => {
-        //get all anouncements
+        const getAnouncements = async () => {
+            try {
+                console.log("working fine");
+                const res = await axios.get(BASE_URL + "/anouncements", {
+                    withCredentials: true,
+                });
+
+                setAnounceMents(res?.data?.data?.class);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getAnouncements();
     }, []);
 
     const renderRow = (item) => (
@@ -74,7 +105,7 @@ const AnnouncementListPage = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateAnouncementDialog />
+                        <CreateAnouncementDialog setAnounceMents={setAnounceMents} />
                     </div>
                 </div>
             </div>

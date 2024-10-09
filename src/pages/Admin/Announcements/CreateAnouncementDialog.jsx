@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -19,26 +19,13 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const CreateAnouncementDialog = () => {
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+const CreateAnouncementDialog = ({ setAnounceMents }) => {
+    const { toast } = useToast();
+    const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [data, setData] = useState({
@@ -50,15 +37,52 @@ const CreateAnouncementDialog = () => {
         setLoading(true);
         try {
             console.log(data);
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
+            const res = await axios.post(BASE_URL + "/anouncements/create-anouncement", data, {
+                withCredentials: true,
+            });
+            console.log(res?.data?.data?.announcement);
+            setAnounceMents((prev) => [...prev, res?.data?.data?.announcement]);
             setDialogOpen(false);
         } catch (error) {
             console.error("An error occurred:", error);
+            toast({
+                variant: "destructive",
+                title: error?.response?.data?.message,
+            });
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                console.log("working fine");
+                const res = await axios.get(BASE_URL + "/classes", {
+                    withCredentials: true,
+                });
+
+                setClasses(res?.data?.data?.class);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -86,7 +110,7 @@ const CreateAnouncementDialog = () => {
                 <Select
                     value={data.classId}
                     onValue
-                    onValueChange={(e) => setData((prev) => ({ ...prev, classId: e }))}
+                    onValueChange={(e) => setData((prev) => ({ ...prev, classId: e?.trim() }))}
                 >
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select class" />

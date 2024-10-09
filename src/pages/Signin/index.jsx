@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,32 +7,70 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
-
 import axios from "axios";
+
+import { useDispatch } from "react-redux";
+import { setUser } from "@/features/Auth/userSlice";
+import { useToast } from "@/hooks/use-toast";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Signin = () => {
-    const navigate = useNavigate();
-    const handleStaffSignin = async () => {
-        // await axios.post(BASE_URL + "/users/signin", { withCredentials: true });
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [regNo, setRegNo] = useState("");
 
-        // console.log("handle submit called");
-        navigate("/");
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { toast } = useToast();
+
+    const handleStaffSignin = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await axios.post(
+                BASE_URL + "/users/signin",
+                { username, password },
+                {
+                    withCredentials: true,
+                },
+            );
+
+            const { admin, teacher } = res?.data?.data;
+            if (admin) {
+                dispatch(setUser(admin));
+            } else if (teacher) {
+                dispatch(setUser(teacher));
+            }
+
+            navigate("/");
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: error?.response?.data?.message,
+            });
+            console.log(error);
+        }
     };
     const handleStudentSignin = async () => {
         try {
-            // await axios.post(
-            //     "http://localhost:8081/api/v1/users/signin",
-            //     {},
-            //     {
-            //         withCredentials: true, // This should be part of the axios config, not the data
-            //     },
-            // );
-            // console.log("handle submit called");
+            const res = await axios.post(
+                BASE_URL + "/users/signin",
+                { regNo },
+                {
+                    withCredentials: true,
+                },
+            );
+
+            const student = res?.data?.data?.student;
+            dispatch(setUser(student));
+
             navigate("/");
         } catch (error) {
             console.error("Error signing in", error);
+            toast({
+                variant: "destructive",
+                title: error?.response?.data?.message,
+            });
         }
     };
 
@@ -52,7 +90,13 @@ const Signin = () => {
                     <TabsContent value="student">
                         <div className="flex flex-col space-y-1.5">
                             <Label htmlFor="regno">Register Number </Label>
-                            <Input type="text" id="regno" placeholder="Enter your regno" />
+                            <Input
+                                type="text"
+                                id="regno"
+                                placeholder="Enter your regno"
+                                value={regNo}
+                                onChange={(e) => setRegNo(e.target.value)}
+                            />
                         </div>
 
                         <Button className="w-full mt-5" onClick={handleStudentSignin}>
@@ -65,7 +109,12 @@ const Signin = () => {
                             <div className="grid w-full items-center gap-4">
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="username">User name </Label>
-                                    <Input id="username" placeholder="Enter your username" />
+                                    <Input
+                                        id="username"
+                                        placeholder="Enter your username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
                                 </div>
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="password">Password</Label>
@@ -73,6 +122,8 @@ const Signin = () => {
                                         id="password"
                                         type="password"
                                         placeholder="Enter your password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
                             </div>
