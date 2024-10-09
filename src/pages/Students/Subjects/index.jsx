@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
+
 const Subjects = () => {
     const [subjects, setSubjects] = useState([
         {
@@ -47,8 +48,8 @@ const Subjects = () => {
     ]);
 
     const columns = [
-        { header: "Subject", accessor: "Subject" },
-        { header: "class", accessor: "class", style: "hidden md:table-cell" },
+        { header: "Subject name", accessor: "Subject name" },
+        { header: "class", accessor: "class" },
         { header: "Lessions", accessor: "Lessions" },
         { header: "Teacher", accessor: "Teacher" },
     ];
@@ -60,16 +61,17 @@ const Subjects = () => {
         >
             <td className="flex items-center gap-4 py-4 px-6">
                 <div>
-                    <p className=" font-semibold">{item?.name}</p>
+                    <p className="font-semibold">{item?.name}</p>
+                    <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="hidden md:table-cell text-center">{item?.class}</td>
+            <td className="text-center">{item?.class}</td>
             <td className=" text-center">{item?.lessions}</td>
-            <td className=" text-center">{item?.teacher}</td>
+            <td className="hidden md:table-cell text-center">{item?.teacher}</td>
         </tr>
     );
     return (
-        <div className="">
+        <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
                 <h1 className="text-lg font-semibold hidden md:block">All Subjects</h1>
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">

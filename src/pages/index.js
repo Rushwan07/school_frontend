@@ -46,7 +46,7 @@ export { default as StudentEvents } from "./Students/Events";
 export { default as StudentExams } from "./Students/Exams";
 export { default as StudentExtracurricularActivities } from "./Students/ExtracurricularActivities";
 export { default as StudentLessions } from "./Students/Lessions";
-export { default as StudentFees } from "./Admin/Fees";
+export { default as StudentFees } from "./Students/Fees";
 export { default as StudentResults } from "./Students/Results";
 export { default as StudentSubjects } from "./Students/Subjects";
 export { default as StudentTransportations } from "./Students/Transportations";

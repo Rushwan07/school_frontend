@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { Pen, PenBox, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -18,29 +18,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
-import { DatePickerWithRange } from "./DateRangePicker";
 import { Label } from "@/components/ui/label";
 
-const CreateAssignment = () => {
-    const [loading, setLoading] = useState(false);
-    const [dialogOpen, setDialogOpen] = useState(false);
-
-    const [subjects, setSubjects] = useState([
-        {
-            _id: "abcd",
-            name: "Maths",
-        },
-        {
-            _id: "abcd2",
-            name: "Maths",
-        },
-        {
-            _id: "abcddfd",
-            name: "Maths",
-        },
-    ]);
-
+const CreateAnouncementDialog = ({ item }) => {
     const [classes, setClasses] = useState([
         {
             _id: "sadfasdf",
@@ -59,15 +39,13 @@ const CreateAssignment = () => {
             name: "first class",
         },
     ]);
-
+    const [loading, setLoading] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [data, setData] = useState({
-        subjectId: "",
+        title: "",
         description: "",
         classId: "",
-        startDate: "",
-        dueDate: "",
     });
-
     const handleSubmit = async () => {
         setLoading(true);
         try {
@@ -84,14 +62,28 @@ const CreateAssignment = () => {
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            {" "}
             <DialogTrigger>
-                <Plus />
+                <Button size={"icon"} variant={"outline"} onClick={() => setData(item)}>
+                    <PenBox />
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create Assignment</DialogTitle>
+                    <DialogTitle>Edit Announcement</DialogTitle>
                 </DialogHeader>
+                <Label>Title</Label>
+                <Input
+                    placeholder="Title"
+                    value={data.title}
+                    onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
+                />
+                <Label>Description</Label>
+                <Textarea
+                    placeholder="Enter description here"
+                    rows="5"
+                    value={data.description}
+                    onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
+                />
                 <Label>Class</Label>
                 <Select
                     value={data.classId}
@@ -110,39 +102,7 @@ const CreateAssignment = () => {
                         ))}
                     </SelectContent>
                 </Select>
-                <Label>Subject </Label>
-                <Select
-                    value={data.subjectId}
-                    onValue
-                    onValueChange={(e) => setData((prev) => ({ ...prev, subjectId: e }))}
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Subject" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
-                        {subjects?.map((value) => (
-                            <SelectItem key={value?._id} value={value?._id}>
-                                {value?.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>{" "}
-                <Label>Title</Label>
-                <Input
-                    placeholder="Title"
-                    value={data.title}
-                    onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
-                />
-                <Label>Description</Label>
-                <Textarea
-                    placeholder="Enter description here"
-                    rows="5"
-                    value={data.description}
-                    onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
-                />
-                <Label>Date</Label>
-                <DatePickerWithRange setData={setData} />
+
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
                         {loading ? "Saving..." : "Save"}
@@ -153,4 +113,4 @@ const CreateAssignment = () => {
     );
 };
 
-export default CreateAssignment;
+export default CreateAnouncementDialog;

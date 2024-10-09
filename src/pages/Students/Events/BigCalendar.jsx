@@ -4,10 +4,10 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const localizer = momentLocalizer(moment);
 
-const BigCalendar = ({ assignments, selectedDate }) => {
-    const events = assignments.flatMap((assignment) => {
-        const start = new Date(assignment.startDate);
-        const end = new Date(assignment.dueDate);
+const BigCalendar = ({ events, selectedDate }) => {
+    const eventss = events.flatMap((event) => {
+        const start = new Date(event.startDate);
+        const end = new Date(event.dueDate);
 
         const startEvent = new Date(start);
         startEvent.setHours(8, 0, 0, 0);
@@ -21,14 +21,14 @@ const BigCalendar = ({ assignments, selectedDate }) => {
 
         return [
             {
-                id: `${assignment._id}-start`,
-                title: assignment.title + "- (Start)",
+                id: `${event._id}-start`,
+                title: event.title + "- (Start)",
                 start: startEvent, // Assignment start date at 8:00 AM
                 end: startEventEnd, // Ends at 9:00 AM
             },
             {
-                id: `${assignment._id}-end`,
-                title: `${assignment.title} - (Due)`, // Indicate it's the due date
+                id: `${event._id}-end`,
+                title: `${event.title} - (Due)`, // Indicate it's the due date
                 start: endEvent, // Assignment end date at 8:00 AM
                 end: endEventEnd, // Ends at 9:00 AM
             },
@@ -38,7 +38,7 @@ const BigCalendar = ({ assignments, selectedDate }) => {
     return (
         <Calendar
             localizer={localizer}
-            events={events}
+            events={eventss}
             startAccessor="start"
             endAccessor="end"
             views={["day"]}

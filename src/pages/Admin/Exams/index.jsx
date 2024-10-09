@@ -1,7 +1,9 @@
 import { Input } from "@/components/ui/input";
-import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
+import { ArrowDownAZ, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
 import React, { useState } from "react";
 import CreateExam from "./CreateExam";
+import EditExam from "./EditExam";
+import { Button } from "@/components/ui/button";
 const Exams = () => {
     const [exams, setExams] = useState([
         {
@@ -72,23 +74,21 @@ const Exams = () => {
             <td className="hidden md:table-cell text-center">{item?.endDate}</td>
 
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
+                <EditExam subjects={subjects} classes={classes} />
+                <Button variant="destructive" size="icon">
+                    <Trash2Icon size={"20"} />
+                </Button>
             </td>
         </tr>
     );
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
-                <h1 className="text-lg font-semibold hidden md:block">All Events</h1>
+                <h1 className="text-lg font-semibold hidden md:block">All Exams</h1>
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                     <Input
                         type="text"
-                        placeholder="Search events"
+                        placeholder="Search exams   "
                         className="border rounded px-3 py-2"
                     />
                     <div className="flex items-center gap-4 self-end ">

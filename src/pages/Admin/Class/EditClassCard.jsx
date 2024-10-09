@@ -73,7 +73,7 @@ const CreateClassCard = () => {
             </DialogTrigger>
             <DialogContent className="max-h-[80vh] overflow-x-hidden overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>Create Grade</DialogTitle>
+                    <DialogTitle>Edit Class</DialogTitle>
                 </DialogHeader>{" "}
                 <div className="space-y-5">
                     <div>

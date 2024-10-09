@@ -43,11 +43,11 @@ const StudentSidebar = () => {
             link: "/student/attendance", // Corrected to match the route
             icon: <CheckSquare />,
         },
-        {
-            text: "Class",
-            link: "/student/class", // Corrected to match the route
-            icon: <Calendar />,
-        },
+        // {
+        //     text: "Class",
+        //     link: "/student/class", // Corrected to match the route
+        //     icon: <Calendar />,
+        // },
         {
             text: "Events",
             link: "/student/events", // Corrected to match the route
@@ -68,11 +68,11 @@ const StudentSidebar = () => {
             link: "/student/fees", // Corrected to match the route
             icon: <DollarSign />,
         },
-        {
-            text: "Lessions",
-            link: "/student/lessons", // Corrected from 'lessions' to 'lessons'
-            icon: <BookOpen />,
-        },
+        // {
+        //     text: "Lessions",
+        //     link: "/student/lessons", // Corrected from 'lessions' to 'lessons'
+        //     icon: <BookOpen />,
+        // },
         {
             text: "Results",
             link: "/student/results", // Corrected to match the route

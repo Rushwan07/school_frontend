@@ -91,7 +91,7 @@ const Exams = () => {
         { header: "class", accessor: "class" },
         { header: "subjectName", accessor: "subjectName" },
         { header: "startDate", accessor: "startDate" },
-        { header: "Time", accessor: "time", style: "hidden md:table-cell" },
+        // { header: "Time", accessor: "time", style: "hidden md:table-cell" },
     ];
 
     const renderRow = (item) => (
@@ -108,7 +108,7 @@ const Exams = () => {
             <td className="text-center">{item?.class}</td>
             <td className="hidden md:table-cell text-center">{item?.subjectName}</td>
             <td className="hidden md:table-cell text-center">{item?.startDate}</td>
-            <td className="hidden md:table-cell text-center">{item?.time}</td>
+            {/* <td className="hidden md:table-cell text-center">{item?.time}</td> */}
         </tr>
     );
 

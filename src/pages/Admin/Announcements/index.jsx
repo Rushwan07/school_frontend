@@ -1,7 +1,9 @@
 import { Input } from "@/components/ui/input";
-import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import { ArrowDownAZ, Plus, SlidersHorizontal, Trash, Trash2, Trash2Icon } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import CreateAnouncementDialog from "./CreateAnouncementDialog";
+import EditAnouncementDialog from "./EditAnouncementDialog";
+import { Button } from "@/components/ui/button";
 
 const AnnouncementListPage = () => {
     const [anouncements, setAnounceMents] = useState([
@@ -9,7 +11,7 @@ const AnnouncementListPage = () => {
             id: 1,
             title: "Important Announcement",
             description: "This is an important update for Class A",
-            class: "Class A",
+            class: "sadfaasdfasdf",
             date: "2023-10-01",
         },
         {
@@ -19,40 +21,18 @@ const AnnouncementListPage = () => {
             class: "Class B",
             date: "2023-10-15",
         },
-        // Add more announcements here
     ]);
-
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
-
-    const [data, setData] = useState({
-        title: "",
-        description: "",
-        classId: "",
-    });
 
     const columns = [
-        { header: "Title", accessor: "title" },
-        { header: "Class", accessor: "class" },
+        { header: "Title", accessor: "title", className: "text-center " },
+        { header: "Class", accessor: "class", className: "text-center" },
         { header: "Date", accessor: "date", className: "hidden md:table-cell" },
         { header: "Actions", accessor: "action" },
     ];
+
+    useEffect(() => {
+        //get all anouncements
+    }, []);
 
     const renderRow = (item) => (
         <tr
@@ -65,15 +45,14 @@ const AnnouncementListPage = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td>{item?.class}</td>
+            <td className="text-center">{item?.class}</td>
             <td className="hidden md:table-cell">{item?.date}</td>
-            <td className="flex items-center gap-2">
-                <button className="btn btn-sm btn-outline-primary rounded-full">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
+            <td className="flex items-center gap-2 py-3 ">
+                <EditAnouncementDialog item={item} />
+
+                <Button variant="destructive" size="icon">
+                    <Trash2Icon size={"20"} />
+                </Button>
             </td>
         </tr>
     );
@@ -95,7 +74,7 @@ const AnnouncementListPage = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateAnouncementDialog classes={classes} setData={setData} data={data} />
+                        <CreateAnouncementDialog />
                     </div>
                 </div>
             </div>
@@ -104,7 +83,7 @@ const AnnouncementListPage = () => {
                 <thead>
                     <tr className="bg-gray-100 text-left text-xs font-semibold">
                         {columns?.map((column) => (
-                            <th key={column.header} className="px-6 py-3">
+                            <th key={column.header} className={`px-6 py-3 ${column?.className}`}>
                                 {column?.header}
                             </th>
                         ))}

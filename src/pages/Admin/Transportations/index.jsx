@@ -1,7 +1,9 @@
 import { Input } from "@/components/ui/input";
-import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
+import { ArrowDownAZ, Edit, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
 import React, { useState } from "react";
 import CreateNewBus from "./CreateNewBus";
+import EditTransportation from "./EditTransportation";
+import { Button } from "@/components/ui/button";
 const Transportations = () => {
     const [activities, setActivities] = useState([
         {
@@ -52,19 +54,17 @@ const Transportations = () => {
             <td className="hidden md:table-cell text-center">{item?.endingPlace}</td>
 
             <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
+                <EditTransportation />
+                <Button variant="destructive" size="icon">
+                    <Trash2Icon size={"20"} />
+                </Button>
             </td>
         </tr>
     );
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
-                <h1 className="text-lg font-semibold hidden md:block">All Activities</h1>
+                <h1 className="text-lg font-semibold hidden md:block">All Transportations</h1>
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                     <Input
                         type="text"

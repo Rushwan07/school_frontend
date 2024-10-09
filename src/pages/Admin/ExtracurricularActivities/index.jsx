@@ -1,7 +1,9 @@
 import { Input } from "@/components/ui/input";
-import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
+import { ArrowDownAZ, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
 import React, { useState } from "react";
 import CreateActivity from "./CreateActivity";
+import EditActivity from "./EditActivity";
+import { Button } from "@/components/ui/button";
 const ExtracurricularActivities = () => {
     const [activities, setActivities] = useState([
         {
@@ -57,12 +59,10 @@ const ExtracurricularActivities = () => {
             <td className="hidden md:table-cell text-center">{item?.date}</td>
 
             <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
+                <EditActivity />
+                <Button variant="destructive" size="icon">
+                    <Trash2Icon size={"20"} />
+                </Button>
             </td>
         </tr>
     );

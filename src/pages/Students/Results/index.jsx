@@ -1,92 +1,100 @@
-import { Input } from "@/components/ui/input";
-import { ArrowDownAZ, SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
-const Results = () => {
-    const [assignments, setAssignments] = useState([
+
+// Example student result data (replace this with actual data fetching)
+const studentResult = {
+    _id: "670524810c6aa699c6ede9d0",
+    subjects: [
         {
-            id: 1,
-            subjectName: "Maths",
-            class: "Class A",
-            marks: "60",
-            result: "Pass",
+            subjectId: {
+                _id: "6704ea5418b730aed6cc5089",
+                name: "Tamil",
+                description: "Description for Tamil subject",
+            },
+            mark: 43,
+            assignmentMark: 23,
+            grade: "B+",
         },
         {
-            id: 2,
-            subjectName: "History",
-            class: "Class A",
-            marks: "10",
-            result: "Fail",
+            subjectId: {
+                _id: "6704ea5418b730aed6cc5090",
+                name: "Math",
+                description: "Description for Math subject",
+            },
+            mark: 45,
+            assignmentMark: 25,
+            grade: "A",
         },
-    ]);
-    const columns = [
-        { header: "Subject", accessor: "subjectName" },
-        // { header: "Title", accessor: "tile",style: "hidden md:table-cell" },
-        { header: "Class", accessor: "class", style: "hidden md:table-cell" },
-        { header: "Marks", accessor: "startDate" },
-        { header: "Result", accessor: "duration" },
-    ];
+    ],
+    total: 136,
+    examId: {
+        _id: "670519227e2fd9ab12fc5b8e",
+        name: "Final Exam",
+        description: "Final examination for the academic year",
+    },
+    classId: {
+        _id: "6704ec91fee39a5e6ebd0162",
+        name: "X A",
+    },
+    studentId: {
+        _id: "670504cf9d81be21a0a06e3e",
+        regno: "101",
+        name: "Subin",
+        address: "123 Main Street, Anytown, USA",
+        img: "https://example.com/student.jpg",
+    },
+};
 
-    const renderRow = (item) => (
-        <tr
-            key={item.id}
-            className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
-        >
-            <td className="flex items-center gap-4 py-4 px-6">
-                <div>
-                    <p className=" font-semibold">{item?.subjectName}</p>
-                </div>
-            </td>
-            <td className="hidden md:table-cell text-center">{item?.class}</td>
-            <td className="text-center">{item?.marks}</td>
+const StudentExamResult = () => {
+    const [result, setResult] = useState(studentResult); // Set this from fetched data
 
-            <td
-                className={`text-center text-white ${
-                    item?.result === "Pass" ? "bg-green-500" : "bg-red-500"
-                }`}
-            >
-                {item?.result}
-            </td>
-
-            {/* <td className="hidden md:table-cell text-center">{item?.duration}m</td> */}
-        </tr>
-    );
     return (
-        <div>
-            <div className="flex items-center justify-between mb-5">
-                <h1 className="text-lg font-semibold hidden md:block">Results</h1>
-                <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-                    <Input
-                        type="text"
-                        placeholder="Search Lesson"
-                        className="border rounded px-3 py-2"
-                    />
-                    <div className="flex items-center gap-4 self-end ">
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <SlidersHorizontal />
-                        </button>
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <ArrowDownAZ />
-                        </button>
-                    </div>
-                </div>
+        <div className="bg-white p-6 rounded-md m-4">
+            <h1 className="text-lg font-semibold mb-5">Exam Result</h1>
+            <div className="mb-5">
+                <p>
+                    <strong>Name:</strong> {result.studentId.name}
+                </p>
+                <p>
+                    <strong>Registration Number:</strong> {result.studentId.regno}
+                </p>
+                <p>
+                    <strong>Class:</strong> {result.classId.name}
+                </p>
+                <p>
+                    <strong>Exam:</strong> {result.examId.name}
+                </p>
             </div>
-            <table className="table-auto w-full mx-auto shadow-md rounded">
-                <thead>
-                    <tr className="bg-gray-100 text-center  text-xs font-semibold">
-                        {columns?.map((column) => (
-                            <th
-                                key={column.header}
-                                className={`px-6 py-3 max-w-[200px] ${column.style} `}
-                            >
-                                {column?.header}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>{assignments?.map(renderRow)}</tbody>
-            </table>
+
+            <h2 className="text-md font-semibold mb-3">Subject-wise Marks</h2>
+            <div className="flex flex-col gap-1">
+                {result.subjects.map((subject) => (
+                    <div
+                        key={subject.subjectId._id}
+                        className="p-4 border border-gray-300 rounded-md"
+                    >
+                        <p>
+                            <strong>Subject:</strong> {subject.subjectId.name}
+                        </p>
+                        {/* <p>
+                            <strong>Mark:</strong> {subject.mark} / 50
+                        </p> */}
+                        <p>
+                            <strong>Assignment Mark:</strong> {subject.assignmentMark} / 25
+                        </p>
+                        <p>
+                            <strong>Grade:</strong> {subject.grade}
+                        </p>
+                    </div>
+                ))}
+            </div>
+
+            {/* <div className="mt-6 p-4 bg-gray-100 rounded-md">
+                <p>
+                    <strong>Total Marks:</strong> {result.total}
+                </p>
+            </div> */}
         </div>
     );
 };
 
-export default Results;
+export default StudentExamResult;

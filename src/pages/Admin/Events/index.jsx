@@ -1,7 +1,9 @@
 import { Input } from "@/components/ui/input";
-import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
+import { ArrowDownAZ, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
 import React, { useState } from "react";
 import CreateEvents from "./CreateEvents";
+import EditEvent from "./EditEvents";
+import { Button } from "@/components/ui/button";
 
 const Events = () => {
     const [events, setEvents] = useState([
@@ -15,39 +17,6 @@ const Events = () => {
             endTime: "8:00am",
 
             duedate: "2023-10-01",
-        },
-    ]);
-    const [subjects, setSubjects] = useState([
-        {
-            _id: "abcd",
-            name: "Maths",
-        },
-        {
-            _id: "abcd2",
-            name: "Maths",
-        },
-        {
-            _id: "abcddfd",
-            name: "Maths",
-        },
-    ]);
-
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
         },
     ]);
 
@@ -77,13 +46,11 @@ const Events = () => {
             <td className="hidden md:table-cell text-center">{item?.startTime}</td>
             <td className="hidden md:table-cell text-center">{item?.endTime}</td>
 
-            <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
+            <td className="flex hidden md:table-cell items-center justify-center  text-center">
+                <EditEvent /> &nbsp;
+                <Button variant="destructive" size="icon">
+                    <Trash2Icon size={"20"} />
+                </Button>
             </td>
         </tr>
     );
@@ -104,7 +71,7 @@ const Events = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateEvents subjects={subjects} classes={classes} />
+                        <CreateEvents />
                     </div>
                 </div>
             </div>

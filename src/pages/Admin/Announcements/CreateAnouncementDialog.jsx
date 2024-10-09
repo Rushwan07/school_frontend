@@ -20,10 +20,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
-const CreateAnouncementDialog = ({ classes, data, setData }) => {
+const CreateAnouncementDialog = () => {
+    const [classes, setClasses] = useState([
+        {
+            _id: "sadfasdf",
+            name: "first class",
+        },
+        {
+            _id: "s3432adfasdf",
+            name: "first class",
+        },
+        {
+            _id: "sadfasdfasd",
+            name: "first class",
+        },
+        {
+            _id: "sadfaasdfasdf",
+            name: "first class",
+        },
+    ]);
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
-
+    const [data, setData] = useState({
+        title: "",
+        description: "",
+        classId: "",
+    });
     const handleSubmit = async () => {
         setLoading(true);
         try {

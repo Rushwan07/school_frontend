@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
 import CreateSubject from "./CreateSubject";
+import EditSubjects from "./EditSubjects";
 
 const Subjects = () => {
     const [subjects, setSubjects] = useState([
@@ -72,12 +73,7 @@ const Subjects = () => {
             <td className="hidden md:table-cell text-center">{item?.teacher}</td>
 
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
+                <EditSubjects />
             </td>
         </tr>
     );

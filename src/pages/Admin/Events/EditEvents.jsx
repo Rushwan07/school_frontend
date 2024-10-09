@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { PenBox, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -22,24 +22,16 @@ import { Button } from "@/components/ui/button";
 import { DatePickerWithRange } from "./DateRangePicker";
 import { Label } from "@/components/ui/label";
 
-const CreateAssignment = () => {
+const EditEvent = ({ item }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const [subjects, setSubjects] = useState([
-        {
-            _id: "abcd",
-            name: "Maths",
-        },
-        {
-            _id: "abcd2",
-            name: "Maths",
-        },
-        {
-            _id: "abcddfd",
-            name: "Maths",
-        },
-    ]);
+    const [eventName, setEventName] = useState("");
+    const [description, setDescription] = useState("");
+    const [classId, setClassId] = useState("");
+    const [date, setDate] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
 
     const [classes, setClasses] = useState([
         {
@@ -59,19 +51,11 @@ const CreateAssignment = () => {
             name: "first class",
         },
     ]);
-
-    const [data, setData] = useState({
-        subjectId: "",
-        description: "",
-        classId: "",
-        startDate: "",
-        dueDate: "",
-    });
-
     const handleSubmit = async () => {
+        console.log({ eventName, description, classId, date, startTime, endTime });
+
         setLoading(true);
         try {
-            console.log(data);
             await new Promise((resolve) => setTimeout(resolve, 2000));
 
             setDialogOpen(false);
@@ -86,18 +70,34 @@ const CreateAssignment = () => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             {" "}
             <DialogTrigger>
-                <Plus />
+                <Button
+                    size={"icon"}
+                    variant={"outline"}
+                    // onClick={() => setData(item)}
+                >
+                    <PenBox />
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create Assignment</DialogTitle>
+                    <DialogTitle>Create Event</DialogTitle>
                 </DialogHeader>
+                <Label>Event name</Label>
+                <Input
+                    type="text"
+                    placeholder="Event name"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                />{" "}
+                <Label>Description</Label>
+                <Textarea
+                    placeholder="Enter description here"
+                    rows="5"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
                 <Label>Class</Label>
-                <Select
-                    value={data.classId}
-                    onValue
-                    onValueChange={(e) => setData((prev) => ({ ...prev, classId: e }))}
-                >
+                <Select value={classId} onValue onValueChange={(e) => setClassId(e)}>
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
@@ -110,39 +110,27 @@ const CreateAssignment = () => {
                         ))}
                     </SelectContent>
                 </Select>
-                <Label>Subject </Label>
-                <Select
-                    value={data.subjectId}
-                    onValue
-                    onValueChange={(e) => setData((prev) => ({ ...prev, subjectId: e }))}
-                >
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Subject" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
-                        {subjects?.map((value) => (
-                            <SelectItem key={value?._id} value={value?._id}>
-                                {value?.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>{" "}
-                <Label>Title</Label>
-                <Input
+                {/* <Input
                     placeholder="Title"
                     value={data.title}
                     onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
-                />
-                <Label>Description</Label>
-                <Textarea
-                    placeholder="Enter description here"
-                    rows="5"
-                    value={data.description}
-                    onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
-                />
+                /> */}
                 <Label>Date</Label>
-                <DatePickerWithRange setData={setData} />
+                <DatePickerWithRange setData={setDate} />
+                <Label>Start time</Label>
+                <Input
+                    aria-label="Time"
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                />
+                <Label>End time</Label>
+                <Input
+                    aria-label="Time"
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                />
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
                         {loading ? "Saving..." : "Save"}
@@ -153,4 +141,4 @@ const CreateAssignment = () => {
     );
 };
 
-export default CreateAssignment;
+export default EditEvent;

@@ -3,6 +3,7 @@ import { ArrowDownAZ, Eye, Plus, SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
 import StudentList from "./StudentDetails";
 import ViewStudentDetails from "./ViewStudentDetails";
+import EditStudent from "./EditStudent";
 
 const Students = () => {
     const [students, setStudents] = useState([
@@ -42,6 +43,7 @@ const Students = () => {
             <td className="hidden md:table-cell text-center w-[400px]">{item?.sex}</td>
             {/* <td className="hidden md:table-cell text-center ">{item?.duration}</td> */}
             <td className="flex items-center justify-center gap-2 text-center  py-4 ">
+                <EditStudent />
                 <ViewStudentDetails />
             </td>
         </tr>

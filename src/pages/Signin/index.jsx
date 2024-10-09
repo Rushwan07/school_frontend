@@ -15,21 +15,21 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Signin = () => {
     const navigate = useNavigate();
     const handleStaffSignin = async () => {
-        await axios.post(BASE_URL + "/users/signin", { withCredentials: true });
+        // await axios.post(BASE_URL + "/users/signin", { withCredentials: true });
 
-        console.log("handle submit called");
+        // console.log("handle submit called");
         navigate("/");
     };
     const handleStudentSignin = async () => {
         try {
-            await axios.post(
-                "http://localhost:8081/api/v1/users/signin",
-                {},
-                {
-                    withCredentials: true, // This should be part of the axios config, not the data
-                },
-            );
-            console.log("handle submit called");
+            // await axios.post(
+            //     "http://localhost:8081/api/v1/users/signin",
+            //     {},
+            //     {
+            //         withCredentials: true, // This should be part of the axios config, not the data
+            //     },
+            // );
+            // console.log("handle submit called");
             navigate("/");
         } catch (error) {
             console.error("Error signing in", error);

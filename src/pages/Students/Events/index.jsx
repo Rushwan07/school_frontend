@@ -1,96 +1,40 @@
-import { Input } from "@/components/ui/input";
-import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
-
+import BigCalendar from "./BigCalendar";
+import EventCalendar from "./EventCalendar";
 const Events = () => {
-    const [events, setEvents] = useState([
+    const events = [
         {
-            id: 1,
-            eventname: "Hackethon",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            startDate: "2023-10-01",
-            startTime: "7:00am",
-            endTime: "8:00am",
-
-            duedate: "2023-10-01",
+            _id: "670509f30283e5ca5122723c",
+            title: "Write about someone",
+            startDate: "2024-10-03T18:30:00.000Z",
+            dueDate: "2024-10-18T00:00:00.000Z",
+            description: "Description about the assignment",
+            classId: "6704ec91fee39a5e6ebd0162",
+            subjectId: "6704ea5418b730aed6cc5089",
         },
-    ]);
-
-    const columns = [
-        { header: "Event name", accessor: "Event name" },
-        { header: "class", accessor: "class" },
-        { header: "startDate", accessor: "startDate" },
-        { header: "Due Date", accessor: "Due Date", style: "hidden md:table-cell" },
-        { header: "Start time", accessor: "Start time", style: "hidden md:table-cell" },
-        { header: "End time", accessor: "End time", style: "hidden md:table-cell" },
-        // { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
-    const renderRow = (item) => (
-        <tr
-            key={item.id}
-            className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
-        >
-            <td className="flex items-center gap-4 py-4 px-6">
-                <div>
-                    <p className="font-semibold">{item?.eventname}</p>
-                    <p className="text-xs text-gray-500 hidden md:table-cell">
-                        {item?.description}
-                    </p>
-                </div>
-            </td>
-            <td className="text-center">{item?.class}</td>
-            <td className=" text-center">{item?.startDate}</td>
-            <td className="hidden md:table-cell text-center">{item?.duedate}</td>
-            <td className=" text-center hidden md:table-cell">{item?.startTime}</td>
-            <td className="hidden md:table-cell text-center">{item?.endTime}</td>
 
-            {/* <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
-                <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button>
-            </td> */}
-        </tr>
-    );
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+    // Function to handle date click from EventCalendar
+    const handleDateClick = (date) => {
+        setSelectedDate(date);
+    };
+
     return (
-        <div className="">
-            <div className="flex items-center justify-between mb-5">
-                <h1 className="text-lg font-semibold hidden md:block">All Events</h1>
-                <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-                    <Input
-                        type="text"
-                        placeholder="Search events"
-                        className="border rounded px-3 py-2"
-                    />
-                    <div className="flex items-center gap-4 self-end ">
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <SlidersHorizontal />
-                        </button>
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <ArrowDownAZ />
-                        </button>
-                    </div>
+        <div className="p-4 flex gap-4 flex-col xl:flex-row">
+            <div className="w-full xl:w-2/3">
+                <div className="h-full bg-white p-4 rounded-md">
+                    <h1 className="text-xl font-semibold">Schedule (4A)</h1>
+                    {/* Pass assignments and selectedDate to BigCalendar */}
+                    <BigCalendar events={events} selectedDate={selectedDate} />
                 </div>
             </div>
 
-            <table className="table-auto w-full mx-auto shadow-md rounded">
-                <thead>
-                    <tr className="bg-gray-100 text-center  text-xs font-semibold">
-                        {columns?.map((column) => (
-                            <th
-                                key={column.header}
-                                className={`px-6 py-3 max-w-[200px] ${column.style} `}
-                            >
-                                {column?.header}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>{events?.map(renderRow)}</tbody>
-            </table>
+            <div className="w-full xl:w-1/3 flex flex-col gap-8">
+                {/* Pass assignments and date click handler to EventCalendar */}
+                <EventCalendar events={events} onDateClick={handleDateClick} />
+            </div>
         </div>
     );
 };

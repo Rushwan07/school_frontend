@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { PenBox, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { DatePickerWithRange } from "./DateRangePicker";
 import { Label } from "@/components/ui/label";
 
-const CreateAssignment = () => {
+const EditAssignment = ({ item }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -82,11 +82,15 @@ const CreateAssignment = () => {
         }
     };
 
+    console.log(item);
+
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             {" "}
             <DialogTrigger>
-                <Plus />
+                <Button size={"icon"} variant={"outline"} onClick={() => setData(item)}>
+                    <PenBox />
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -153,4 +157,4 @@ const CreateAssignment = () => {
     );
 };
 
-export default CreateAssignment;
+export default EditAssignment;

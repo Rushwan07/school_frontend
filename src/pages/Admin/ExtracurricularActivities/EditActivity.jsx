@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { PenBox, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -19,56 +19,23 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-import { DatePickerWithRange } from "./DateRangePicker";
+// import { DatePickerWithRange } from "./DateRangePicker";
+// import { Calendar } from "@/components/ui/calendar";
+import { DatePicker } from "@/components/DatePicker";
 import { Label } from "@/components/ui/label";
 
-const CreateEvent = () => {
+const EditActivity = ({ classes }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const [eventName, setEventName] = useState("");
+    const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [classId, setClassId] = useState("");
+    const [fees, setFees] = useState("");
     const [date, setDate] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-
-    const [subjects, setSubjects] = useState([
-        {
-            _id: "abcd",
-            name: "Maths",
-        },
-        {
-            _id: "abcd2",
-            name: "Maths",
-        },
-        {
-            _id: "abcddfd",
-            name: "Maths",
-        },
-    ]);
-
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
 
     const handleSubmit = async () => {
-        console.log({ eventName, description, classId, date, startTime, endTime });
+        console.log({ name, description, classId, date, fees });
 
         setLoading(true);
         try {
@@ -86,19 +53,25 @@ const CreateEvent = () => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             {" "}
             <DialogTrigger>
-                <Plus />
+                <Button
+                    size={"icon"}
+                    variant={"outline"}
+                    // onClick={() => setData(item)}
+                >
+                    <PenBox />
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create Event</DialogTitle>
+                    <DialogTitle>Create Activity</DialogTitle>
                 </DialogHeader>
-                <Label>Event name</Label>
+                <Label>Activity name</Label>
                 <Input
                     type="text"
-                    placeholder="Event name"
-                    value={eventName}
-                    onChange={(e) => setEventName(e.target.value)}
-                />{" "}
+                    placeholder="Activity  name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
                 <Label>Description</Label>
                 <Textarea
                     placeholder="Enter description here"
@@ -119,28 +92,16 @@ const CreateEvent = () => {
                             </SelectItem>
                         ))}
                     </SelectContent>
-                </Select>
-                {/* <Input
-                    placeholder="Title"
-                    value={data.title}
-                    onChange={(e) => setData((prev) => ({ ...prev, title: e.target.value }))}
-                /> */}
-                <Label>Date</Label>
-                <DatePickerWithRange setData={setDate} />
-                <Label>Start time</Label>
+                </Select>{" "}
+                <Label>Fees</Label>
                 <Input
-                    aria-label="Time"
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
+                    placeholder="Fees"
+                    type="number"
+                    value={fees}
+                    onChange={(e) => setFees(e.target.value)}
                 />
-                <Label>End time</Label>
-                <Input
-                    aria-label="Time"
-                    type="time"
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                />
+                <Label>Due Date</Label>
+                <DatePicker date={date} setDate={setDate} />
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
                         {loading ? "Saving..." : "Save"}
@@ -151,4 +112,4 @@ const CreateEvent = () => {
     );
 };
 
-export default CreateEvent;
+export default EditActivity;
