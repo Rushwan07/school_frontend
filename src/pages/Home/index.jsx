@@ -49,15 +49,17 @@ const Home = () => {
             <header className=" px-5 py-2 shadow-md ">
                 <nav className="flex justify-between items-center">
                     <span className="font-bold text-xl">Little Bees</span>
-                    <span className="flex gap-5 items-center"> {user.role ? (
-                        <Button onClick={handleNavigate}>Get Started</Button>
-                    ) : (
-                        <Link to="/signin">
-                            <Button>Signin</Button>
-                        </Link>
-                    )}
-
-                    {user?.role && <Button onClick={handleSignOut}>Logout</Button>}</span>
+                    <span className="flex gap-5 items-center">
+                        {" "}
+                        {user?.role ? (
+                            <Button onClick={handleNavigate}>Get Started</Button>
+                        ) : (
+                            <Link to="/signin">
+                                <Button>Signin</Button>
+                            </Link>
+                        )}
+                        {user?.role && <Button onClick={handleSignOut}>Logout</Button>}
+                    </span>
                 </nav>
             </header>
             <div className="h-[90vh]   flex justify-center items-center gap-20">
