@@ -37,7 +37,7 @@ const CreateAnouncementDialog = ({ setAnounceMents }) => {
         setLoading(true);
         try {
             console.log(data);
-            const res = await axios.post(BASE_URL + "/anouncements/create-anouncement", data, {
+            const res = await axios.post(BASE_URL + "/anouncements", data, {
                 withCredentials: true,
             });
             console.log(res?.data?.data?.announcement);

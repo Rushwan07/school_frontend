@@ -39,11 +39,11 @@ const AnnouncementListPage = () => {
         const getAnouncements = async () => {
             try {
                 console.log("working fine");
-                const res = await axios.get(BASE_URL + "/anouncements", {
+                const res = await axios.get(BASE_URL + "/anouncements/admin-anouncement", {
                     withCredentials: true,
                 });
-
-                setAnounceMents(res?.data?.data?.class);
+                console.log(res?.data?.data?.announcement);
+                setAnounceMents(res?.data?.data?.announcement);
             } catch (error) {
                 console.log(error);
                 if (error?.response?.data?.message)
