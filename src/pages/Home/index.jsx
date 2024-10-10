@@ -71,9 +71,11 @@ const Home = () => {
 
                     <p className="text-xl">Efficiently manage daycare operations </p>
                     <br />
-                    <Button className="px-5" onClick={handleNavigate}>
-                        Get Started
-                    </Button>
+                    {user?.role && (
+                        <Button className="px-5" onClick={handleNavigate}>
+                            Get Started
+                        </Button>
+                    )}
                 </div>
                 <div className="w-[40vw] rounded-md overflow-hidden relative custom-shadow ">
                     <img src={Banner} className="object-cover " />
