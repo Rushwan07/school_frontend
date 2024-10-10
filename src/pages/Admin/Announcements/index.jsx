@@ -65,6 +65,24 @@ const AnnouncementListPage = () => {
         getAnouncements();
     }, []);
 
+    const handleRemove = async (id) => {
+        try {
+            if (id) {
+                // Make delete request to the server
+                const res = await axios.delete(`${BASE_URL}/anouncements/${id}`);
+
+                // Show success message
+
+                // Update the state to remove the deleted cruise from the UI
+                setAnounceMents((prevAnnouncement) =>
+                    prevAnnouncement.filter((announce) => announce._id !== id),
+                );
+            }
+        } catch (error) {
+            // Show error message
+            console.error(error);
+        }
+    };
     const renderRow = (item) => (
         <tr
             key={item.id}
@@ -79,9 +97,9 @@ const AnnouncementListPage = () => {
             <td className="text-center">{item?.class}</td>
             <td className="hidden md:table-cell">{item?.date}</td>
             <td className="flex items-center gap-2 py-3 ">
-                <EditAnouncementDialog item={item} />
+                <EditAnouncementDialog item={item} setAnounceMents={setAnounceMents} />
 
-                <Button variant="destructive" size="icon">
+                <Button onClick={() => handleRemove(item?._id)} variant="destructive" size="icon">
                     <Trash2Icon size={"20"} />
                 </Button>
             </td>

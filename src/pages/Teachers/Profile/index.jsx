@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -7,7 +7,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -19,12 +18,13 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import useFirebaseUpload from "@/hooks/use-firebaseUploads";
 
 const Profile = () => {
+    const [image, setImage] = useState(null);
+    const [file, setFile] = useState(null);
+
     const [teacher, setTeacher] = useState({
-        profile:
-            "https://images.pexels.com/photos/16094046/pexels-photo-16094046/free-photo-of-man-using-chatgpt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-        username: "teacher123",
         name: "John Doe",
         email: "johndoe@example.com",
         phone: "123-456-7890",
@@ -35,6 +35,12 @@ const Profile = () => {
     });
 
     const [isOpen, setIsOpen] = useState(false);
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFile(file);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -44,8 +50,15 @@ const Profile = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         alert("Profile updated locally!");
-        setIsOpen(false); // Close the dialog
+        setIsOpen(false);
     };
+
+    const { progress, error, downloadURL } = useFirebaseUpload(file);
+    useEffect(() => {
+        if (downloadURL) {
+            setImage(downloadURL);
+        }
+    }, [downloadURL]);
 
     return (
         <Card>
@@ -63,18 +76,28 @@ const Profile = () => {
                                     <DialogTitle>Edit Profile</DialogTitle>
                                 </DialogHeader>
                                 <form onSubmit={handleSubmit}>
-                                    <Input
-                                        label="Profile"
-                                        name="profile"
-                                        type="file"
-                                        onChange={handleChange}
-                                        className="mb-3"
-                                    />
-                                    {/* {teacher.profile && (
-                                            <div className="w-[100px]">
-                                                <p>Selected file: {teacher.profile}</p>
-                                            </div>
-                                        )} */}
+                                    {progress > 0 && progress !== 100 && (
+                                        <p>Upload progress: {progress}%</p>
+                                    )}
+                                    {!image ? (
+                                        <>
+                                            <Input
+                                                label="Profile"
+                                                name="profile"
+                                                type="file"
+                                                onChange={handleImageChange}
+                                                className="mb-3"
+                                            />
+                                        </>
+                                    ) : (
+                                        <div className="flex justify-center items-center mb-3">
+                                            <img
+                                                src={image}
+                                                alt="Selected"
+                                                className="w-[100px] h-[100px] object-cover rounded-full"
+                                            />
+                                        </div>
+                                    )}
 
                                     <Input
                                         label="Username"
@@ -160,7 +183,7 @@ const Profile = () => {
                 <div className="flex gap-10 flex-wrap">
                     <div className="w-[250px] h-[250px]">
                         <img
-                            src={teacher.profile}
+                            src={image}
                             alt="Preview"
                             className="mb-4 w-full h-full object-cover rounded-full hover:cursor-pointer"
                         />
@@ -169,33 +192,33 @@ const Profile = () => {
                     <div className=" mt-5">
                         <div className="flex gap-2 items-center mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Name:</h1>
-                            <h2>{teacher.name}</h2>
+                            <h2>{teacher?.name}</h2>
                         </div>
                         <div className="flex gap-2 items-center mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Email:</h1>
-                            <h2>{teacher.email}</h2>
+                            <h2>{teacher?.email}</h2>
                         </div>
                         <div className="flex gap-2 items-center mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Phone:</h1>
-                            <h2>{teacher.phone}</h2>
+                            <h2>{teacher?.phone}</h2>
                         </div>
                         <div className="flex gap-2  mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Address:</h1>
-                            <h2>{teacher.address} </h2>
+                            <h2>{teacher?.address} </h2>
                         </div>
                         <div className="flex gap-2 items-center mb-1">
                             <h1 className="text-[1.2rem] font-semibold">BloodType:</h1>
-                            <h2>{teacher.bloodType}</h2>
+                            <h2>{teacher?.bloodType}</h2>
                         </div>
                     </div>
                     <div className=" mt-5">
                         <div className="flex gap-2  mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Birthday:</h1>
-                            <h2>{teacher.birthday}</h2>
+                            <h2>{teacher?.birthday}</h2>
                         </div>
                         <div className="flex gap-2 items-center mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Gender:</h1>
-                            <h2>{teacher.sex}</h2>
+                            <h2>{teacher?.sex}</h2>
                         </div>
                         <div className="flex gap-2 items-center mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Subjects:</h1>
