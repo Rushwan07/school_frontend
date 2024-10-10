@@ -6,6 +6,7 @@ import EditAnouncementDialog from "./EditAnouncementDialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import Announcements from "@/pages/Students/Announcement";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const AnnouncementListPage = () => {
@@ -83,6 +84,7 @@ const AnnouncementListPage = () => {
             console.error(error);
         }
     };
+    console.log(anouncements);
     const renderRow = (item) => (
         <tr
             key={item.id}
@@ -94,8 +96,8 @@ const AnnouncementListPage = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
-            <td className="hidden md:table-cell">{item?.date}</td>
+            <td className="text-center">{item?.classId}</td>
+            <td className="hidden md:table-cell">{item?.createdAt}</td>
             <td className="flex items-center gap-2 py-3 ">
                 <EditAnouncementDialog item={item} setAnounceMents={setAnounceMents} />
 
