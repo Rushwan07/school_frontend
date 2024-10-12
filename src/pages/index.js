@@ -50,3 +50,4 @@ export { default as StudentFees } from "./Students/Fees";
 export { default as StudentResults } from "./Students/Results";
 export { default as StudentSubjects } from "./Students/Subjects";
 export { default as StudentTransportations } from "./Students/Transportations";
+export { default as StudentCheckout } from "./Students/Checkout";

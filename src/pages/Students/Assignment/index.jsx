@@ -15,18 +15,6 @@ const Assignments = () => {
     const [assignments, setAssignments] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // const assignments = [
-    //     {
-    //         _id: "670509f30283e5ca5122723c",
-    //         title: "Write about someone",
-    //         startDate: "2024-10-03T18:30:00.000Z",
-    //         dueDate: "2024-10-18T00:00:00.000Z",
-    //         description: "Description about the assignment",
-    //         classId: "6704ec91fee39a5e6ebd0162",
-    //         subjectId: "6704ea5418b730aed6cc5089",
-    //     },
-    // ];
-
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     const handleDateClick = (date) => {

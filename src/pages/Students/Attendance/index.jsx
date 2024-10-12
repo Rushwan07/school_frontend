@@ -1,17 +1,16 @@
 import React from "react";
 import PieChartComponent from "./PieChart";
-import { Card } from "@/components/ui/card";
+import { useSelector } from "react-redux";
+
 const Attendance = () => {
-    const subjects = [
-        { name: "Maths", presenty: 20 },
-        { name: "Science", presenty: 80 },
-        { name: "Chemistry", presenty: 90 },
-        { name: "History", presenty: 80 },
-    ];
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     return (
         <div>
             {" "}
-            <PieChartComponent />
+            <PieChartComponent user={user} />
             {/* <div className="mt-5">
                 <Card>
                     <div className="flex items-center justify-between p-3 m-5">

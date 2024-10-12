@@ -12,10 +12,11 @@ const EventCalendar = ({ events, onDateClick }) => {
 
     // Function to determine if a date has assignments
     const hasAssignment = (date) => {
-        return events.some(
-            (event) =>
-                new Date(event.startDate).toDateString() === date.toDateString() ||
-                new Date(event.dueDate).toDateString() === date.toDateString(),
+        // Check if the given `date` exists in any of the events' `dates` array
+        return events?.some((event) =>
+            event?.dates?.some(
+                (eventDate) => new Date(eventDate).toDateString() === date.toDateString(),
+            ),
         );
     };
 
@@ -35,22 +36,21 @@ const EventCalendar = ({ events, onDateClick }) => {
             {/* Render assignment details for the selected day */}
             <div>
                 {events
-                    .filter(
-                        (Event) =>
-                            new Date(Event.startDate).toDateString() === value.toDateString() ||
-                            new Date(Event.dueDate).toDateString() === value.toDateString(),
+                    ?.filter((Event) =>
+                        Event.dates.some(
+                            (eventDate) =>
+                                new Date(eventDate).toDateString() === value.toDateString(),
+                        ),
                     )
-                    .map((Event) => (
+                    ?.map((Event) => (
                         <div key={Event._id} className="mb-2">
-                            <h3 className="font-semibold">
-                                {/* Conditional rendering of "Submit the assignment" */}
-                                {new Date(Event.dueDate).toDateString() ===
-                                    value.toDateString() && <span>End of the Event: </span>}
-                                {Event.title}
-                            </h3>
+                            <h3 className="font-semibold">{Event.title}</h3>
                             <p>{Event.description}</p>
-                            <p>From: {new Date(Event.startDate).toLocaleString()}</p>
-                            <p>Due: {new Date(Event.dueDate).toLocaleString()}</p>
+                            <p>From: {new Date(Event.dates[0]).toLocaleString()}</p>
+                            <p>
+                                Due:{" "}
+                                {new Date(Event.dates[Event.dates.length - 1]).toLocaleString()}
+                            </p>
                         </div>
                     ))}
             </div>

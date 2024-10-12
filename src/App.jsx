@@ -52,6 +52,7 @@ import {
     StudentResults,
     StudentSubjects,
     StudentTransportations,
+    StudentCheckout,
 } from "@/pages";
 import AdminLayout from "./layouts/AdminLayout";
 import StaffLayout from "./layouts/StaffLayout";
@@ -243,6 +244,10 @@ function App() {
                 {
                     path: "class",
                     element: <StudentClass />,
+                },
+                {
+                    path: "fees/checkout",
+                    element: <StudentCheckout />,
                 },
                 {
                     path: "events",

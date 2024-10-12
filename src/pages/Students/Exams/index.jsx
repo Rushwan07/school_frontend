@@ -1,49 +1,20 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { useToast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Exams = () => {
-    const [exams, setExams] = useState([
-        {
-            _id: "670519227e2fd9ab12fc5b8e",
-            name: "Final Term Exam",
-            description: "Annual exam for the final term",
-            classId: {
-                _id: "6704ec91fee39a5e6ebd0162",
-                name: "X A",
-            },
-            subjects: [
-                {
-                    subjectId: {
-                        _id: "6704ea5418b730aed6cc5089",
-                        name: "Tamil",
-                        description: "Description for the subject",
-                    },
-                    date: "2024-10-08T08:00:00.000Z",
-                    _id: "670519227e2fd9ab12fc5b8f",
-                },
-                {
-                    subjectId: {
-                        _id: "6704ea5418b730aed6cc5089",
-                        name: "English",
-                        description: "Description for the subject",
-                    },
-                    date: "2024-10-09T08:00:00.000Z",
-                    _id: "670519227e2fd9ab12fc5b8f",
-                },
-                {
-                    subjectId: {
-                        _id: "6704ea5418b730aed6cc5089",
-                        name: "Maths",
-                        description: "Description for the subject",
-                    },
-                    date: "2024-10-10T08:00:00.000Z",
-                    _id: "670519227e2fd9ab12fc5b8f",
-                },
-            ],
-        },
-    ]);
+    const [exams, setExams] = useState([]);
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const { toast } = useToast();
 
+    const [loading, setLoading] = useState(false);
     const columns = [
         { header: "Subject", accessor: "subject" },
         { header: "Class", accessor: "class", style: "hidden md:table-cell" },
@@ -51,8 +22,38 @@ const Exams = () => {
         { header: "Time", accessor: "time" },
     ];
 
+    useEffect(() => {
+        const getExams = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/exams/student-exams", {
+                    headers: { token: token },
+                });
+                console.log(res?.data?.data?.exam);
+
+                setExams(res?.data?.data?.exam);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getExams();
+    }, []);
+
     const renderRow = (exam) =>
-        exam.subjects.map((subject) => (
+        exam?.subjects?.map((subject) => (
             <tr
                 key={subject._id}
                 className="border-b border-gray-200 bg-white shadow-sm rounded even:bg-slate-50 text-sm hover:bg-gray-100"
@@ -99,7 +100,7 @@ const Exams = () => {
             <table className="table-auto w-full mx-auto shadow-md rounded">
                 <thead>
                     <tr className="bg-gray-100 text-center text-xs font-semibold">
-                        {columns.map((column) => (
+                        {columns?.map((column) => (
                             <th
                                 key={column.header}
                                 className={`px-6 py-3 max-w-[200px] ${column.style}`}
@@ -109,7 +110,7 @@ const Exams = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{exams.map(renderRow)}</tbody>
+                <tbody>{exams?.map(renderRow)}</tbody>
             </table>
         </div>
     );
