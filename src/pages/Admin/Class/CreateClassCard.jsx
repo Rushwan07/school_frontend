@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Pencil, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -19,99 +19,120 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Multiselect from "multiselect-react-dropdown";
-// name
-// capacity
-// supervisorId
-// lessons
-const CreateClassCard = () => {
+import { toast } from "@/hooks/use-toast";
+import axios from "axios";
+import { useSelector } from "react-redux";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+const CreateClassCard = ({ setSlassLists }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [selectedStaff, setSelectedStaff] = useState("");
     const [capacity, setCapacity] = useState(0);
-    const [name, setName] = useState();
+    const [name, setName] = useState("");
     const [fees, setFees] = useState(0);
+    const [selectedStudents, setSelectedStudents] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [teacher, setTeacher] = useState([]); // Ensure it's an array
+    const [subjects, setSubjects] = useState([]);
+    const [students, setStudents] = useState([]);
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
 
-    const staffMembers = [
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Smith" },
-        { id: 3, name: "Michael Johnson" },
-        { id: 4, name: "Emily Davis" },
-    ];
-    const subjects = [
-        { id: 1, name: "Mathematics" },
-        { id: 2, name: "Science" },
-        { id: 3, name: "History" },
-        { id: 4, name: "Geography" },
-        { id: 5, name: "English" },
-        { id: 6, name: "Physical Education" },
-    ];
-    const students = [
-        { id: 1, regNo: "Mathematics" },
-        { id: 1, regNo: "1" },
-        { id: 1, regNo: "2" },
-        { id: 1, regNo: "4" },
-        { id: 1, regNo: "3" },
-        { id: 1, regNo: "5" },
-    ];
+    useEffect(() => {
+        const getClass = async () => {
+            setLoading(true); // Set loading before fetching data
+            try {
+                const teacherRes = await axios.get(`${BASE_URL}/teachers/all-teacher`, {
+                    withCredentials: true,
+                });
+                const studentRes = await axios.get(`${BASE_URL}/students/all-students`, {
+                    withCredentials: true,
+                });
+                const subjectRes = await axios.get(`${BASE_URL}/subjects`, {
+                    withCredentials: true,
+                });
 
-    // useEffect(() => {
-    //     const getClass = async () => {
-    //         try {
-    //             console.log("working fine");
-    //             const res = await axios.get(BASE_URL + "/students", {
-    //                 withCredentials: true,
-    //             });
+                setTeacher(teacherRes.data.data.teachers || []); // Ensure default to empty array
+                setStudents(studentRes.data.data.students || []); // Ensure default to empty array
+                setSubjects(subjectRes.data.data.subjects || []); // Ensure default to empty array
+            } catch (error) {
+                console.error(error);
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message || "Uh oh! Something went wrong.",
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
 
-    //             setClasses(res?.data?.data?.class);
-    //         } catch (error) {
-    //             console.log(error);
-    //             if (error?.response?.data?.message)
-    //                 toast({
-    //                     variant: "destructive",
-    //                     title: error?.response?.data?.message,
-    //                 });
-    //             else {
-    //                 toast({
-    //                     variant: "destructive",
-    //                     title: "Uh oh! Something went wrong.",
-    //                     description: "There was a problem with your request.",
-    //                 });
-    //             }
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     getClass();
-    // }, []);
+    // const handleSubmit = async () => {
+    //     setLoading(true);
+    //     try {
+    //         console.log("Selected Staff:", selectedStaff);
+    //         console.log("Capacity:", capacity);
+    //         console.log("Class Name:", name);
+    //         console.log("Selected Subjects:", selectedSubjects);
+    //         console.log("Fees:", fees);
+    //         console.log("Selected Students:", selectedStudents);
+    //         await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulating a delay
+    //         setDialogOpen(false);
+    //     } catch (error) {
+    //         console.error("An error occurred:", error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            console.log(selectedStaff);
-            console.log(capacity);
-            console.log(name);
-            console.log(selectedSubjects);
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            // Assuming selectedSubjects and selectedStudents are arrays
+            const subjectsId = selectedSubjects.map((subject) => subject._id); // Collecting subject IDs
+            const studentsId = selectedStudents.map((student) => student._id); // Collecting student IDs
+            const res = await axios.post(
+                `${BASE_URL}/classes`,
+                {
+                    teacherId: selectedStaff, // Assuming selectedStaff is a string with the staff ID
+                    subjectsId, // This will be an array of subject IDs
+                    studentsId: studentsId, // This will be an array of student IDs
+                    name,
+                    baseFees: fees,
+                    capacity,
+                },
+                {
+                    headers: { token: token },
+                },
+            );
 
+            console.log(res?.data?.data?.class);
+            setSlassLists((prev) => [...prev, res?.data?.data?.class]);
             setDialogOpen(false);
         } catch (error) {
             console.error("An error occurred:", error);
+            toast({
+                variant: "destructive",
+                title: error?.response?.data?.message,
+            });
         } finally {
             setLoading(false);
         }
     };
+
     const handleSelectChange = (value) => {
         setSelectedStaff(value);
     };
-    const [selectedStudents, setSelectedStudents] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
 
-    // Filter students based on the search term
     const filteredStudents = students.filter((student) =>
-        student.regNo.toLowerCase().includes(searchTerm.toLowerCase()),
+        student.regNo?.toLowerCase().includes(searchTerm.toLowerCase()),
     );
+
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>
@@ -122,7 +143,7 @@ const CreateClassCard = () => {
             <DialogContent className="max-h-[80vh] overflow-x-hidden overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create Class</DialogTitle>
-                </DialogHeader>{" "}
+                </DialogHeader>
                 <div className="space-y-5">
                     <div>
                         <Label>Name</Label>
@@ -142,20 +163,19 @@ const CreateClassCard = () => {
                             onChange={(e) => setCapacity(e.target.value)}
                         />
                     </div>
-
                     <div>
                         <Label>Subjects</Label>
                         <Multiselect
-                            options={subjects} // Options to display in the dropdown
-                            selectedValues={selectedSubjects} // Preselected value to persist in dropdown
-                            onSelect={(selectedList) => setSelectedSubjects(selectedList)} // Function will trigger on select event
-                            onRemove={(selectedList) => setSelectedSubjects(selectedList)} // Function will trigger on remove event
-                            displayValue="name" // Property to display in the dropdown
+                            options={subjects}
+                            selectedValues={selectedSubjects}
+                            onSelect={(selectedList) => setSelectedSubjects(selectedList)}
+                            onRemove={(selectedList) => setSelectedSubjects(selectedList)}
+                            displayValue="name"
                             className="rounded-lg"
                         />
                     </div>
                     <div>
-                        <label>Students</label>
+                        <Label>Students</Label>
                         <input
                             type="text"
                             placeholder="Search by Registration No"
@@ -164,23 +184,23 @@ const CreateClassCard = () => {
                             className="mb-2 rounded-lg border p-2 mx-3"
                         />
                         <Multiselect
-                            options={filteredStudents} // Filtered options to display in the dropdown
-                            selectedValues={selectedStudents} // Preselected values to persist in dropdown
-                            onSelect={(selectedList) => setSelectedStudents(selectedList)} // Function will trigger on select event
-                            onRemove={(selectedList) => setSelectedStudents(selectedList)} // Function will trigger on remove event
-                            displayValue="regNo" // Property to display in the dropdown (change as needed)
+                            options={students}
+                            selectedValues={selectedStudents}
+                            onSelect={(selectedList) => setSelectedStudents(selectedList)}
+                            onRemove={(selectedList) => setSelectedStudents(selectedList)}
+                            displayValue="regno"
                             className="rounded-lg"
                         />
                     </div>
                     <div>
-                        <label>Staff</label>
+                        <Label>Staff</Label>
                         <Select onValueChange={handleSelectChange}>
                             <SelectTrigger className="rounded-lg">
                                 <SelectValue placeholder="Select Staff" />
                             </SelectTrigger>
                             <SelectContent>
-                                {staffMembers.map((staff) => (
-                                    <SelectItem key={staff.id} value={staff.id.toString()}>
+                                {teacher.map((staff) => (
+                                    <SelectItem key={staff._id} value={staff._id?.toString()}>
                                         {staff.name}
                                     </SelectItem>
                                 ))}
@@ -202,7 +222,7 @@ const CreateClassCard = () => {
                         {loading ? "Saving..." : "Save"}
                     </Button>
                 </DialogFooter>
-            </DialogContent>{" "}
+            </DialogContent>
         </Dialog>
     );
 };

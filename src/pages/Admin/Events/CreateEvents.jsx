@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -21,8 +21,16 @@ import { Button } from "@/components/ui/button";
 
 import { DatePickerWithRange } from "./DateRangePicker";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import { useSelector } from "react-redux";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const CreateEvent = () => {
+const CreateEvent = ({ setEvents }) => {
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -33,46 +41,57 @@ const CreateEvent = () => {
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
 
-    const [subjects, setSubjects] = useState([
-        {
-            _id: "abcd",
-            name: "Maths",
-        },
-        {
-            _id: "abcd2",
-            name: "Maths",
-        },
-        {
-            _id: "abcddfd",
-            name: "Maths",
-        },
-    ]);
+    const [classes, setClasses] = useState([]);
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                console.log("working fine");
+                const res = await axios.get(BASE_URL + "/classes", {
+                    headers: { token: token },
+                });
+                // const res2 = await axios.get(BASE_URL + "/subjects/", {
+                //     headers: { token: token },
+                // });
+
+                setClasses(res?.data?.data?.class);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
+
+    console.log(classes);
 
     const handleSubmit = async () => {
-        console.log({ eventName, description, classId, date, startTime, endTime });
+        console.log({ date: date });
 
         setLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const res = await axios.post(
+                BASE_URL + "/events",
+                { eventName, description, classId, date, startTime, endTime },
+                {
+                    headers: { token: token },
+                },
+            );
+            console.log(res?.data?.data?.event);
+            setEvents((prev) => [...prev, res?.data?.data?.event]);
 
             setDialogOpen(false);
         } catch (error) {

@@ -21,8 +21,15 @@ import { Button } from "@/components/ui/button";
 
 import { DatePickerWithRange } from "./DateRangePicker";
 import { Label } from "@/components/ui/label";
+import { useSelector } from "react-redux";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const EditEvent = ({ item }) => {
+const EditEvent = ({ item, setEvents }) => {
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -51,12 +58,33 @@ const EditEvent = ({ item }) => {
             name: "first class",
         },
     ]);
-    const handleSubmit = async () => {
-        console.log({ eventName, description, classId, date, startTime, endTime });
 
+    const [data, setData] = useState({
+        name: "",
+        endTime: "",
+        description: "",
+        classId: "",
+        startTime: "",
+    });
+    const handleSubmit = async () => {
         setLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const res = await axios.put(
+                `${BASE_URL}/events/${item._id}`,
+                {
+                    ...data, // Spread the existing data object
+                    dates: date, // Include the dates object directly
+                },
+                {
+                    withCredentials: true,
+                },
+            );
+
+            setEvents((prev) =>
+                prev.map((assignment) =>
+                    assignment._id === item._id ? { ...assignment, ...data } : assignment,
+                ),
+            );
 
             setDialogOpen(false);
         } catch (error) {
@@ -70,11 +98,7 @@ const EditEvent = ({ item }) => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             {" "}
             <DialogTrigger>
-                <Button
-                    size={"icon"}
-                    variant={"outline"}
-                    // onClick={() => setData(item)}
-                >
+                <Button size={"icon"} variant={"outline"} onClick={() => setData(item)}>
                     <PenBox />
                 </Button>
             </DialogTrigger>
@@ -86,18 +110,22 @@ const EditEvent = ({ item }) => {
                 <Input
                     type="text"
                     placeholder="Event name"
-                    value={eventName}
-                    onChange={(e) => setEventName(e.target.value)}
+                    value={data.name}
+                    onChange={(e) => setData((prev) => ({ ...prev, name: e.target.value }))}
                 />{" "}
                 <Label>Description</Label>
                 <Textarea
                     placeholder="Enter description here"
                     rows="5"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={data.description}
+                    onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
                 />
                 <Label>Class</Label>
-                <Select value={classId} onValue onValueChange={(e) => setClassId(e)}>
+                <Select
+                    value={data.classId}
+                    onValue
+                    onValueChange={(e) => setData((prev) => ({ ...prev, classId: e }))}
+                >
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
@@ -121,15 +149,15 @@ const EditEvent = ({ item }) => {
                 <Input
                     aria-label="Time"
                     type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
+                    value={data.startTime}
+                    onChange={(e) => setData((prev) => ({ ...prev, startTime: e.target.value }))}
                 />
                 <Label>End time</Label>
                 <Input
                     aria-label="Time"
                     type="time"
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
+                    value={data.endTime}
+                    onChange={(e) => setData((prev) => ({ ...prev, endTime: e.target.value }))}
                 />
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
