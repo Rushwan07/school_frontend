@@ -1,46 +1,64 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateAssignment from "./CreateAssignment";
 import EditAssignment from "./EditAssignment";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import { useSelector } from "react-redux";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Assignments = () => {
-    const [assignments, setAssignments] = useState([
-        {
-            id: 1,
-            title: "title",
-            subjectName: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            startDate: "2023-10-01",
-            teacherName: "teacher one",
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const [assignments, setAssignments] = useState([]);
 
-            duedate: "2023-10-01",
-        },
-        {
-            id: 1,
-            title: "title",
-            subjectName: "Maths",
-            description: "This is an important update for Class A",
-            class: "Class A",
-            startDate: "2023-10-01",
-            teacherName: "teacher one",
-            duedate: "2023-10-01",
-        },
-        {
-            id: 1,
-            title: "title",
-            subjectName: "Maths",
-            description: "This is an important update for Class A",
-            class: "Class A",
-            startDate: "2023-10-01",
-            teacherName: "teacher one",
+    useEffect(() => {
+        const getAssignments = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/assignments/admin-assignment", {
+                    headers: { token: token },
+                });
+                setAssignments(res?.data?.data?.assignments);
+            } catch (error) {
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            }
+        };
+        getAssignments();
+    }, []);
 
-            duedate: "2023-10-01",
-        },
-    ]);
+    const handleRemove = async (id) => {
+        try {
+            if (id) {
+                // Make delete request to the server
+                const res = await axios.delete(`${BASE_URL}/assignments/${id}`);
 
+                // Show success message
+
+                // Update the state to remove the deleted cruise from the UI
+                setAssignments((prevAnnouncement) =>
+                    prevAnnouncement.filter((announce) => announce._id !== id),
+                );
+            }
+        } catch (error) {
+            // Show error message
+            console.error(error);
+        }
+    };
     const columns = [
         { header: "Title", accessor: "Title" },
         { header: "class", accessor: "class" },
@@ -61,14 +79,14 @@ const Assignments = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
-            <td className="text-center">{item?.subjectName}</td>
+            <td className="text-center">{item?.classId}</td>
+            <td className="text-center">{item?.subjectId}</td>
             <td className="hidden md:table-cell text-center">{item?.startDate}</td>
-            <td className="hidden md:table-cell text-center">{item?.duedate}</td>
+            <td className="hidden md:table-cell text-center">{item?.dueDate}</td>
 
             <td className="flex items-center gap-2 py-3 ">
-                <EditAssignment item={item} />
-                <Button variant="destructive" size="icon">
+                <EditAssignment item={item} setAssignments={setAssignments} />
+                <Button onClick={() => handleRemove(item?._id)} variant="destructive" size="icon">
                     <Trash2Icon size={"20"} />
                 </Button>
             </td>
@@ -91,7 +109,7 @@ const Assignments = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateAssignment />
+                        <CreateAssignment setAssignments={setAssignments} />
                     </div>
                 </div>
             </div>
