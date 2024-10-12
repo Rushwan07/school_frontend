@@ -1,70 +1,46 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Pencil, Plus, SlidersHorizontal, Trash } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import CreateClassCard from "./CreateClassCard";
 
 import StudentList from "./EditClassCard";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Class = () => {
-    const [classLists, setSlassLists] = useState([
-        {
-            id: 1,
-            class: "Class A",
-            capacity: " 5",
-            supravisor: "Class A",
-            attendanceForToday: true,
-            fees: 200,
-        },
-        {
-            id: 2,
-            class: "Class A",
-            capacity: " 5",
-            supravisor: "Class A",
-            attendanceForToday: false,
-            fees: 200,
-        },
-        {
-            id: 3,
-            class: "Class A",
-            capacity: " 5",
-            supravisor: "Class A",
-            attendanceForToday: true,
-            fees: 200,
-        },
-        {
-            id: 3,
-            class: "Class A",
-            capacity: " 5",
-            supravisor: "Class A",
-            attendanceForToday: false,
-            fees: 200,
-        },
-        {
-            id: 3,
-            class: "Class A",
-            capacity: " 5",
-            supravisor: "Class A",
-            attendanceForToday: false,
-            fees: 200,
-        },
-        {
-            id: 3,
-            class: "Class A",
-            capacity: " 5",
-            supravisor: "Class A",
-            attendanceForToday: false,
-            fees: 200,
-        },
-        {
-            id: 3,
-            class: "Class A",
-            capacity: " 5",
-            supravisor: "Class A",
-            attendanceForToday: false,
-            fees: 200,
-        },
-    ]);
+    const [classLists, setSlassLists] = useState([]);
+
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                console.log("working fine");
+                const res = await axios.get(BASE_URL + "/classes", {
+                    withCredentials: true,
+                });
+
+                setSlassLists(res?.data?.data?.class);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
 
     const columns = [
         { header: "Class", accessor: "Class" },
@@ -81,10 +57,10 @@ const Class = () => {
                 item?.attendanceForToday && "bg-green-100"
             }`}
         >
-            <td className="text-center py-4">{item?.class}</td>
+            <td className="text-center py-4">{item?.name}</td>
             <td className="text-center">{item?.capacity}</td>
-            <td className="text-center">{item?.supravisor}</td>
-            <td className="text-center">{item?.fees}</td>
+            <td className="text-center">{item?.teacherId}</td>
+            <td className="text-center">{item?.baseFees}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
                 <StudentList classId={item?.class} />
@@ -112,7 +88,7 @@ const Class = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateClassCard />
+                        <CreateClassCard setSlassLists={setSlassLists} />
                     </div>
                 </div>
             </div>
