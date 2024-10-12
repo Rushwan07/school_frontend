@@ -6,9 +6,15 @@ import EditAnouncementDialog from "./EditAnouncementDialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const AnnouncementListPage = () => {
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
     const [anouncements, setAnounceMents] = useState([
@@ -39,8 +45,9 @@ const AnnouncementListPage = () => {
         const getAnouncements = async () => {
             try {
                 console.log("working fine");
+                console.log(token);
                 const res = await axios.get(BASE_URL + "/anouncements/admin-anouncement", {
-                    withCredentials: true,
+                    headers: { token: token },
                 });
                 console.log(res?.data?.data?.announcement);
                 setAnounceMents(res?.data?.data?.announcement);

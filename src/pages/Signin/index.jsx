@@ -35,11 +35,14 @@ const Signin = () => {
                 },
             );
 
-            const { admin, teacher } = res?.data?.data;
+            const { admin, teacher, token } = res?.data?.data;
+
             if (admin) {
-                dispatch(setUser(admin));
+                dispatch(setUser({ user: admin, token }));
+                // dispatch(setUser({admin}));
             } else if (teacher) {
-                dispatch(setUser(teacher));
+                // dispatch(setUser(teacher));
+                dispatch(setUser({ user: teacher, token }));
             }
 
             navigate("/");
@@ -61,8 +64,8 @@ const Signin = () => {
                 },
             );
 
-            const student = res?.data?.data?.student;
-            dispatch(setUser(student));
+            const { student, token } = res?.data?.data;
+            dispatch(setUser({ user: student, token }));
 
             navigate("/");
         } catch (error) {

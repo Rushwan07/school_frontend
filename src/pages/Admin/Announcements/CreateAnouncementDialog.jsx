@@ -21,9 +21,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const CreateAnouncementDialog = ({ setAnounceMents }) => {
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     const { toast } = useToast();
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -38,7 +43,7 @@ const CreateAnouncementDialog = ({ setAnounceMents }) => {
         try {
             console.log(data);
             const res = await axios.post(BASE_URL + "/anouncements", data, {
-                withCredentials: true,
+                headers: { token: token },
             });
             console.log(res?.data?.data?.announcement);
             setAnounceMents((prev) => [...prev, res?.data?.data?.announcement]);

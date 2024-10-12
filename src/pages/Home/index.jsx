@@ -8,7 +8,11 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/features/Auth/userSlice";
 
 const Home = () => {
-    const user = useSelector((state) => state.user.user);
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+
     const { toast } = useToast();
     const dispatch = useDispatch();
 
