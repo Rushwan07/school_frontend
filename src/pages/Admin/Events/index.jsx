@@ -1,24 +1,64 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateEvents from "./CreateEvents";
 import EditEvent from "./EditEvents";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import { useSelector } from "react-redux";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Events = () => {
-    const [events, setEvents] = useState([
-        {
-            id: 1,
-            eventname: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            startDate: "2023-10-01",
-            startTime: "7:00am",
-            endTime: "8:00am",
+    const [events, setEvents] = useState([]);
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
 
-            duedate: "2023-10-01",
-        },
-    ]);
+    useEffect(() => {
+        const getAssignments = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/events/admin-event", {
+                    headers: { token: token },
+                });
+                setEvents(res?.data?.data?.events);
+            } catch (error) {
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            }
+        };
+        getAssignments();
+    }, []);
+
+    const handleRemove = async (id) => {
+        try {
+            if (id) {
+                // Make delete request to the server
+                const res = await axios.delete(`${BASE_URL}/events/${id}`);
+
+                // Show success message
+
+                // Update the state to remove the deleted cruise from the UI
+                setEvents((prevAnnouncement) =>
+                    prevAnnouncement.filter((announce) => announce._id !== id),
+                );
+            }
+        } catch (error) {
+            // Show error message
+            console.error(error);
+        }
+    };
 
     const columns = [
         { header: "Event name", accessor: "Event name" },
@@ -36,24 +76,30 @@ const Events = () => {
         >
             <td className="flex items-center gap-4 py-4 px-6">
                 <div>
-                    <p className="font-semibold">{item?.eventname}</p>
+                    <p className="font-semibold">{item?.name}</p>
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
+            <td className="text-center">{item?.classId}</td>
             <td className=" text-center">{item?.startDate}</td>
             <td className="hidden md:table-cell text-center">{item?.duedate}</td>
             <td className="hidden md:table-cell text-center">{item?.startTime}</td>
             <td className="hidden md:table-cell text-center">{item?.endTime}</td>
 
             <td className="flex hidden md:table-cell items-center justify-center  text-center">
-                <EditEvent /> &nbsp;
+                <EditEvent item={item} setEvents={setEvents} /> &nbsp;
                 <Button variant="destructive" size="icon">
-                    <Trash2Icon size={"20"} />
+                    <Trash2Icon
+                        size={"20"}
+                        onClick={() => {
+                            handleRemove(item._id);
+                        }}
+                    />
                 </Button>
             </td>
         </tr>
     );
+    console.log(events);
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
@@ -71,7 +117,7 @@ const Events = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateEvents />
+                        <CreateEvents setEvents={setEvents} />
                     </div>
                 </div>
             </div>
