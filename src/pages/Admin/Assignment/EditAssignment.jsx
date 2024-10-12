@@ -21,8 +21,10 @@ import { Button } from "@/components/ui/button";
 
 import { DatePickerWithRange } from "./DateRangePicker";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const EditAssignment = ({ item }) => {
+const EditAssignment = ({ item, setAssignments }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -71,8 +73,15 @@ const EditAssignment = ({ item }) => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            console.log(data);
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const res = await axios.put(BASE_URL + "/assignments/" + item._id, data, {
+                withCredentials: true,
+            });
+
+            setAssignments((prev) =>
+                prev.map((assignment) =>
+                    assignment._id === item._id ? { ...assignment, ...data } : assignment,
+                ),
+            );
 
             setDialogOpen(false);
         } catch (error) {
