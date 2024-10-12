@@ -12,20 +12,20 @@ const Attendance = () => {
         <div>
             {" "}
             <PieChartComponent />
-            <div className="mt-5">
+            {/* <div className="mt-5">
                 <Card>
                     <div className="flex items-center justify-between p-3 m-5">
                         <h1 className="text-xl font-semibold">Subject</h1>
                         <h1 className="text-xl font-semibold">Presenty</h1>
                     </div>
-                    {subjects?.map((sub, ind) => (
+                  {subjects?.map((sub, ind) => (
                         <div className="flex items-center justify-between border-2 p-3 m-5">
                             <h1 className="text-xl font-semibold">Maths</h1>
                             <h1 className="text-xl font-semibold">20%</h1>
                         </div>
-                    ))}
+                    ))}  
                 </Card>
-            </div>
+            </div> */}
         </div>
     );
 };

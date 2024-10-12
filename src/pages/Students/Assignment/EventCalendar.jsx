@@ -12,7 +12,7 @@ const EventCalendar = ({ assignments, onDateClick }) => {
 
     // Function to determine if a date has assignments
     const hasAssignment = (date) => {
-        return assignments.some(
+        return assignments?.some(
             (assignment) =>
                 new Date(assignment.startDate).toDateString() === date.toDateString() ||
                 new Date(assignment.dueDate).toDateString() === date.toDateString(),
@@ -35,14 +35,14 @@ const EventCalendar = ({ assignments, onDateClick }) => {
             {/* Render assignment details for the selected day */}
             <div>
                 {assignments
-                    .filter(
+                    ?.filter(
                         (assignment) =>
                             new Date(assignment.startDate).toDateString() ===
                                 value.toDateString() ||
                             new Date(assignment.dueDate).toDateString() === value.toDateString(),
                     )
                     .map((assignment) => (
-                        <div key={assignment._id} className="mb-2">
+                        <div key={assignment._id} className="mb-2 ">
                             <h3 className="font-semibold">
                                 {/* Conditional rendering of "Submit the assignment" */}
                                 {new Date(assignment.dueDate).toDateString() ===
