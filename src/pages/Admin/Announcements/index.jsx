@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import Announcements from "@/pages/Students/Announcement";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const AnnouncementListPage = () => {
@@ -72,6 +73,25 @@ const AnnouncementListPage = () => {
         getAnouncements();
     }, []);
 
+    const handleRemove = async (id) => {
+        try {
+            if (id) {
+                // Make delete request to the server
+                const res = await axios.delete(`${BASE_URL}/anouncements/${id}`);
+
+                // Show success message
+
+                // Update the state to remove the deleted cruise from the UI
+                setAnounceMents((prevAnnouncement) =>
+                    prevAnnouncement.filter((announce) => announce._id !== id),
+                );
+            }
+        } catch (error) {
+            // Show error message
+            console.error(error);
+        }
+    };
+    console.log(anouncements);
     const renderRow = (item) => (
         <tr
             key={item.id}
@@ -83,12 +103,12 @@ const AnnouncementListPage = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
-            <td className="hidden md:table-cell">{item?.date}</td>
+            <td className="text-center">{item?.classId}</td>
+            <td className="hidden md:table-cell">{item?.createdAt}</td>
             <td className="flex items-center gap-2 py-3 ">
-                <EditAnouncementDialog item={item} />
+                <EditAnouncementDialog item={item} setAnounceMents={setAnounceMents} />
 
-                <Button variant="destructive" size="icon">
+                <Button onClick={() => handleRemove(item?._id)} variant="destructive" size="icon">
                     <Trash2Icon size={"20"} />
                 </Button>
             </td>

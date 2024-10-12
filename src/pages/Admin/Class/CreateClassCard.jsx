@@ -47,6 +47,44 @@ const CreateClassCard = () => {
         { id: 5, name: "English" },
         { id: 6, name: "Physical Education" },
     ];
+    const students = [
+        { id: 1, regNo: "Mathematics" },
+        { id: 1, regNo: "1" },
+        { id: 1, regNo: "2" },
+        { id: 1, regNo: "4" },
+        { id: 1, regNo: "3" },
+        { id: 1, regNo: "5" },
+    ];
+
+    // useEffect(() => {
+    //     const getClass = async () => {
+    //         try {
+    //             console.log("working fine");
+    //             const res = await axios.get(BASE_URL + "/students", {
+    //                 withCredentials: true,
+    //             });
+
+    //             setClasses(res?.data?.data?.class);
+    //         } catch (error) {
+    //             console.log(error);
+    //             if (error?.response?.data?.message)
+    //                 toast({
+    //                     variant: "destructive",
+    //                     title: error?.response?.data?.message,
+    //                 });
+    //             else {
+    //                 toast({
+    //                     variant: "destructive",
+    //                     title: "Uh oh! Something went wrong.",
+    //                     description: "There was a problem with your request.",
+    //                 });
+    //             }
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     getClass();
+    // }, []);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -67,6 +105,13 @@ const CreateClassCard = () => {
     const handleSelectChange = (value) => {
         setSelectedStaff(value);
     };
+    const [selectedStudents, setSelectedStudents] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // Filter students based on the search term
+    const filteredStudents = students.filter((student) =>
+        student.regNo.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>
@@ -106,6 +151,24 @@ const CreateClassCard = () => {
                             onSelect={(selectedList) => setSelectedSubjects(selectedList)} // Function will trigger on select event
                             onRemove={(selectedList) => setSelectedSubjects(selectedList)} // Function will trigger on remove event
                             displayValue="name" // Property to display in the dropdown
+                            className="rounded-lg"
+                        />
+                    </div>
+                    <div>
+                        <label>Students</label>
+                        <input
+                            type="text"
+                            placeholder="Search by Registration No"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="mb-2 rounded-lg border p-2 mx-3"
+                        />
+                        <Multiselect
+                            options={filteredStudents} // Filtered options to display in the dropdown
+                            selectedValues={selectedStudents} // Preselected values to persist in dropdown
+                            onSelect={(selectedList) => setSelectedStudents(selectedList)} // Function will trigger on select event
+                            onRemove={(selectedList) => setSelectedStudents(selectedList)} // Function will trigger on remove event
+                            displayValue="regNo" // Property to display in the dropdown (change as needed)
                             className="rounded-lg"
                         />
                     </div>

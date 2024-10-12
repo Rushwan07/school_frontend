@@ -19,8 +19,11 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
 
-const CreateAnouncementDialog = ({ item }) => {
+const CreateAnouncementDialog = ({ item, setAnounceMents }) => {
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+
     const [classes, setClasses] = useState([
         {
             _id: "sadfasdf",
@@ -47,10 +50,18 @@ const CreateAnouncementDialog = ({ item }) => {
         classId: "",
     });
     const handleSubmit = async () => {
+        let updatedFleet;
         setLoading(true);
         try {
-            console.log(data);
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const res = await axios.put(BASE_URL + "/anouncements/" + item._id, data, {
+                withCredentials: true,
+            });
+
+            setAnounceMents((prev) =>
+                prev.map((announcement) =>
+                    announcement._id === item._id ? { ...announcement, ...data } : announcement,
+                ),
+            );
 
             setDialogOpen(false);
         } catch (error) {
@@ -90,6 +101,7 @@ const CreateAnouncementDialog = ({ item }) => {
                     onValue
                     onValueChange={(e) => setData((prev) => ({ ...prev, classId: e }))}
                 >
+                    <Label>{item?.classId?.name}</Label>
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
