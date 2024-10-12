@@ -183,9 +183,10 @@
     background-color: #fdf2fb !important;
 }
 
-.rbc-event-label {
-    color: gray !important;
-    margin-bottom: 5px;
+.assignment-page .rbc-event-label {
+    display: none;
+    /* color: gray !important;
+    margin-bottom: 5px; */
 }
 /* button:first-child */
 .rbc-btn-group {
