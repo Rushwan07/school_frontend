@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -18,17 +18,19 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
-// import { DatePickerWithRange } from "./DateRangePicker";
-// import { Calendar } from "@/components/ui/calendar";
+import { toast } from "@/hooks/use-toast";
 import { DatePicker } from "./ExamDatePicker";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 //Once admin selects a class get subjects from database and show it to the admin
-const CreateAssignment = ({ classes, subjects }) => {
+const CreateAssignment = ({ classes, setExams }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
+    const [subjects, setSubjects] = useState([]);
     const [examName, setExamName] = useState("");
     const [description, setDescription] = useState("");
     const [classId, setClassId] = useState("");
@@ -37,37 +39,65 @@ const CreateAssignment = ({ classes, subjects }) => {
 
     const handleSubmit = async () => {
         console.log(subjectDates);
-
-        return;
         console.log({ examName, description, classId });
 
         setLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const res = await axios.post(BASE_URL + "/exams", {
+                name: examName,
+                description,
+                classId,
+                subjects: subjectDates,
+            });
 
-            setDialogOpen(false);
+            setExams((prev) => [...prev, res?.data?.data?.exam]);
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
         } finally {
             setLoading(false);
+            setDialogOpen(false);
         }
     };
 
-    // Function to update subject date
     const updateSubjectDate = (subjectId, date) => {
         setSubjectDates((prevDates) => {
             const existingSubject = prevDates.find((item) => item.subjectId === subjectId);
             if (existingSubject) {
-                // Update date for existing subject
                 return prevDates.map((item) =>
                     item.subjectId === subjectId ? { subjectId, date } : item,
                 );
             } else {
-                // Add new subject date
                 return [...prevDates, { subjectId, date }];
             }
         });
     };
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                if (!classId) return;
+                const res = await axios.get(BASE_URL + "/subjects/subject-class/" + classId);
+                console.log(res?.data?.data?.subjects);
+                setSubjects(res?.data?.data?.subjects);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getData();
+    }, [classId]);
+
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             {" "}
@@ -98,7 +128,6 @@ const CreateAssignment = ({ classes, subjects }) => {
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
                         {classes?.map((value) => (
                             <SelectItem key={value?._id} value={value?._id}>
                                 {value?.name}
