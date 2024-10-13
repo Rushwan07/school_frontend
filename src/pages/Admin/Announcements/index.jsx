@@ -18,22 +18,7 @@ const AnnouncementListPage = () => {
 
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
-    const [anouncements, setAnounceMents] = useState([
-        {
-            id: 1,
-            title: "Important Announcement",
-            description: "This is an important update for Class A",
-            class: "sadfaasdfasdf",
-            date: "2023-10-01",
-        },
-        {
-            id: 2,
-            title: "Upcoming Event",
-            description: "Class B has an upcoming event",
-            class: "Class B",
-            date: "2023-10-15",
-        },
-    ]);
+    const [anouncements, setAnounceMents] = useState([]);
 
     const columns = [
         { header: "Title", accessor: "title", className: "text-center " },

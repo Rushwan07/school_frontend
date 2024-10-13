@@ -11,8 +11,11 @@ import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { toast } from "@/hooks/use-toast";
 
-const CreateGrade = () => {
+const CreateGrade = ({ setGrade }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -23,18 +26,31 @@ const CreateGrade = () => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            // Here you can add your API call or any function to handle the submission
-            console.log("Grade Name:", name);
-            console.log("Starting Mark:", startingMark);
-            console.log("Ending Mark:", endingMark);
-
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate an API request
-
-            setDialogOpen(false);
+            const res = await axios.post(BASE_URL + "/grades", {
+                name,
+                startingMark,
+                endingMark,
+            });
+            setName("");
+            setStartingMark("");
+            setEndingMark("");
+            setGrade((prev) => [...prev, res?.data?.data?.grade]);
         } catch (error) {
-            console.error("An error occurred:", error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
         } finally {
             setLoading(false);
+            setDialogOpen(false);
         }
     };
 

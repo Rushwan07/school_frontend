@@ -1,20 +1,14 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Pencil, Plus, SlidersHorizontal, Trash } from "lucide-react";
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 import CreateGrade from "./CreateGrade";
 
 import EditGrade from "./EditGrade";
 
 const Grade = () => {
-    const [classLists, setSlassLists] = useState([
-        {
-            id: 1,
-            name: "A+",
-            startMark: 5,
-            endMark: "20",
-        },
-    ]);
+    const [grade, setGrade] = useState([]);
 
     const columns = [
         { header: "Grade name", accessor: "Grade name" },
@@ -24,6 +18,33 @@ const Grade = () => {
         { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
 
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/grades");
+
+                setGrade(res?.data?.data?.grade);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
+
     const renderRow = (item) => (
         <tr
             key={item.id}
@@ -32,8 +53,8 @@ const Grade = () => {
             }`}
         >
             <td className="text-center py-4">{item?.name}</td>
-            <td className="text-center">{item?.startMark}</td>
-            <td className="text-center">{item?.endMark}</td>
+            <td className="text-center">{item?.startingMark}</td>
+            <td className="text-center">{item?.endingMark}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
                 <EditGrade classId={item?.class} />
@@ -47,11 +68,11 @@ const Grade = () => {
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
-                <h1 className="text-lg font-semibold hidden md:block">All Classes</h1>
+                <h1 className="text-lg font-semibold hidden md:block">All Grades</h1>
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                     <Input
                         type="text"
-                        placeholder="Search classes"
+                        placeholder="Search grade"
                         className="border rounded px-3 py-2"
                     />
                     <div className="flex items-center gap-4 self-end ">
@@ -61,7 +82,7 @@ const Grade = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateGrade />
+                        <CreateGrade setGrade={setGrade} />
                     </div>
                 </div>
             </div>
@@ -79,7 +100,7 @@ const Grade = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{classLists?.map(renderRow)}</tbody>
+                <tbody>{grade?.map(renderRow)}</tbody>
             </table>
         </div>
     );

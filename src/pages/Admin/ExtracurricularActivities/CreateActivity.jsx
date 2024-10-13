@@ -18,13 +18,16 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // import { DatePickerWithRange } from "./DateRangePicker";
 // import { Calendar } from "@/components/ui/calendar";
 import { DatePicker } from "@/components/DatePicker";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
 
-const CreateAssignment = ({ classes }) => {
+const CreateAssignment = ({ classes, setActivities }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -37,15 +40,33 @@ const CreateAssignment = ({ classes }) => {
     const handleSubmit = async () => {
         console.log({ name, description, classId, date, fees });
 
-        setLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
-            setDialogOpen(false);
+            const res = await axios.post(BASE_URL + "/activitys", {
+                name,
+                description,
+                classId,
+                duedate: date,
+                fees,
+            });
+            console.log(res?.data?.data?.extraCurricularActivity);
+            setActivities((prev) => [...prev, res?.data?.data?.extraCurricularActivity]);
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
         } finally {
             setLoading(false);
+            setDialogOpen(false);
         }
     };
 
