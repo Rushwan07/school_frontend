@@ -1,30 +1,13 @@
 import { Input } from "@/components/ui/input";
-import { ArrowDownAZ, Eye, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import { ArrowDownAZ, SlidersHorizontal } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import TeacherDetails from "./TeacherDetails"; // Assuming this is a list of teachers to be imported
 import ViewTeacherDetails from "./ViewTeacherDetails"; // Updated component to view teacher details
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Teachers = () => {
-    const [teachers, setTeachers] = useState([
-        {
-            id: 1,
-            name: "Mr. John Doe",
-            subjects: "Mathematics, Physics",
-            phone: "1234567890",
-            email: "john.doe@example.com",
-            sex: "Male",
-            classes: "10th Grade, 11th Grade",
-        },
-        {
-            id: 2,
-            name: "Ms. Jane Smith",
-            subjects: "English, History",
-            phone: "9876543210",
-            email: "jane.smith@example.com",
-            sex: "Female",
-            classes: "9th Grade, 10th Grade",
-        },
-    ]);
+    const [teachers, setTeachers] = useState([]);
 
     const columns = [
         { header: "Name", accessor: "name" },
@@ -32,8 +15,21 @@ const Teachers = () => {
         { header: "Phone", accessor: "phone" },
         { header: "Email", accessor: "email", style: "hidden md:table-cell" },
         { header: "Gender", accessor: "sex", style: "hidden md:table-cell" },
-        { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
+        { header: "Actions", accessor: "Actions" },
     ];
+
+    useEffect(() => {
+        const getTeachers = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/teachers/all-teacher");
+
+                setTeachers(res?.data?.data?.teachers);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getTeachers();
+    }, []);
 
     const renderRow = (item) => (
         <tr
@@ -41,7 +37,10 @@ const Teachers = () => {
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-50"
         >
             <td className="text-center py-4 px-6">{item?.name}</td>
-            <td className="text-center hidden md:table-cell">{item?.subjects}</td>
+
+            <td className="text-center hidden md:table-cell">
+                {item?.subjects.length > 0 ? item?.subjects?.map((sub) => sub?.name) : "--"}
+            </td>
             <td className="text-center">{item?.phone}</td>
             <td className="hidden md:table-cell text-center">{item?.email}</td>
             <td className="hidden md:table-cell text-center">{item?.sex}</td>
@@ -68,7 +67,7 @@ const Teachers = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <TeacherDetails /> {/* Button to add new teachers or show more options */}
+                        <TeacherDetails setTeachers={setTeachers} />
                     </div>
                 </div>
             </div>

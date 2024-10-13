@@ -24,7 +24,7 @@ const Attendance = () => {
                 const res = await axios.get(BASE_URL + "/classes", {
                     withCredentials: true,
                 });
-
+                console.log(res);
                 setSlassLists(res?.data?.data?.class);
             } catch (error) {
                 console.log(error);
@@ -56,7 +56,7 @@ const Attendance = () => {
         >
             <td className="text-center py-4">{item?.name}</td>
             <td className="text-center">{item?.capacity}</td>
-            <td className="text-center">{item?.teacherId}</td>
+            <td className="text-center">{item?.teacherId?.name}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
                 <StudentList classId={item} />

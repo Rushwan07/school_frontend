@@ -1,34 +1,14 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateSubject from "./CreateSubject";
 import EditSubjects from "./EditSubjects";
-
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+import axios from "axios";
 const Subjects = () => {
-    const [subjects, setSubjects] = useState([
-        {
-            id: 1,
-            name: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            lessions: "5",
-            teacher: "teacher's name",
-        },
-    ]);
-    // const [subjects, setSubjects] = useState([
-    //     {
-    //         _id: "abcd",
-    //         name: "Maths",
-    //     },
-    //     {
-    //         _id: "abcd2",
-    //         name: "Maths",
-    //     },
-    //     {
-    //         _id: "abcddfd",
-    //         name: "Maths",
-    //     },
-    // ]);
+    const [loading, setLoading] = useState(false);
+    const [subjects, setSubjects] = useState([]);
 
     const [classes, setClasses] = useState([
         {
@@ -49,6 +29,35 @@ const Subjects = () => {
         },
     ]);
 
+    useEffect(() => {
+        const getSubjects = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/subjects", {
+                    withCredentials: true,
+                });
+                console.log(res?.data?.data);
+                setSubjects(res?.data?.data?.subjects);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getSubjects();
+    }, []);
+
     const columns = [
         { header: "Subject name", accessor: "Subject name" },
         { header: "class", accessor: "class" },
@@ -68,9 +77,9 @@ const Subjects = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
+            <td className="text-center">{item?.classId?.name}</td>
             <td className=" text-center">{item?.lessions}</td>
-            <td className="hidden md:table-cell text-center">{item?.teacher}</td>
+            <td className="hidden md:table-cell text-center">{item?.teacherId?.name}</td>
 
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
                 <EditSubjects />

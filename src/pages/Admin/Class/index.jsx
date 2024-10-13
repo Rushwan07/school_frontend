@@ -11,18 +11,17 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Class = () => {
     const [classLists, setSlassLists] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const getClass = async () => {
             try {
-                console.log("working fine");
                 const res = await axios.get(BASE_URL + "/classes", {
                     withCredentials: true,
                 });
 
                 setSlassLists(res?.data?.data?.class);
             } catch (error) {
-                console.log(error);
                 if (error?.response?.data?.message)
                     toast({
                         variant: "destructive",
@@ -59,7 +58,7 @@ const Class = () => {
         >
             <td className="text-center py-4">{item?.name}</td>
             <td className="text-center">{item?.capacity}</td>
-            <td className="text-center">{item?.teacherId}</td>
+            <td className="text-center">{item?.teacherId?.name}</td>
             <td className="text-center">{item?.baseFees}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">

@@ -38,7 +38,7 @@ const StudentList = ({ classId }) => {
                 regno: student.regno, // Assuming these properties exist
                 _id: student._id, // Assuming these properties exist
                 name: student.name, // Assuming these properties exist
-                present: true, // Default value for presence
+                present: "true", // Default value for presence
             }));
             setStudents(initialStudents);
         }
@@ -68,13 +68,11 @@ const StudentList = ({ classId }) => {
                     headers: { token: token },
                 },
             );
-            toast({
-                variant: "destructive",
-                title: res?.response?.data?.message,
-            });
+
             setDialogOpen(false);
         } catch (error) {
             console.error("An error occurred:", error);
+
             toast({
                 variant: "destructive",
                 title: error?.response?.data?.message,
@@ -122,7 +120,11 @@ const StudentList = ({ classId }) => {
                                             setStudents((prev) =>
                                                 prev.map((val) =>
                                                     val.regno === student.regno
-                                                        ? { ...val, present: e === "true" }
+                                                        ? {
+                                                              ...val,
+                                                              present:
+                                                                  e === "true" ? "true" : "false",
+                                                          }
                                                         : val,
                                                 ),
                                             );

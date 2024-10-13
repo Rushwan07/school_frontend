@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Select,
     SelectContent,
@@ -22,32 +22,34 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 import { Plus } from "lucide-react";
-import { DatePicker } from "@/components/DatePicker";
+import { DatePicker } from "./DobCalendar";
 import Multiselect from "multiselect-react-dropdown";
 
-const TeacherForm = ({ onSubmit, loading }) => {
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+const TeacherForm = ({ setTeachers }) => {
+    const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [date, setDate] = useState();
+    const [subjects, setSubjects] = useState([
+        { _id: 1, name: "Mathematics" },
+        { _id: 2, name: "Science" },
+        { _id: 3, name: "History" },
+        { _id: 4, name: "Geography" },
+        { _id: 5, name: "English" },
+        { _id: 6, name: "Physical Education" },
+    ]);
+    const [classes, setClasses] = useState([
+        { _id: 1, name: "class one" },
+        { _id: 2, name: "class two" },
+        { _id: 3, name: "class three" },
+        { _id: 4, name: "class four" },
+        { _id: 5, name: "class fine" },
+        { _id: 6, name: "class six " },
+    ]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [selectedClasses, setSelectedClasses] = useState([]);
-
-    const subjects = [
-        { id: 1, name: "Mathematics" },
-        { id: 2, name: "Science" },
-        { id: 3, name: "History" },
-        { id: 4, name: "Geography" },
-        { id: 5, name: "English" },
-        { id: 6, name: "Physical Education" },
-    ];
-
-    const classes = [
-        { id: 1, name: "class one" },
-        { id: 2, name: "class two" },
-        { id: 3, name: "class three" },
-        { id: 4, name: "class four" },
-        { id: 5, name: "class fine" },
-        { id: 6, name: "class six " },
-    ];
 
     const [teacherData, setTeacherData] = useState({
         username: "",
@@ -73,14 +75,52 @@ const TeacherForm = ({ onSubmit, loading }) => {
         setTeacherData((prev) => ({ ...prev, img: e.target.files[0] }));
     };
 
-    const handleSubmit = () => {
-        console.log(teacherData);
-        console.log(date);
-        console.log(selectedSubjects);
-        console.log(selectedClasses);
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.post(BASE_URL + "/teachers", {
+                ...teacherData,
+                birthday: date,
+                subjects: [],
+                classes: [],
+                //subjects: selectedSubjects?.map((subj) => subj._id),
+                //classes: selectedClasses?.map((cls) => cls._id),
+            });
+            setTeacherData({
+                username: "",
+                password: "",
+                name: "",
+                email: "",
+                phone: "",
+                address: "",
+                img: "",
+                bloodType: "",
+                sex: "",
 
-        // onSubmit(teacherData);
+                classes: "",
+                birthday: "",
+            });
+            setTeachers((prev) => [...prev, res?.data?.data?.teacher]);
+            setDialogOpen(false);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    useEffect(() => {
+        const getSubjectsAndClasses = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/subjects");
+                console.log(res?.data?.data?.subjects);
+                const ress = await axios.get(BASE_URL + "/classes");
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getSubjectsAndClasses();
+    }, []);
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -181,30 +221,30 @@ const TeacherForm = ({ onSubmit, loading }) => {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div>
+                    {/* <div>
                         <div>
                             <Label>Subjects</Label>
                             <Multiselect
-                                options={subjects} // Options to display in the dropdown
-                                selectedValues={selectedSubjects} // Preselected value to persist in dropdown
-                                onSelect={(selectedList) => setSelectedSubjects(selectedList)} // Function will trigger on select event
-                                onRemove={(selectedList) => setSelectedSubjects(selectedList)} // Function will trigger on remove event
-                                displayValue="name" // Property to display in the dropdown
+                                options={subjects}
+                                selectedValues={selectedSubjects}
+                                onSelect={(selectedList) => setSelectedSubjects(selectedList)}
+                                onRemove={(selectedList) => setSelectedSubjects(selectedList)}
+                                displayValue="name"
                                 className="rounded-lg"
                                 placeholder="Select Subjects"
                             />
                         </div>
-                    </div>
-                    <div>
-                        <Label>Classes</Label>
-                        {/* <Input
+                    </div> */}
+                    {/* <div>
+                        <Label>Classes</Label> */}
+                    {/* <Input
                             name="classes"
                             type="text"
                             value={teacherData.classes}
                             onChange={handleInputChange}
                            
                         /> */}
-                        <Multiselect
+                    {/* <Multiselect
                             options={classes}
                             placeholder="Select classes"
                             selectedValues={selectedClasses}
@@ -212,10 +252,11 @@ const TeacherForm = ({ onSubmit, loading }) => {
                             onRemove={(selectedList) => setSelectedClasses(selectedList)}
                             displayValue="name"
                             className="rounded-lg"
-                        />
-                    </div>
+                        /> 
+                    </div>*/}
                     <div>
                         <Label>Birthday</Label>
+                        {/* <DatePicker name="birthday" date={date} setDate={setDate} /> */}
                         <DatePicker name="birthday" date={date} setDate={setDate} />
                     </div>
                     <div>
