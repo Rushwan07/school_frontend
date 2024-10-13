@@ -13,8 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { Label } from "@/components/ui/label";
+import axios from "axios";
 
-const CreateAssignment = ({ classes }) => {
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const CreateAssignment = ({ setTransports }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [stops, setStops] = useState([]);
@@ -50,15 +53,33 @@ const CreateAssignment = ({ classes }) => {
     };
 
     const handleSubmit = async () => {
-        console.log({ stops, name, busNo });
+        console.log({ stops, driverName: name, busNumber: busNo });
 
         setLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const res = await axios.post(BASE_URL + "/transports/create-transport", {
+                stops,
+                driverName: name,
+                busNumber: busNo,
+            });
+            console.log(res?.data?.data?.transport);
+            setTransports((prev) => [...prev, res?.data?.data?.transport]);
 
             setDialogOpen(false);
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
         } finally {
             setLoading(false);
         }

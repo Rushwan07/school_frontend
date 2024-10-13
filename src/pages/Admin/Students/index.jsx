@@ -1,9 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Eye, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StudentList from "./StudentDetails";
 import ViewStudentDetails from "./ViewStudentDetails";
 import EditStudent from "./EditStudent";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Students = () => {
     const [students, setStudents] = useState([
@@ -22,6 +25,46 @@ const Students = () => {
             },
         },
     ]);
+    const [transports, setTransports] = useState([]);
+    const [classLists, setSlassLists] = useState([]);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const getStudents = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/students/all-students", {
+                    withCredentials: true,
+                });
+                const ress = await axios.get(BASE_URL + "/transports", {
+                    withCredentials: true,
+                });
+                const resss = await axios.get(BASE_URL + "/classes", {
+                    withCredentials: true,
+                });
+
+                setSlassLists(resss?.data?.data?.class);
+                console.log(ress?.data?.data);
+                setTransports(ress?.data?.data?.transport);
+                console.log(res?.data?.data?.students);
+                setStudents(res?.data?.data?.students);
+            } catch (error) {
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getStudents();
+    }, []);
 
     const columns = [
         { header: "Reg no", accessor: "Reg no" },
@@ -37,9 +80,9 @@ const Students = () => {
             key={item.id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-50"
         >
-            <td className="text-center  py-4 px-6">{item?.regNo}</td>
+            <td className="text-center  py-4 px-6">{item?.regno}</td>
             <td className="text-center">{item?.name}</td>
-            <td className="hidden md:table-cell text-center">{item?.class}</td>
+            <td className="hidden md:table-cell text-center">{item?.classId?.name}</td>
             <td className="hidden md:table-cell text-center w-[400px]">{item?.sex}</td>
             {/* <td className="hidden md:table-cell text-center ">{item?.duration}</td> */}
             <td className="flex items-center justify-center gap-2 text-center  py-4 ">
@@ -65,7 +108,11 @@ const Students = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <StudentList />
+                        <StudentList
+                            setStudents={setStudents}
+                            transports={transports}
+                            classLists={classLists}
+                        />
                     </div>
                 </div>
             </div>
