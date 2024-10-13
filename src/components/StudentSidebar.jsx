@@ -64,7 +64,7 @@ const StudentSidebar = () => {
             icon: <Activity />,
         },
         {
-            text: "Fees details",
+            text: "Accounts",
             link: "/student/fees", // Corrected to match the route
             icon: <DollarSign />,
         },
