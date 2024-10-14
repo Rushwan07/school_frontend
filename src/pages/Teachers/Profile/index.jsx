@@ -19,20 +19,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import useFirebaseUpload from "@/hooks/use-firebaseUploads";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Profile = () => {
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     const [image, setImage] = useState(null);
     const [file, setFile] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const [teacher, setTeacher] = useState({
-        name: "John Doe",
-        email: "johndoe@example.com",
-        phone: "123-456-7890",
-        address: "123 Main St, Anytown, USA",
-        bloodType: "O+",
-        sex: "MALE",
-        birthday: "1980-01-01",
-    });
+    const [teacher, setProfile] = useState([]);
 
     const [isOpen, setIsOpen] = useState(false);
     const handleImageChange = (e) => {
@@ -44,29 +45,84 @@ const Profile = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setTeacher((prev) => ({ ...prev, [name]: value }));
+        setProfile((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        alert("Profile updated locally!");
-        setIsOpen(false);
-    };
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     alert("Profile updated locally!");
+    //     setIsOpen(false);
+    // };
 
     const { progress, error, downloadURL } = useFirebaseUpload(file);
     useEffect(() => {
         if (downloadURL) {
             setImage(downloadURL);
+            setProfile((prevProfile) => ({
+                ...prevProfile,
+                img: downloadURL,
+            }));
         }
     }, [downloadURL]);
 
+    const handleSubmit = async () => {
+        // setLoading(true);
+        try {
+            const res = await axios.put(BASE_URL + "/teachers/" + user?._id, teacher, {
+                withCredentials: true,
+            });
+
+            setProfile((prev) =>
+                prev.map((assignment) =>
+                    assignment._id === user?._id ? { ...assignment, ...teacher } : assignment,
+                ),
+            );
+
+            setIsOpen(false);
+        } catch (error) {
+            console.error("An error occurred:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                console.log("working fine");
+                const res = await axios.get(BASE_URL + `/teachers/${user._id}`, {
+                    headers: { token: token },
+                });
+
+                setProfile(res?.data?.data?.teacher);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
+    console.log("USer", teacher);
     return (
         <Card>
             <CardHeader>
                 <div className="flex justify-between items-center flex-wrap">
                     <h1 className="font-bold text-xl ">Profile</h1>
                     <div className="flex items-center gap-5">
-                        <h1 className="text-2xl font-semibold">{teacher.username}</h1>
+                        <h1 className="text-2xl font-semibold">{teacher?.username}</h1>
                         <Dialog open={isOpen} onOpenChange={setIsOpen}>
                             <DialogTrigger asChild>
                                 <Button>Edit</Button>
@@ -79,26 +135,23 @@ const Profile = () => {
                                     {progress > 0 && progress !== 100 && (
                                         <p>Upload progress: {progress}%</p>
                                     )}
-                                    {!image ? (
-                                        <>
-                                            <Input
-                                                label="Profile"
-                                                name="profile"
-                                                type="file"
-                                                onChange={handleImageChange}
-                                                className="mb-3"
-                                            />
-                                        </>
-                                    ) : (
-                                        <div className="flex justify-center items-center mb-3">
-                                            <img
-                                                src={image}
-                                                alt="Selected"
-                                                className="w-[100px] h-[100px] object-cover rounded-full"
-                                            />
-                                        </div>
-                                    )}
+                                    <>
+                                        <Input
+                                            label="Profile"
+                                            name="profile"
+                                            type="file"
+                                            onChange={handleImageChange}
+                                            className="mb-3"
+                                        />
+                                    </>
 
+                                    <div className="flex justify-center items-center mb-3">
+                                        <img
+                                            src={teacher?.img}
+                                            alt="Selected"
+                                            className="w-[100px] h-[100px] object-cover rounded-full"
+                                        />
+                                    </div>
                                     <Input
                                         label="Username"
                                         name="username"
@@ -140,7 +193,7 @@ const Profile = () => {
                                     <Input
                                         label="Blood Type"
                                         name="bloodType"
-                                        value={teacher.bloodType}
+                                        value={teacher?.bloodType}
                                         onChange={handleChange}
                                         className="mb-3"
                                     />
@@ -148,7 +201,7 @@ const Profile = () => {
                                         label="Sex"
                                         value={teacher.sex}
                                         onValueChange={(value) =>
-                                            setTeacher((prev) => ({ ...prev, sex: value }))
+                                            setProfile((prev) => ({ ...prev, sex: value }))
                                         }
                                         className="mb-3"
                                     >
@@ -160,14 +213,12 @@ const Profile = () => {
                                             <SelectItem value="FEMALE">Female</SelectItem>
                                         </SelectContent>
                                     </Select>
-
                                     <Input
                                         label="Birthday"
                                         type="date"
                                         name="birthday"
-                                        value={teacher.birthday}
+                                        value={teacher?.birthday}
                                         onChange={handleChange}
-                                        required
                                         className="mb-3"
                                     />
                                     <DialogFooter>
@@ -183,7 +234,7 @@ const Profile = () => {
                 <div className="flex gap-10 flex-wrap">
                     <div className="w-[250px] h-[250px]">
                         <img
-                            src={image}
+                            src={teacher?.img}
                             alt="Preview"
                             className="mb-4 w-full h-full object-cover rounded-full hover:cursor-pointer"
                         />
@@ -222,11 +273,13 @@ const Profile = () => {
                         </div>
                         <div className="flex gap-2 items-center mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Subjects:</h1>
-                            <h2>Maths, Science, Physics</h2>
+                            <h2>{teacher?.subjects?.join()}</h2>
                         </div>
                         <div className="flex gap-2 items-center mb-1">
                             <h1 className="text-[1.2rem] font-semibold">Classes:</h1>
-                            <h2>9th</h2>
+                            <h2>
+                                {teacher?.classes?.map((classItem) => classItem.name).join(", ")}
+                            </h2>
                         </div>
                     </div>
                     <div className="">

@@ -1,32 +1,55 @@
 import { Input } from "@/components/ui/input";
+import axios from "axios";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 const Student = () => {
-    const [students, setStudents] = useState([
-
-        {
-            id: 1,
-            name: "Lorem ipsum dolor sit amet, consectetur adipisicing.",
-            reg: "0217",
-            // description: " This is an important update for Class AThis is  ",
-            class: "Test@gmail.com",
-            gender: "Male",
-            parent: "Lorem ipsum dolor sit amet consectetur.",
-            phone: "+91-9999999999",
-
-        },
-    ]);
-
+    const [students, setStudents] = useState([]);
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const [loading, setLoading] = useState(false);
     const columns = [
         { header: "Name", accessor: "name", style: "hidden md:table-cell" },
         { header: "RegNo", accessor: "reg" },
         { header: "Class", accessor: "class" },
         { header: "Gender", accessor: "gender" },
         { header: "Parent Name", accessor: "parent", style: "hidden md:table-cell" },
-        { header: "Parent Phone", accessor: "phone", },
+        { header: "Parent Phone", accessor: "phone" },
         // { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
 
+    useEffect(() => {
+        const get = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/students/all-students", {
+                    headers: { token: token },
+                });
+                setStudents(res?.data?.data?.students);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        get();
+    }, []);
+
+    console.log(students);
     const renderRow = (item) => (
         <tr
             key={item.id}
@@ -38,11 +61,11 @@ const Student = () => {
                     {/* <p className="text-xs text-gray-500">{item?.name}</p> */}
                 </div>
             </td>
-            <td className="text-center">{item?.reg}</td>
-            <td className="hidden md:table-cell text-center">{item?.class}</td>
-            <td className="hidden md:table-cell text-center ">{item?.gender}</td>
-            <td className="hidden md:table-cell text-center w-[400px] ">{item?.name}</td>
-            <td className="hidden md:table-cell text-center ">{item?.phone}</td>
+            <td className="text-center">{item?.regno}</td>
+            <td className="hidden md:table-cell text-center">{item?.classId?.name}</td>
+            <td className="hidden md:table-cell text-center ">{item?.sex}</td>
+            <td className="hidden md:table-cell text-center w-[400px] ">{item?.parentId?.name}</td>
+            <td className="hidden md:table-cell text-center ">{item?.parentId?.phone}</td>
             {/* <td className="flex items-center justify-center gap-2 text-center">
                 <button className="btn btn-sm btn-outline-primary rounded-full ">
                     <i className="fa fa-edit" aria-hidden="true"></i> Edit
