@@ -51,7 +51,7 @@ const Class = () => {
 
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className={`border-b  border-gray-200   rounded  text-sm   ${
                 item?.attendanceForToday && "bg-green-100"
             }`}

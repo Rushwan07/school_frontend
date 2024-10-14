@@ -9,6 +9,7 @@ import EditGrade from "./EditGrade";
 
 const Grade = () => {
     const [grade, setGrade] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const columns = [
         { header: "Grade name", accessor: "Grade name" },
@@ -47,7 +48,7 @@ const Grade = () => {
 
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className={`border-b  border-gray-200   rounded  text-sm   ${
                 item?.attendanceForToday && "bg-green-100"
             }`}

@@ -8,6 +8,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Attendance = () => {
     const [classLists, setSlassLists] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const columns = [
         { header: "Class", accessor: "Class" },
@@ -49,7 +50,7 @@ const Attendance = () => {
     console.log("classLists", classLists);
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className={`border-b  border-gray-200   rounded  text-sm   ${
                 item?.attendanceForToday && "bg-green-100"
             }`}

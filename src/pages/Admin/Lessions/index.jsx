@@ -59,7 +59,6 @@ const Lessions = () => {
             time: "11:30 to 12:30",
             duedate: "2023-10-01",
             duration: "60",
-
         },
         {
             id: 1,
@@ -73,7 +72,6 @@ const Lessions = () => {
             teacherName: "teacher one",
             duedate: "2023-10-01",
             duration: "60",
-
         },
         {
             id: 1,
@@ -101,7 +99,7 @@ const Lessions = () => {
 
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
         >
             <td className="flex items-center gap-4 py-4 px-6">

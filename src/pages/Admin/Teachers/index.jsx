@@ -33,7 +33,7 @@ const Teachers = () => {
 
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-50"
         >
             <td className="text-center py-4 px-6">{item?.name}</td>
