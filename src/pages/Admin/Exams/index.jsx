@@ -94,9 +94,9 @@ const Exams = () => {
                 </div>
             </td>
             <td className="text-center">{item?.classId?.name}</td>
-            <td className=" text-center">{item?.subjects[0]?.date?.split("T")[0]}</td>
+            <td className=" text-center">{item?.subjects?.[0]?.date?.split("T")[0]}</td>
             <td className="hidden md:table-cell text-center">
-                {item?.subjects[item?.subjects?.length - 1]?.date?.split("T")[0]}
+                {item?.subjects?.[item?.subjects?.length - 1]?.date?.split("T")[0]}
             </td>
 
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
