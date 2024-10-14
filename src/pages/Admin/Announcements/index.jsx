@@ -18,22 +18,7 @@ const AnnouncementListPage = () => {
 
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
-    const [anouncements, setAnounceMents] = useState([
-        {
-            id: 1,
-            title: "Important Announcement",
-            description: "This is an important update for Class A",
-            class: "sadfaasdfasdf",
-            date: "2023-10-01",
-        },
-        {
-            id: 2,
-            title: "Upcoming Event",
-            description: "Class B has an upcoming event",
-            class: "Class B",
-            date: "2023-10-15",
-        },
-    ]);
+    const [anouncements, setAnounceMents] = useState([]);
 
     const columns = [
         { header: "Title", accessor: "title", className: "text-center " },
@@ -45,8 +30,6 @@ const AnnouncementListPage = () => {
     useEffect(() => {
         const getAnouncements = async () => {
             try {
-                console.log("working fine");
-                console.log(token);
                 const res = await axios.get(BASE_URL + "/anouncements/admin-anouncement", {
                     headers: { token: token },
                 });
@@ -94,7 +77,7 @@ const AnnouncementListPage = () => {
     console.log(anouncements);
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
         >
             <td className="flex items-center gap-4 py-4 px-6">

@@ -23,24 +23,24 @@ import { Label } from "@/components/ui/label";
 
 import { Eye } from "lucide-react";
 
-const ViewStudentDetails = ({ onSubmit, loading }) => {
+const ViewStudentDetails = ({ teacherData }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const teacherData = {
-        username: "rubi",
-        password: "abcd ",
-        name: "rrubi rubi",
-        email: "rubi@gmail.com",
-        phone: "9089878987",
-        address: "address of 0988",
-        img: "",
-        bloodType: "O+",
-        sex: "FEMALE",
-        classes: "ABCD, Efg,Hig",
-        birthday: "",
-        subjects: "ADFADSFA",
-        classes: "SFASFDA,ASDFASDF",
-    };
+    // const teacherData = {
+    //     username: "rubi",
+    //     password: "abcd ",
+    //     name: "rrubi rubi",
+    //     email: "rubi@gmail.com",
+    //     phone: "9089878987",
+    //     address: "address of 0988",
+    //     img: "",
+    //     bloodType: "O+",
+    //     sex: "FEMALE",
+    //     classes: "ABCD, Efg,Hig",
+    //     birthday: "",
+    //     subjects: "ADFADSFA",
+    //     classes: "SFASFDA,ASDFASDF",
+    // };
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -88,14 +88,14 @@ const ViewStudentDetails = ({ onSubmit, loading }) => {
                         <Label>Sex:</Label>
                         <p>{teacherData?.sex || "N/A"}</p>
                     </div>
-                    <div>
+                    {/* <div>
                         <Label>Subjects:</Label>
                         <p>{teacherData?.subjects || "N/A"}</p>
                     </div>
                     <div>
                         <Label>Classes:</Label>
                         <p>{teacherData?.classes || "N/A"}</p>
-                    </div>
+                    </div> */}
                     <div>
                         <Label>Birthday:</Label>
                         <p>
@@ -120,9 +120,7 @@ const ViewStudentDetails = ({ onSubmit, loading }) => {
 
                 {/* Dialog Footer with Close Button */}
                 <div className="mt-4 flex justify-end">
-                    <Button onClick={() => setDialogOpen(false)} disabled={loading}>
-                        Close
-                    </Button>
+                    <Button onClick={() => setDialogOpen(false)}>Close</Button>
                 </div>
             </DialogContent>
         </Dialog>

@@ -1,40 +1,49 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateActivity from "./CreateActivity";
 import EditActivity from "./EditActivity";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 const ExtracurricularActivities = () => {
-    const [activities, setActivities] = useState([
-        {
-            id: 1,
-            name: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            date: "2023-10-01",
-            fees: "50",
-        },
-    ]);
+    const [activities, setActivities] = useState([]);
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    const [classes, setClasses] = useState([]);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const getStudents = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/classes", {
+                    withCredentials: true,
+                });
 
+                const ress = await axios.get(BASE_URL + "/activitys/admin-activity");
+                console.log(ress?.data?.data?.extraCurricularActivity);
+                setActivities(ress?.data?.data?.extraCurricularActivity);
+
+                console.log(res?.data?.data?.class);
+                setClasses(res?.data?.data?.class);
+            } catch (error) {
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getStudents();
+    }, []);
     const columns = [
         { header: "Activity name", accessor: "Activity name" },
         { header: "Class", accessor: "Class" },
@@ -45,7 +54,7 @@ const ExtracurricularActivities = () => {
     ];
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
         >
             <td className="flex items-center gap-4 py-4 px-6">
@@ -54,9 +63,12 @@ const ExtracurricularActivities = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
-            <td className=" text-center">{item?.fees}</td>
-            <td className="hidden md:table-cell text-center">{item?.date}</td>
+
+            <td className="text-center">
+                {item?.classId?.name ? item?.classId?.name : "All class"}
+            </td>
+            <td className=" text-center">{item?.fees ? item?.fees : "--"}</td>
+            <td className="hidden md:table-cell text-center">{item?.duedate?.split("T")[0]}</td>
 
             <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
                 <EditActivity />
@@ -83,7 +95,7 @@ const ExtracurricularActivities = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateActivity classes={classes} />
+                        <CreateActivity classes={classes} setActivities={setActivities} />
                     </div>
                 </div>
             </div>

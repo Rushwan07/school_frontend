@@ -22,6 +22,7 @@ import Multiselect from "multiselect-react-dropdown";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import CreateSubject from "./CreateSubject";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const CreateClassCard = ({ setSlassLists }) => {
@@ -32,11 +33,11 @@ const CreateClassCard = ({ setSlassLists }) => {
     const [capacity, setCapacity] = useState(0);
     const [name, setName] = useState("");
     const [fees, setFees] = useState(0);
-    const [selectedStudents, setSelectedStudents] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [screen, setScreen] = useState(0);
+
     const [teacher, setTeacher] = useState([]); // Ensure it's an array
     const [subjects, setSubjects] = useState([]);
-    const [students, setStudents] = useState([]);
+
     const { user, token } = useSelector((state) => {
         const user = state?.user?.user;
         return user || {};
@@ -57,8 +58,6 @@ const CreateClassCard = ({ setSlassLists }) => {
                 });
 
                 setTeacher(teacherRes.data.data.teachers || []); // Ensure default to empty array
-                setStudents(studentRes.data.data.students || []); // Ensure default to empty array
-                setSubjects(subjectRes.data.data.subjects || []); // Ensure default to empty array
             } catch (error) {
                 console.error(error);
                 toast({
@@ -72,47 +71,33 @@ const CreateClassCard = ({ setSlassLists }) => {
         getClass();
     }, []);
 
-    // const handleSubmit = async () => {
-    //     setLoading(true);
-    //     try {
-    //         console.log("Selected Staff:", selectedStaff);
-    //         console.log("Capacity:", capacity);
-    //         console.log("Class Name:", name);
-    //         console.log("Selected Subjects:", selectedSubjects);
-    //         console.log("Fees:", fees);
-    //         console.log("Selected Students:", selectedStudents);
-    //         await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulating a delay
-    //         setDialogOpen(false);
-    //     } catch (error) {
-    //         console.error("An error occurred:", error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            // Assuming selectedSubjects and selectedStudents are arrays
-            const subjectsId = selectedSubjects.map((subject) => subject._id); // Collecting subject IDs
-            const studentsId = selectedStudents.map((student) => student._id); // Collecting student IDs
+            const subjectsId = selectedSubjects.map((subject) => subject._id);
+
             const res = await axios.post(
                 `${BASE_URL}/classes`,
                 {
-                    teacherId: selectedStaff, // Assuming selectedStaff is a string with the staff ID
-                    subjectsId, // This will be an array of subject IDs
-                    studentsId: studentsId, // This will be an array of student IDs
+                    teacherId: selectedStaff,
+                    subjectsId,
+                    studentsId: [],
                     name,
                     baseFees: fees,
                     capacity,
+                    subjects,
                 },
                 {
                     headers: { token: token },
                 },
             );
 
-            console.log(res?.data?.data?.class);
             setSlassLists((prev) => [...prev, res?.data?.data?.class]);
+            setSelectedSubjects([]);
+            setSelectedStaff([]);
+            setCapacity("");
+            setName("");
+            setFees("");
             setDialogOpen(false);
         } catch (error) {
             console.error("An error occurred:", error);
@@ -129,10 +114,6 @@ const CreateClassCard = ({ setSlassLists }) => {
         setSelectedStaff(value);
     };
 
-    const filteredStudents = students.filter((student) =>
-        student.regNo?.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>
@@ -141,29 +122,32 @@ const CreateClassCard = ({ setSlassLists }) => {
                 </button>
             </DialogTrigger>
             <DialogContent className="max-h-[80vh] overflow-x-hidden overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle>Create Class</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-5">
-                    <div>
-                        <Label>Name</Label>
-                        <Input
-                            type="text"
-                            placeholder="Name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <Label>Capacity</Label>
-                        <Input
-                            type="number"
-                            placeholder="Capacity"
-                            value={capacity}
-                            onChange={(e) => setCapacity(e.target.value)}
-                        />
-                    </div>
-                    <div>
+                {screen == 0 ? (
+                    <>
+                        {" "}
+                        <DialogHeader>
+                            <DialogTitle>Create Class</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-5">
+                            <div>
+                                <Label>Name</Label>
+                                <Input
+                                    type="text"
+                                    placeholder="Name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <Label>Capacity</Label>
+                                <Input
+                                    type="number"
+                                    placeholder="Capacity"
+                                    value={capacity}
+                                    onChange={(e) => setCapacity(e.target.value)}
+                                />
+                            </div>
+                            {/* <div>
                         <Label>Subjects</Label>
                         <Multiselect
                             options={subjects}
@@ -173,54 +157,53 @@ const CreateClassCard = ({ setSlassLists }) => {
                             displayValue="name"
                             className="rounded-lg"
                         />
-                    </div>
-                    <div>
-                        <Label>Students</Label>
-                        <input
-                            type="text"
-                            placeholder="Search by Registration No"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="mb-2 rounded-lg border p-2 mx-3"
-                        />
-                        <Multiselect
-                            options={students}
-                            selectedValues={selectedStudents}
-                            onSelect={(selectedList) => setSelectedStudents(selectedList)}
-                            onRemove={(selectedList) => setSelectedStudents(selectedList)}
-                            displayValue="regno"
-                            className="rounded-lg"
-                        />
-                    </div>
-                    <div>
-                        <Label>Staff</Label>
-                        <Select onValueChange={handleSelectChange}>
-                            <SelectTrigger className="rounded-lg">
-                                <SelectValue placeholder="Select Staff" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {teacher.map((staff) => (
-                                    <SelectItem key={staff._id} value={staff._id?.toString()}>
-                                        {staff.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div>
-                        <Label>Fees</Label>
-                        <Input
-                            type="number"
-                            placeholder="Fees"
-                            value={fees}
-                            onChange={(e) => setFees(e.target.value)}
-                        />
-                    </div>
-                </div>
+                    </div> */}
+
+                            <div>
+                                <Label>Staff</Label>
+                                <Select onValueChange={handleSelectChange}>
+                                    <SelectTrigger className="rounded-lg">
+                                        <SelectValue placeholder="Select Staff" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {teacher.map((staff) => (
+                                            <SelectItem
+                                                key={staff._id}
+                                                value={staff._id?.toString()}
+                                            >
+                                                {staff.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <Label>Fees</Label>
+                                <Input
+                                    type="number"
+                                    placeholder="Fees"
+                                    value={fees}
+                                    onChange={(e) => setFees(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <CreateSubject
+                        setSubjects={setSubjects}
+                        subjects={subjects}
+                        teacher={teacher}
+                    />
+                )}
                 <DialogFooter className="sm:justify-end">
-                    <Button onClick={handleSubmit} disabled={loading}>
-                        {loading ? "Saving..." : "Save"}
+                    <Button onClick={() => setScreen((prev) => (prev == 1 ? 0 : 1))}>
+                        {screen === 0 ? "Next" : "Previous"}
                     </Button>
+                    {screen == 1 && (
+                        <Button onClick={handleSubmit} disabled={loading}>
+                            {loading ? "Saving..." : "Save"}
+                        </Button>
+                    )}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

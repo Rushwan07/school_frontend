@@ -8,6 +8,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Attendance = () => {
     const [classLists, setSlassLists] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const columns = [
         { header: "Class", accessor: "Class" },
@@ -24,7 +25,7 @@ const Attendance = () => {
                 const res = await axios.get(BASE_URL + "/classes", {
                     withCredentials: true,
                 });
-
+                console.log(res);
                 setSlassLists(res?.data?.data?.class);
             } catch (error) {
                 console.log(error);
@@ -49,14 +50,14 @@ const Attendance = () => {
     console.log("classLists", classLists);
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className={`border-b  border-gray-200   rounded  text-sm   ${
                 item?.attendanceForToday && "bg-green-100"
             }`}
         >
             <td className="text-center py-4">{item?.name}</td>
             <td className="text-center">{item?.capacity}</td>
-            <td className="text-center">{item?.teacherId}</td>
+            <td className="text-center">{item?.teacherId?.name}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
                 <StudentList classId={item} />

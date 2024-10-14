@@ -1,6 +1,10 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { useToast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Subjects = () => {
     const [subjects, setSubjects] = useState([
@@ -13,47 +17,49 @@ const Subjects = () => {
             teacher: "teacher's name",
         },
     ]);
-    // const [subjects, setSubjects] = useState([
-    //     {
-    //         _id: "abcd",
-    //         name: "Maths",
-    //     },
-    //     {
-    //         _id: "abcd2",
-    //         name: "Maths",
-    //     },
-    //     {
-    //         _id: "abcddfd",
-    //         name: "Maths",
-    //     },
-    // ]);
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const { toast } = useToast();
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
-
+    const [loading, setLoading] = useState(false);
     const columns = [
         { header: "Subject name", accessor: "Subject name" },
         { header: "class", accessor: "class" },
         { header: "Lessions", accessor: "Lessions" },
         { header: "Teacher", accessor: "Teacher" },
     ];
+    //
+    useEffect(() => {
+        const getSubjects = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/subjects/student-subject", {
+                    headers: { token: token },
+                });
+                console.log(res?.data?.data);
 
+                // setSubjects(res?.data?.data);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getSubjects();
+    }, []);
     const renderRow = (item) => (
         <tr
             key={item.id}

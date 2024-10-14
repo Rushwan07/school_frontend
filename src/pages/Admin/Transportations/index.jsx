@@ -1,20 +1,15 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Edit, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateNewBus from "./CreateNewBus";
 import EditTransportation from "./EditTransportation";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+import axios from "axios";
 const Transportations = () => {
-    const [activities, setActivities] = useState([
-        {
-            id: 1,
-            name: "vilson",
-            busNo: "5",
-            startingPlace: "starting 1",
-            endingPlace: "Ending 2",
-            fees: "50",
-        },
-    ]);
+    const [loading, setLoading] = useState(false);
+    const [transports, setTransports] = useState([]);
 
     const [classes, setClasses] = useState([
         {
@@ -35,6 +30,35 @@ const Transportations = () => {
         },
     ]);
 
+    useEffect(() => {
+        const getTransports = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/transports", {
+                    withCredentials: true,
+                });
+                console.log(res?.data?.data);
+                setTransports(res?.data?.data?.transport);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getTransports();
+    }, []);
+
     const columns = [
         { header: "  Driver name", accessor: " Driver name" },
         { header: "Bus No", accessor: "Bus No" },
@@ -45,13 +69,15 @@ const Transportations = () => {
     ];
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
         >
-            <td className=" text-center gap-4 py-4 px-6">{item?.name}</td>
-            <td className="text-center">{item?.busNo}</td>
-            <td className=" text-center">{item?.startingPlace}</td>
-            <td className="hidden md:table-cell text-center">{item?.endingPlace}</td>
+            <td className=" text-center gap-4 py-4 px-6">{item?.driverName}</td>
+            <td className="text-center">{item?.busNumber}</td>
+            <td className=" text-center">{item?.stops[0]?.place}</td>
+            <td className="hidden md:table-cell text-center">
+                {item?.stops[item?.stops?.length - 1]?.place}
+            </td>
 
             <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
                 <EditTransportation />
@@ -78,7 +104,7 @@ const Transportations = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateNewBus classes={classes} />
+                        <CreateNewBus setTransports={setTransports} />
                     </div>
                 </div>
             </div>
@@ -96,7 +122,7 @@ const Transportations = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{activities?.map(renderRow)}</tbody>
+                <tbody>{transports?.map(renderRow)}</tbody>
             </table>
         </div>
     );

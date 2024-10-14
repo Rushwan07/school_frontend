@@ -101,7 +101,7 @@ function App() {
                     element: <AdminExams />,
                 },
                 {
-                    path: "results/:examId",
+                    path: "results/:classId/:examId",
                     element: <AdminSingleExam />,
                 },
                 {

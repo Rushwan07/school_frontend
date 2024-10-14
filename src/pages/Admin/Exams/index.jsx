@@ -1,9 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal, Trash2Icon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateExam from "./CreateExam";
 import EditExam from "./EditExam";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Exams = () => {
     const [exams, setExams] = useState([
         {
@@ -14,20 +17,6 @@ const Exams = () => {
             startDate: "2023-10-06",
             endDate: "2023-10-01",
             subject: "subject",
-        },
-    ]);
-    const [subjects, setSubjects] = useState([
-        {
-            _id: "abcd",
-            name: "Maths",
-        },
-        {
-            _id: "abcd2",
-            name: "Maths",
-        },
-        {
-            _id: "abcddfd",
-            name: "Maths",
         },
     ]);
 
@@ -58,23 +47,60 @@ const Exams = () => {
 
         { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
+
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/classes", {
+                    withCredentials: true,
+                });
+
+                const ress = await axios.get(BASE_URL + "/exams/admin-exams", {
+                    withCredentials: true,
+                });
+
+                setExams(ress?.data?.data?.exam);
+                setClasses(res?.data?.data?.class);
+            } catch (error) {
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
+
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
         >
             <td className="flex items-center gap-4 py-4 px-6">
                 <div>
-                    <p className="font-semibold">{item?.examname}</p>
+                    <p className="font-semibold">{item?.name}</p>
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
-            <td className=" text-center">{item?.startDate}</td>
-            <td className="hidden md:table-cell text-center">{item?.endDate}</td>
+            <td className="text-center">{item?.classId?.name}</td>
+            <td className=" text-center">{item?.subjects?.[0]?.date?.split("T")[0]}</td>
+            <td className="hidden md:table-cell text-center">
+                {item?.subjects?.[item?.subjects?.length - 1]?.date?.split("T")[0]}
+            </td>
 
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
-                <EditExam subjects={subjects} classes={classes} />
+                <EditExam classes={classes} />
                 <Button variant="destructive" size="icon">
                     <Trash2Icon size={"20"} />
                 </Button>
@@ -98,7 +124,7 @@ const Exams = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                        <CreateExam subjects={subjects} classes={classes} />
+                        <CreateExam classes={classes} setExams={setExams} />
                     </div>
                 </div>
             </div>

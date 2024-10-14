@@ -40,7 +40,7 @@ const Fees = () => {
     ];
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className={`border-b border-gray-200  shadow-md rounded  text-sm   ${
                 item?.isPaid ? " bg-green-200 hover:bg-green-100" : "bg-red-200 hover:bg-red-100"
             }`}

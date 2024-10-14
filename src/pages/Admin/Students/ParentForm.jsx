@@ -2,16 +2,14 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const ParentForm = ({parentData, setParentData}) => {
-   
-
+const ParentForm = ({ parentData, setParentData }) => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setParentData((prev) => ({ ...prev, [name]: value }));
     };
 
     return (
-        <div className="mt-6">
+        <div>
             <h3 className="text-lg font-semibold">Parent Details</h3>
             <div className="grid grid-cols-2 gap-4">
                 <div>

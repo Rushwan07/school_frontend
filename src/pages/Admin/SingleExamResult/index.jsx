@@ -1,36 +1,62 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const SingleExam = () => {
-    const { examId } = useParams();
-
-    // Sample data for students and subjects
-    const [students, setStudents] = useState([
-        { _id: "student1", regNo: "123", name: "John Doe" },
-        { _id: "student2", regNo: "124", name: "Jane Smith" },
-    ]);
-
+    const { examId, classId } = useParams();
+    const navigate = useNavigate();
+    const [students, setStudents] = useState([]);
     const [subjects, setSubjects] = useState([
         { _id: "subject1", name: "Math" },
         { _id: "subject2", name: "Science" },
         { _id: "subject3", name: "Physics" },
         { _id: "subject4", name: "Chemistry" },
     ]);
+    const [marksData, setMarksData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const [marksData, setMarksData] = useState(
-        students.map((student) => ({
-            studentId: student._id,
-            examId,
-            total: 0,
-            subjects: subjects.map((subject) => ({
-                subjectId: subject._id,
-                mark: "",
-                assignmentMark: "",
-            })),
-        })),
-    );
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                setLoading(true);
+                const res = await axios.get(BASE_URL + "/classes/" + classId, {
+                    withCredentials: true,
+                });
+                setSubjects(res?.data?.data?.subjects);
+                const studentsFromClass = res?.data?.data?.students || [];
+                setStudents(studentsFromClass);
+                const resSubjects = res?.data?.data?.subjects;
+                setMarksData(
+                    studentsFromClass.map((student) => ({
+                        studentId: student._id,
+                        examId,
+                        classId,
+                        total: 0,
+                        subjects: resSubjects?.map((subject) => ({
+                            subjectId: subject._id,
+                            mark: "",
+                            assignmentMark: "",
+                        })),
+                    })),
+                );
+            } catch (error) {
+                console.error(error);
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message || "An error occurred",
+                    description: "There was a problem with your request.",
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, [classId, examId]);
 
     const handleInputChange = (studentId, subjectId, field, value) => {
         setMarksData((prev) =>
@@ -59,8 +85,9 @@ const SingleExam = () => {
         return total || 0;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const formattedData = marksData.map((student) => ({
+            classId,
             studentId: student.studentId,
             examId: student.examId,
             total: calculateTotal(student.studentId),
@@ -70,7 +97,29 @@ const SingleExam = () => {
                 assignmentMark: subject.assignmentMark,
             })),
         }));
-        console.log(formattedData);
+        console.log("Formatted Data:", formattedData);
+        setLoading(true);
+        try {
+            const res = await axios.post(BASE_URL + "/results", formattedData);
+            console.log(res);
+            navigate("/admin/results");
+        } catch (error) {
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -90,14 +139,15 @@ const SingleExam = () => {
                         <th className="px-6 py-3">Total</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {marksData.map((student) => (
                         <tr key={student.studentId} className="text-center even:bg-gray-100">
                             <td className="px-6 py-4">
-                                {students.find((s) => s._id === student.studentId)?.regNo}
+                                {students.find((s) => s._id === student.studentId)?.regno || "N/A"}
                             </td>
                             <td className="px-6 py-4">
-                                {students.find((s) => s._id === student.studentId)?.name}
+                                {students.find((s) => s._id === student.studentId)?.name || "N/A"}
                             </td>
                             {student.subjects.map((subject) => (
                                 <td key={subject.subjectId} className="px-6 py-4">

@@ -50,9 +50,6 @@ const CreateEvent = ({ setEvents }) => {
                 const res = await axios.get(BASE_URL + "/classes", {
                     headers: { token: token },
                 });
-                // const res2 = await axios.get(BASE_URL + "/subjects/", {
-                //     headers: { token: token },
-                // });
 
                 setClasses(res?.data?.data?.class);
             } catch (error) {
