@@ -49,6 +49,7 @@ const StudentForm = ({ setStudents, transports, classLists }) => {
             pickupLocation: "",
             dropOffLocation: "",
             busNumber: "",
+            fees: "",
         },
     });
 
@@ -76,6 +77,7 @@ const StudentForm = ({ setStudents, transports, classLists }) => {
                 parent: parentData,
                 transport: studentData.transportation,
             });
+
             console.log(res?.data?.data);
             setStudents((prev) => [...prev, res?.data?.data?.student]);
         } catch (error) {

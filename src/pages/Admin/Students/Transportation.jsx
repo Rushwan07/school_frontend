@@ -21,20 +21,18 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
             setStudentData((prev) => ({
                 ...prev,
                 transportation: {
+                    busId: "",
                     pickupLocation: "",
                     dropOffLocation: "",
-                    busNumber: "",
                 },
             }));
         }
     };
 
-    // Extract all bus numbers and stops
-    const busNumbers = transports.map((transport) => transport.busNumber);
-    const getStopsForBus = (busNumber) => {
-        const selectedBus = transports.find(
-            (transport) => transport.busNumber === parseInt(busNumber),
-        );
+    // Extract all bus ids and stops
+    const busIds = transports.map((transport) => transport._id);
+    const getStopsForBus = (busId) => {
+        const selectedBus = transports.find((transport) => transport._id === busId);
         return selectedBus ? selectedBus.stops : [];
     };
 
@@ -52,21 +50,20 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                     <Eye className="h-4 w-4" />
                 </Toggle>
             </h4>
-
             {strokeToggle && ( // Only show transportation fields if toggle is pressed
                 <div className="grid grid-cols-3 gap-4">
                     <div>
                         <Label>Bus Number</Label>
                         <Select
-                            name="busNumber"
-                            value={studentData.transportation.busNumber}
+                            name="busId"
+                            value={studentData.transportation.busId}
                             onValueChange={(value) =>
                                 setStudentData((prev) => ({
                                     ...prev,
                                     transportation: {
                                         ...prev.transportation,
-                                        busNumber: value,
-                                        pickupLocation: "", // Reset the stops when bus number changes
+                                        busId: value,
+                                        pickupLocation: "", // Reset the stops when bus id changes
                                         dropOffLocation: "",
                                     },
                                 }))
@@ -76,16 +73,17 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                                 <SelectValue placeholder="Select bus" />
                             </SelectTrigger>
                             <SelectContent>
-                                {busNumbers.map((busNumber) => (
-                                    <SelectItem key={busNumber} value={busNumber}>
-                                        Bus {busNumber}
+                                {transports.map((bus) => (
+                                    <SelectItem key={bus._id} value={bus._id}>
+                                        Bus {bus.busNumber}{" "}
+                                        {/* You can still display busNumber here */}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                     </div>
 
-                    {studentData.transportation.busNumber && (
+                    {studentData.transportation.busId && (
                         <>
                             <div>
                                 <Label>Pickup Location</Label>
@@ -106,7 +104,7 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                                         <SelectValue placeholder="Select Pickup Location" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {getStopsForBus(studentData.transportation.busNumber).map(
+                                        {getStopsForBus(studentData.transportation.busId).map(
                                             (stop) => (
                                                 <SelectItem
                                                     key={stop.stopNumber}
@@ -139,7 +137,7 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                                         <SelectValue placeholder="Select Drop Off Location" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {getStopsForBus(studentData.transportation.busNumber).map(
+                                        {getStopsForBus(studentData.transportation.busId).map(
                                             (stop) => (
                                                 <SelectItem
                                                     key={stop.stopNumber}
@@ -154,6 +152,27 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                             </div>
                         </>
                     )}
+                </div>
+            )}{" "}
+            {studentData.transportation.busId && (
+                <div>
+                    <Label>Bus Fees</Label>
+                    <Input
+                        name="fees"
+                        type="number"
+                        className="w-full  "
+                        value={studentData.transportation.fees}
+                        onChange={(e) =>
+                            setStudentData((prev) => ({
+                                ...prev,
+                                transportation: {
+                                    ...prev.transportation,
+                                    fees: e.target.value,
+                                },
+                            }))
+                        }
+                        placeholder="Enter Bus fees"
+                    />
                 </div>
             )}
         </div>

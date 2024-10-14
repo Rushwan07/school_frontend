@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ConfirmationAlert from "./ConfirmationAlert";
-
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Fees = () => {
-    const [activities, setActivities] = useState([
+    const [students, setStudents] = useState([
         {
             id: 1,
             regNo: 342,
@@ -34,10 +36,38 @@ const Fees = () => {
 
         { header: "Class", accessor: "Class", style: "hidden md:table-cell" },
         { header: "Fees", accessor: "Fees", style: "hidden md:table-cell" },
-        { header: "Due date", accessor: "Due date", style: "hidden md:table-cell" },
 
         { header: "Status", accessor: "Status" },
     ];
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const getFeesDetails = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/fees ", {
+                    withCredentials: true,
+                });
+                console.log(res?.data?.data?.feesDetails);
+
+                setStudents(res?.data?.data?.feesDetails);
+            } catch (error) {
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getFeesDetails();
+    }, []);
     const renderRow = (item) => (
         <tr
             key={item._id}
@@ -45,11 +75,10 @@ const Fees = () => {
                 item?.isPaid ? " bg-green-200 hover:bg-green-100" : "bg-red-200 hover:bg-red-100"
             }`}
         >
-            <td className="text-center">{item?.regNo}</td>
-            <td className=" gap-4 py-4 px-6 text-center">{item?.name}</td>
-            <td className="text-center hidden flex md:table-cell">{item?.class}</td>
-            <td className=" text-center hidden flex md:table-cell">{item?.fees}</td>
-            <td className="hidden md:table-cell text-center">{item?.date}</td>
+            <td className="text-center">{item?.studentId?.regno}</td>
+            <td className=" gap-4 py-4 px-6 text-center">{item?.studentId?.name}</td>
+            <td className="text-center hidden flex md:table-cell">{item?.classId?.name}</td>
+            <td className=" text-center hidden flex md:table-cell">{item?.totalFees}</td>
 
             <td className="flex md:table-cell items-center justify-center gap-2 text-center">
                 {item?.isPaid ? (
@@ -58,10 +87,10 @@ const Fees = () => {
                     </>
                 ) : (
                     <ConfirmationAlert
-                        name={item?.name}
-                        regNo={item?.regNo}
-                        fees={item?.fees}
-                        className={item?.class}
+                        name={item?.studentId?.name}
+                        regNo={item?.studentId?.regno}
+                        fees={item?.totalFees}
+                        className={item?.classId?.name}
                     />
                 )}
             </td>
@@ -101,7 +130,7 @@ const Fees = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{activities?.map(renderRow)}</tbody>
+                <tbody>{students?.map(renderRow)}</tbody>
             </table>
         </div>
     );

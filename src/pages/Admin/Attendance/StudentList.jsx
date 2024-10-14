@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Pencil } from "lucide-react";
+import { Edit, Pencil } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -22,7 +22,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const StudentList = ({ classId }) => {
+const StudentList = ({ classId, setSlassLists }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [students, setStudents] = useState([]);
@@ -44,21 +44,9 @@ const StudentList = ({ classId }) => {
         }
     }, [dialogOpen, classId]);
 
-    // const handleSubmit = async () => {
-    //     console.log(classId._id);
-    //     console.log("students", students);
-    //     setLoading(true);
-    //     try {
-    //         await new Promise((resolve) => setTimeout(resolve, 2000));
-    //         setDialogOpen(false);
-    //     } catch (error) {
-    //         console.error("An error occurred:", error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     const handleSubmit = async () => {
+        console.log({ classId: classId._id, students: students });
+
         setLoading(true);
         try {
             const res = await axios.post(
@@ -68,6 +56,64 @@ const StudentList = ({ classId }) => {
                     headers: { token: token },
                 },
             );
+            console.log(res?.data?.data?.attendance?._id);
+
+            // Properly updating the array immutably
+            setSlassLists((prev) => {
+                return prev.map((val) => {
+                    if (val._id === classId._id) {
+                        // Return a new object with the updated attendanceId
+                        return {
+                            ...val,
+                            attendanceId: res?.data?.data?.attendance?._id,
+                        };
+                    }
+                    // If classId doesn't match, return the original object
+                    return val;
+                });
+            });
+
+            setDialogOpen(false);
+        } catch (error) {
+            console.error("An error occurred:", error);
+
+            toast({
+                variant: "destructive",
+                title: error?.response?.data?.message,
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEdit = async () => {
+        console.log({ classId: classId._id, students: students });
+
+        setLoading(true);
+        try {
+            const res = await axios.put(
+                BASE_URL + "/attendances/edit-attendance/" + classId.attendanceId,
+                { classId: classId._id, students: students },
+                {
+                    headers: { token: token },
+                },
+            );
+            console.log(res?.data?.data?.attendance?._id);
+
+            // Properly updating the array immutably
+            setSlassLists((prev) => {
+                return prev.map((val) => {
+                    if (val._id === classId._id) {
+                        // Return a new object with the updated attendanceId
+                        return {
+                            ...val,
+                            attendanceId: res?.data?.data?.attendance?._id,
+                        };
+                    }
+                    // If classId doesn't match, return the original object
+                    return val;
+                });
+            });
 
             setDialogOpen(false);
         } catch (error) {
@@ -85,8 +131,17 @@ const StudentList = ({ classId }) => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>
                 <button className="btn btn-sm btn-outline-primary rounded-full flex justify-center items-center gap-1">
-                    <Pencil size={18} />
-                    Add attendance
+                    {classId?.attendanceId ? (
+                        <>
+                            <Edit size={18} />
+                            Edit
+                        </>
+                    ) : (
+                        <>
+                            <Pencil size={18} />
+                            Add attendance
+                        </>
+                    )}
                 </button>
             </DialogTrigger>
             <DialogContent className="max-h-[80vh] overflow-x-hidden overflow-y-auto">
@@ -145,9 +200,15 @@ const StudentList = ({ classId }) => {
                     </tbody>
                 </table>
                 <DialogFooter className="sm:justify-end">
-                    <Button onClick={handleSubmit} disabled={loading}>
-                        {loading ? "Saving..." : "Save"}
-                    </Button>
+                    {classId?.attendanceId ? (
+                        <Button onClick={handleEdit} disabled={loading}>
+                            {loading ? "Saving..." : "Save"}
+                        </Button>
+                    ) : (
+                        <Button onClick={handleSubmit} disabled={loading}>
+                            {loading ? "Saving..." : "Save"}
+                        </Button>
+                    )}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

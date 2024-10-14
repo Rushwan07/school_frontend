@@ -28,22 +28,15 @@ const CreateAssignment = ({ setTransports }) => {
         stopNumber: "",
         place: "",
         time: "",
-        transportationFees: "",
     });
 
     const handleAddStop = () => {
-        if (
-            tempStop.stopNumber &&
-            tempStop.place.trim().length > 0 &&
-            tempStop.time &&
-            tempStop.transportationFees.trim().length > 0
-        ) {
+        if (tempStop.stopNumber && tempStop.place.trim().length > 0 && tempStop.time) {
             setStops((prev) => [...prev, tempStop]);
             setTempStop({
                 stopNumber: "",
                 place: "",
                 time: "",
-                transportationFees: "",
             });
         }
     };
@@ -166,7 +159,7 @@ const CreateAssignment = ({ setTransports }) => {
                                 }
                             />
                         </div>
-                        <div>
+                        {/* <div>
                             <Label>Transportation Fees</Label>
                             <Input
                                 type="text"
@@ -179,7 +172,7 @@ const CreateAssignment = ({ setTransports }) => {
                                 }
                                 placeholder="Fees"
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <Button variant="outline" className="bg-gray-300" onClick={handleAddStop}>

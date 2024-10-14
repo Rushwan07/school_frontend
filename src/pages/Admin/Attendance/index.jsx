@@ -21,12 +21,11 @@ const Attendance = () => {
     useEffect(() => {
         const getClass = async () => {
             try {
-                console.log("working fine");
-                const res = await axios.get(BASE_URL + "/classes", {
+                const res = await axios.get(BASE_URL + "/classes/class-attendance", {
                     withCredentials: true,
                 });
-                console.log(res);
-                setSlassLists(res?.data?.data?.class);
+                console.log(res?.data?.data?.classes);
+                setSlassLists(res?.data?.data?.classes);
             } catch (error) {
                 console.log(error);
                 if (error?.response?.data?.message)
@@ -47,12 +46,12 @@ const Attendance = () => {
         };
         getClass();
     }, []);
-    console.log("classLists", classLists);
+
     const renderRow = (item) => (
         <tr
             key={item._id}
             className={`border-b  border-gray-200   rounded  text-sm   ${
-                item?.attendanceForToday && "bg-green-100"
+                item?.attendanceId && "bg-green-200"
             }`}
         >
             <td className="text-center py-4">{item?.name}</td>
@@ -60,7 +59,7 @@ const Attendance = () => {
             <td className="text-center">{item?.teacherId?.name}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
-                <StudentList classId={item} />
+                <StudentList classId={item} setSlassLists={setSlassLists} />
 
                 {/* <button className="btn btn-sm btn-outline-danger rounded-full ml-2 flex justify-center items-center gap-1 ">
                     <Trash size={18} /> Delete
