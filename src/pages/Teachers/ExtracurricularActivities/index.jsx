@@ -1,37 +1,18 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateActivity from "./CreateActivity";
+import { useSelector } from "react-redux";
+import { toast } from "@/hooks/use-toast";
+import axios from "axios";
 const ExtracurricularActivities = () => {
-    const [activities, setActivities] = useState([
-        {
-            id: 1,
-            name: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            date: "2023-10-01",
-            fees: "50",
-        },
-    ]);
-
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    const [activities, setActivities] = useState([]);
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const [loading, setLoading] = useState(false);
 
     const columns = [
         { header: "Activity name", accessor: "Activity name" },
@@ -50,11 +31,38 @@ const ExtracurricularActivities = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
+            <td className="text-center">{item?.classId?.name}</td>
             <td className=" text-center">{item?.fees}</td>
-            <td className="hidden md:table-cell text-center">{item?.date}</td>
+            <td className="hidden md:table-cell text-center">{item?.duedate}</td>
         </tr>
     );
+    useEffect(() => {
+        const get = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/activitys/teacher-activity", {
+                    headers: { token: token },
+                });
+                setActivities(res?.data?.data?.extraCurricularActivity);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        get();
+    }, []);
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
@@ -89,7 +97,18 @@ const ExtracurricularActivities = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{activities?.map(renderRow)}</tbody>
+                <tbody>
+                    {" "}
+                    {activities && activities.length > 0 ? (
+                        activities.map(renderRow)
+                    ) : (
+                        <tr>
+                            <td colSpan="100%" className="text-center">
+                                No exams available
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
             </table>
         </div>
     );

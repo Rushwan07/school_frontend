@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdAdd } from "react-icons/md";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -21,9 +21,19 @@ import {
 } from "@/components/ui/select";
 
 import { Button } from "@/components/ui/button";
+import { useSelector } from "react-redux";
+import { toast } from "@/hooks/use-toast";
+import axios from "axios";
 
 const Exams = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const [loading, setLoading] = useState(false);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         alert("Profile updated locally!");
@@ -47,44 +57,7 @@ const Exams = () => {
         setTeacher((prev) => ({ ...prev, [name]: value }));
     };
 
-    const [assignments, setAssignments] = useState([
-        {
-            id: 1,
-            title: "Unit test",
-            subjectName: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            startDate: "2023-10-01",
-            teacherName: "teacher one",
-            time: "11:30 to 12:30",
-            duedate: "2023-10-01",
-        },
-        {
-            id: 1,
-            title: "Unit test",
-            time: "11:30 to 12:30",
-
-            subjectName: "Maths",
-            description: "This is an important update for Class A",
-            class: "Class A",
-            startDate: "2023-10-01",
-            teacherName: "teacher one",
-            duedate: "2023-10-01",
-        },
-        {
-            id: 1,
-            title: "Unit test",
-            time: "11:30 to 12:30",
-
-            subjectName: "Maths",
-            description: "This is an important update for Class A",
-            class: "Class A",
-            startDate: "2023-10-01",
-            teacherName: "teacher one",
-
-            duedate: "2023-10-01",
-        },
-    ]);
+    const [exam, setExam] = useState([]);
 
     const columns = [
         { header: "Title", accessor: "tile", style: "hidden md:table-cell" },
@@ -93,6 +66,36 @@ const Exams = () => {
         { header: "startDate", accessor: "startDate" },
         // { header: "Time", accessor: "time", style: "hidden md:table-cell" },
     ];
+
+    useEffect(() => {
+        const get = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/exams/teacher-exams", {
+                    headers: { token: token },
+                });
+                setExam(res?.data?.data?.exam);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        get();
+    }, []);
+
+    console.log(exam);
 
     const renderRow = (item) => (
         <tr
@@ -145,7 +148,17 @@ const Exams = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{assignments?.map(renderRow)}</tbody>
+                <tbody>
+  {exam && exam.length > 0 ? (
+    exam.map(renderRow)
+  ) : (
+    <tr>
+      <td colSpan="100%" className="text-center">
+        No exams available
+      </td>
+    </tr>
+  )}
+</tbody>
             </table>
         </div>
     );

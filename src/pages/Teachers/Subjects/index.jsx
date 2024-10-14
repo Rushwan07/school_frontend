@@ -1,19 +1,19 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateSubject from "./CreateSubject";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import { useSelector } from "react-redux";
 
 const Subjects = () => {
-    const [subjects, setSubjects] = useState([
-        {
-            id: 1,
-            name: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            lessions: "5",
-            teacher: "teacher's name",
-        },
-    ]);
+    const [subjects, setSubjects] = useState([]);
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const [loading, setLoading] = useState(false);
     // const [subjects, setSubjects] = useState([
     //     {
     //         _id: "abcd",
@@ -29,25 +29,35 @@ const Subjects = () => {
     //     },
     // ]);
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    useEffect(() => {
+        const get = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/subjects/student-subject", {
+                    headers: { token: token },
+                });
+                setSubjects(res?.data?.data?.class);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        get();
+    }, []);
 
+    console.log("subjects", subjects);
     const columns = [
         { header: "Subject name", accessor: "Subject name" },
         { header: "class", accessor: "class" },
@@ -67,9 +77,9 @@ const Subjects = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
+            <td className="text-center">{item?.classId?.name}</td>
             <td className=" text-center">{item?.lessions}</td>
-            <td className="hidden md:table-cell text-center">{item?.teacher}</td>
+            <td className="hidden md:table-cell text-center">{item?.teacherId?.name}</td>
 
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
                 <button className="btn btn-sm btn-outline-primary rounded-full ">
@@ -115,7 +125,7 @@ const Subjects = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{subjects?.map(renderRow)}</tbody>
+                <tbody>{renderRow(subjects)}</tbody>
             </table>
         </div>
     );
