@@ -160,7 +160,7 @@ const CreateClassCard = ({ setSlassLists }) => {
                     </div> */}
 
                             <div>
-                                <Label>Staff</Label>
+                                <Label>Incharge staff</Label>
                                 <Select onValueChange={handleSelectChange}>
                                     <SelectTrigger className="rounded-lg">
                                         <SelectValue placeholder="Select Staff" />

@@ -62,7 +62,7 @@ const Class = () => {
             <td className="text-center">{item?.baseFees}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
-                <StudentList classId={item?.class} />
+                <StudentList item={item} setSlassLists={setSlassLists} />
 
                 {/* <button className="btn btn-sm btn-outline-danger rounded-full ml-2 flex justify-center items-center gap-1 ">
                     <Trash size={18} /> Delete

@@ -113,7 +113,7 @@ const Sidebar = () => {
                 <span className="hidden md:inline">Admin Dashboard</span>
             </div>
             {links.map((link) => (
-                <TooltipProvider>
+                <TooltipProvider key={link?.link}>
                     {" "}
                     <Tooltip>
                         <TooltipTrigger>
