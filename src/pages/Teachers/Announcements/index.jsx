@@ -1,26 +1,19 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateAnouncementDialog from "./CreateAnouncementDialog";
+import { toast } from "@/hooks/use-toast";
+import axios from "axios";
+import { useSelector } from "react-redux";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const AnnouncementListPage = () => {
-    const [anouncements, setAnounceMents] = useState([
-        {
-            id: 1,
-            title: "Important Announcement",
-            description: "This is an important update for Class A",
-            class: "Class A",
-            date: "2023-10-01",
-        },
-        {
-            id: 2,
-            title: "Upcoming Event",
-            description: "Class B has an upcoming event",
-            class: "Class B",
-            date: "2023-10-15",
-        },
-        // Add more announcements here
-    ]);
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const [anouncements, setAnounceMents] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const [classes, setClasses] = useState([
         {
@@ -53,6 +46,37 @@ const AnnouncementListPage = () => {
         { header: "Date", accessor: "date", className: "hidden md:table-cell" },
     ];
 
+    useEffect(() => {
+        const get = async () => {
+            try {
+                console.log("working fine");
+                const res = await axios.get(BASE_URL + `/anouncements/teacher-anouncement`, {
+                    headers: { token: token },
+                });
+
+                setAnounceMents(res?.data?.data?.announcements);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        get();
+    }, []);
+    console.log(anouncements);
+
     const renderRow = (item) => (
         <tr
             key={item.id}
@@ -64,8 +88,8 @@ const AnnouncementListPage = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td>{item?.class}</td>
-            <td className="hidden md:table-cell">{item?.date}</td>
+            <td>{item?.classId?.name}</td>
+            <td className="hidden md:table-cell">{item?.createdAt}</td>
         </tr>
     );
 
