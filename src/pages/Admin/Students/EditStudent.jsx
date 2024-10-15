@@ -83,9 +83,11 @@ const EditStudentForm = ({ setStudents, transports, classLists, item }) => {
                 transport: studentData.transportations,
             });
 
-            console.log(res?.data?.data);
+            console.log(res?.data?.data?.student);
             setStudents((prev) => {
-                const val = prev.map((s) => (s._id == studentData._id ? studentData : s));
+                const val = prev.map((s) =>
+                    s._id == studentData._id ? res?.data?.data?.student : s,
+                );
                 return val;
             });
         } catch (error) {
