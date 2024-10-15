@@ -7,34 +7,56 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Pen, Plus } from "lucide-react";
+import { Pen } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { toast } from "@/hooks/use-toast";
 
-const CreateClassCard = () => {
+const EditGrade = ({ setGrade, item }) => {
+    console.log(item);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const [name, setName] = useState("");
-    const [startingMark, setStartingMark] = useState("");
-    const [endingMark, setEndingMark] = useState("");
+    const [name, setName] = useState(item?.name);
+    const [startingMark, setStartingMark] = useState(item?.startingMark);
+    const [endingMark, setEndingMark] = useState(item?.endingMark);
 
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            // Here you can add your API call or any function to handle the submission
-            console.log("Grade Name:", name);
-            console.log("Starting Mark:", startingMark);
-            console.log("Ending Mark:", endingMark);
+            const res = await axios.put(BASE_URL + "/grades/" + item?._id, {
+                name,
+                startingMark,
+                endingMark,
+            });
 
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate an API request
-
-            setDialogOpen(false);
+            console.log(res?.data?.data?.grade);
+            setGrade((prev) => {
+                let val = prev.map((val) =>
+                    val._id == res?.data?.data?.grade?._id ? res?.data?.data?.grade : val,
+                );
+                return val;
+            });
         } catch (error) {
-            console.error("An error occurred:", error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
         } finally {
             setLoading(false);
+            setDialogOpen(false);
         }
     };
 
@@ -47,7 +69,7 @@ const CreateClassCard = () => {
             </DialogTrigger>
             <DialogContent className="max-h-[80vh] overflow-x-hidden overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>Edit Grade</DialogTitle>
+                    <DialogTitle>Create Grade</DialogTitle>
                 </DialogHeader>{" "}
                 <div className="space-y-5">
                     <div>
@@ -88,4 +110,4 @@ const CreateClassCard = () => {
     );
 };
 
-export default CreateClassCard;
+export default EditGrade;

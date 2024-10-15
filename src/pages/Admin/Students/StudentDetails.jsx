@@ -66,7 +66,7 @@ const StudentForm = ({ setStudents, transports, classLists }) => {
         console.log(studentData);
         console.log(date);
         console.log(parentData);
-
+        setLoading(true);
         try {
             const res = await axios.post(BASE_URL + "/students", {
                 student: {
@@ -80,6 +80,28 @@ const StudentForm = ({ setStudents, transports, classLists }) => {
 
             console.log(res?.data?.data);
             setStudents((prev) => [...prev, res?.data?.data?.student]);
+            setStudentData({
+                regno: "",
+                name: "",
+                bloodType: "",
+                address: "",
+                img: null,
+                sex: "",
+                classId: "",
+                birthday: "",
+                transportation: {
+                    pickupLocation: "",
+                    dropOffLocation: "",
+                    busNumber: "",
+                    fees: "",
+                },
+            });
+            setParentData({
+                name: "", // New field for Parent Name
+                email: "",
+                phone: "",
+                address: "",
+            });
         } catch (error) {
             console.log(error);
             if (error?.response?.data?.message)

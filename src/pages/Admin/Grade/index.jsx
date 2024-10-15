@@ -58,7 +58,7 @@ const Grade = () => {
             <td className="text-center">{item?.endingMark}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
-                <EditGrade classId={item?.class} />
+                <EditGrade item={item} setGrade={setGrade} />
 
                 {/* <button className="btn btn-sm btn-outline-danger rounded-full ml-2 flex justify-center items-center gap-1 ">
                     <Trash size={18} /> Delete

@@ -73,6 +73,7 @@ const EditStudentForm = ({ setStudents, transports, classLists, item }) => {
         console.log(parentData);
 
         try {
+            setLoading(true);
             const res = await axios.put(BASE_URL + "/students/" + studentData?._id, {
                 student: {
                     ...studentData,
