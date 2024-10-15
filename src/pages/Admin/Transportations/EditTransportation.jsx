@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -13,34 +13,30 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { Label } from "@/components/ui/label";
+import axios from "axios";
 
-const EditTransportation = ({ classes }) => {
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const EditTransportation = ({ item, setTransports }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [stops, setStops] = useState([]);
-
-    const [name, setName] = useState("");
-    const [busNo, setBusNo] = useState("");
+    const [stops, setStops] = useState(item?.stops || []);
+    console.log(item);
+    const [name, setName] = useState(item?.driverName);
+    const [busNo, setBusNo] = useState(item?.busNumber);
     const [tempStop, setTempStop] = useState({
         stopNumber: "",
         place: "",
         time: "",
-        transportationFees: "",
     });
 
     const handleAddStop = () => {
-        if (
-            tempStop.stopNumber &&
-            tempStop.place.trim().length > 0 &&
-            tempStop.time &&
-            tempStop.transportationFees.trim().length > 0
-        ) {
+        if (tempStop.stopNumber && tempStop.place.trim().length > 0 && tempStop.time) {
             setStops((prev) => [...prev, tempStop]);
             setTempStop({
                 stopNumber: "",
                 place: "",
                 time: "",
-                transportationFees: "",
             });
         }
     };
@@ -50,15 +46,42 @@ const EditTransportation = ({ classes }) => {
     };
 
     const handleSubmit = async () => {
-        console.log({ stops, name, busNo });
+        console.log({ stops, driverName: name, busNumber: busNo });
 
         setLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const res = await axios.put(BASE_URL + `/transports/${item?._id}`, {
+                stops,
+                driverName: name,
+                busNumber: busNo,
+            });
+
+            // setTransports((prev) => [...prev, res?.data?.data?.transport]);
+            setTransports((prev) => {
+                const val = prev.map((trans) =>
+                    trans._id == res?.data?.data?.transport?._id
+                        ? res?.data?.data?.transport
+                        : trans,
+                );
+                console.log(val);
+                return val;
+            });
 
             setDialogOpen(false);
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
         } finally {
             setLoading(false);
         }
@@ -102,8 +125,7 @@ const EditTransportation = ({ classes }) => {
                                 <li key={index} className="flex items-center space-x-4 py-2">
                                     <span className="font-semibold">{stop.stopNumber}.</span>
                                     <span className="text-gray-700 flex-grow">
-                                        {stop.place} at {stop.time} (&#8377;
-                                        {stop.transportationFees})
+                                        {stop.place} at {stop.time}
                                     </span>
                                     <Button
                                         variant="outline"
@@ -151,7 +173,7 @@ const EditTransportation = ({ classes }) => {
                                 }
                             />
                         </div>
-                        <div>
+                        {/* <div>
                             <Label>Transportation Fees</Label>
                             <Input
                                 type="text"
@@ -164,7 +186,7 @@ const EditTransportation = ({ classes }) => {
                                 }
                                 placeholder="Fees"
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <Button variant="outline" className="bg-gray-300" onClick={handleAddStop}>

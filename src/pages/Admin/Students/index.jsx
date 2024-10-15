@@ -86,7 +86,12 @@ const Students = () => {
             <td className="hidden md:table-cell text-center w-[400px]">{item?.sex}</td>
             {/* <td className="hidden md:table-cell text-center ">{item?.duration}</td> */}
             <td className="flex items-center justify-center gap-2 text-center  py-4 ">
-                <EditStudent />
+                <EditStudent
+                    item={item}
+                    setStudents={setStudents}
+                    transports={transports}
+                    classLists={classLists}
+                />
                 <ViewStudentDetails />
             </td>
         </tr>

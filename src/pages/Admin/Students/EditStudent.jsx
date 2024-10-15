@@ -10,44 +10,53 @@ import {
 import {
     Dialog,
     DialogContent,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-
+import { Toggle } from "@/components/ui/toggle";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import { DatePicker } from "./DobCalendar";
 import { Label } from "@/components/ui/label";
 import ParentForm from "./ParentForm";
-import { PenBox, Plus } from "lucide-react";
-import { DatePicker } from "@/components/DatePicker";
+import { Edit, Eye, Plus } from "lucide-react";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+import TransportationComponent from "./EditTransportation";
 
-const EditStudent = ({ onSubmit, loading }) => {
+const EditStudentForm = ({ setStudents, transports, classLists, item }) => {
+    console.log(item);
+    const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [date, setDate] = useState();
-    const [parentData, setParentData] = useState({
-        name: "", // New field for Parent Name
-        email: "",
-        phone: "",
-        address: "",
-    });
-    const [studentData, setStudentData] = useState({
-        regno: "",
-        name: "",
-        bloodType: "",
-        address: "",
-        img: null,
-        sex: "",
-        classId: "",
-        birthday: "",
-        transportation: {
-            pickupLocation: "",
-            dropOffLocation: "",
-            busNumber: "",
+    const [parentData, setParentData] = useState(
+        item?.parentId || {
+            name: "",
+            email: "",
+            phone: "",
+            address: "",
         },
-    });
+    );
+    const [studentData, setStudentData] = useState(
+        item || {
+            regno: "",
+            name: "",
+            bloodType: "",
+            address: "",
+            img: null,
+            sex: "",
+            classId: "",
+            birthday: "",
+            transportations: {
+                pickupLocation: "",
+                dropOffLocation: "",
+                busNumber: "",
+                fees: "",
+            },
+        },
+    );
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -58,48 +67,75 @@ const EditStudent = ({ onSubmit, loading }) => {
         setStudentData((prev) => ({ ...prev, img: e.target.files[0] }));
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         console.log(studentData);
         console.log(date);
         console.log(parentData);
 
-        //data should send in this format
-        // {
-        //     "student":{
-        //          "regno": "101",
-        //          "name": "student",
-        //          "address": "123 Main Street, Anytown, USA",
-        //          "img": "https://example.com/student.jpg",
-        //          "bloodType": "A+",
-        //          "sex": "MALE",
-        //          "classId": "6704ec91fee39a5e6ebd0162",
-        //          "birthday": "2024-10-04"
-        //      },
-        //      "parent":{
-        //          "address":"address for the parent",
-        //          "email":"parent@gmail.com",
-        //          "name":"test parent",
-        //          "phone": "8973927483"
-        //      },
-        //      "transport":{
-        //          "pickupLocation":"",
-        //          "dropOffLocation":"",
-        //          "busId":"",
-        //          "fees":500
-        //      }
-        //    }
-    };
+        try {
+            const res = await axios.put(BASE_URL + "/students/" + studentData?._id, {
+                student: {
+                    ...studentData,
+                    birthday: date,
+                    transportation: undefined,
+                },
+                parent: parentData,
+                transport: studentData.transportations,
+            });
 
+            console.log(res?.data?.data);
+            setStudents((prev) => {
+                const val = prev.map((s) => (s._id == studentData._id ? studentData : s));
+                return val;
+            });
+        } catch (error) {
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
+        } finally {
+            setLoading(false);
+            setDialogOpen(false);
+        }
+    };
+    //data should send in this format
+    // {
+    //     "student":{
+    //          "regno": "101",
+    //          "name": "student",
+    //          "address": "123 Main Street, Anytown, USA",
+    //          "img": "https://example.com/student.jpg",
+    //          "bloodType": "A+",
+    //          "sex": "MALE",
+    //          "classId": "6704ec91fee39a5e6ebd0162",
+    //          "birthday": "2024-10-04"
+    //      },
+    //      "parent":{
+    //          "address":"address for the parent",
+    //          "email":"parent@gmail.com",
+    //          "name":"test parent",
+    //          "phone": "8973927483"
+    //      },
+    //      "transport":{
+    //          "pickupLocation":"",
+    //          "dropOffLocation":"",
+    //          "busId":"",
+    //          "fees":500
+    //      }
+    //    }
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>
-                <Button
-                    size={"icon"}
-                    variant={"outline"}
-                    // onClick={() => setData(item)}
-                >
-                    <PenBox />
-                </Button>
+                <Edit />
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -179,9 +215,11 @@ const EditStudent = ({ onSubmit, loading }) => {
                                 <SelectValue placeholder="Select class" />
                             </SelectTrigger>
                             <SelectContent>
-                                {/* Map over available classes */}
-                                <SelectItem value="classId1">Class 1</SelectItem>
-                                <SelectItem value="classId2">Class 2</SelectItem>
+                                {classLists?.map((classItem) => (
+                                    <SelectItem key={classItem._id} value={classItem._id}>
+                                        {classItem?.name}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -195,68 +233,11 @@ const EditStudent = ({ onSubmit, loading }) => {
                     </div>
                 </div>
 
-                <h4 className="text-md mt-4">Transportation</h4>
-                <div className="grid grid-cols-3 gap-4">
-                    <div>
-                        <Label>Pickup Location</Label>
-                        <Input
-                            name="pickupLocation"
-                            type="text"
-                            value={studentData.transportation.pickupLocation}
-                            onChange={(e) =>
-                                setStudentData((prev) => ({
-                                    ...prev,
-                                    transportation: {
-                                        ...prev.transportation,
-                                        pickupLocation: e.target.value,
-                                    },
-                                }))
-                            }
-                        />
-                    </div>
-                    <div>
-                        <Label>Drop Off Location</Label>
-                        <Input
-                            name="dropOffLocation"
-                            type="text"
-                            value={studentData.transportation.dropOffLocation}
-                            onChange={(e) =>
-                                setStudentData((prev) => ({
-                                    ...prev,
-                                    transportation: {
-                                        ...prev.transportation,
-                                        dropOffLocation: e.target.value,
-                                    },
-                                }))
-                            }
-                        />
-                    </div>
-                    <div>
-                        <Label>Bus Number</Label>
-                        <Select
-                            name="busNumber"
-                            value={studentData.transportation.busNumber}
-                            onValueChange={(value) =>
-                                setStudentData((prev) => ({
-                                    ...prev,
-                                    transportation: {
-                                        ...prev.transportation,
-                                        busNumber: value,
-                                    },
-                                }))
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select bus" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="bus1">Bus 1</SelectItem>
-                                <SelectItem value="bus2">Bus 2</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-
+                <TransportationComponent
+                    setStudentData={setStudentData}
+                    studentData={studentData}
+                    transports={transports}
+                />
                 <ParentForm parentData={parentData} setParentData={setParentData} />
                 <div className="mt-4 flex justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
@@ -268,4 +249,4 @@ const EditStudent = ({ onSubmit, loading }) => {
     );
 };
 
-export default EditStudent;
+export default EditStudentForm;

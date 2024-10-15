@@ -80,7 +80,7 @@ const Transportations = () => {
             </td>
 
             <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
-                <EditTransportation />
+                <EditTransportation item={item} setTransports={setTransports} />
                 <Button variant="destructive" size="icon">
                     <Trash2Icon size={"20"} />
                 </Button>

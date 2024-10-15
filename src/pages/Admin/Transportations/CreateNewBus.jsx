@@ -55,7 +55,9 @@ const CreateAssignment = ({ setTransports }) => {
                 driverName: name,
                 busNumber: busNo,
             });
-            console.log(res?.data?.data?.transport);
+            setStops([]);
+            setName("");
+            setBusNo("");
             setTransports((prev) => [...prev, res?.data?.data?.transport]);
 
             setDialogOpen(false);
@@ -110,8 +112,7 @@ const CreateAssignment = ({ setTransports }) => {
                                 <li key={index} className="flex items-center space-x-4 py-2">
                                     <span className="font-semibold">{stop.stopNumber}.</span>
                                     <span className="text-gray-700 flex-grow">
-                                        {stop.place} at {stop.time} (&#8377;
-                                        {stop.transportationFees})
+                                        {stop.place} at {stop.time}
                                     </span>
                                     <Button
                                         variant="outline"

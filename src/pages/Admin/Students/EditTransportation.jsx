@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Toggle } from "@/components/ui/toggle"; // adjust import path as necessary
-import { Eye } from "lucide-react"; // adjust import path as necessary
+import { Eye, Trash } from "lucide-react"; // adjust import path as necessary
 import { Input } from "@/components/ui/input"; // adjust import path as necessary
 import {
     Select,
@@ -12,7 +12,7 @@ import {
 import { Label } from "@/components/ui/label"; // adjust import path as necessary
 
 const TransportationComponent = ({ setStudentData, studentData, transports }) => {
-    const [strokeToggle, setStrokeToggle] = useState(false); // Manage toggle state
+    const [strokeToggle, setStrokeToggle] = useState(studentData?.transportations ? true : false); // Manage toggle state
 
     const handleToggleChange = (pressed) => {
         setStrokeToggle(pressed); // Update toggle state
@@ -20,7 +20,7 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
         if (!pressed) {
             setStudentData((prev) => ({
                 ...prev,
-                transportation: {
+                transportations: {
                     busId: "",
                     pickupLocation: "",
                 },
@@ -29,9 +29,9 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
     };
 
     // Extract all bus ids and stops
-    const busIds = transports.map((transport) => transport._id);
+    const busIds = transports?.map((transport) => transport?._id);
     const getStopsForBus = (busId) => {
-        const selectedBus = transports.find((transport) => transport._id === busId);
+        const selectedBus = transports?.find((transport) => transport?._id === busId);
         return selectedBus ? selectedBus.stops : [];
     };
 
@@ -46,7 +46,11 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                     pressed={strokeToggle}
                     onPressedChange={handleToggleChange}
                 >
-                    <Eye className="h-4 w-4" />
+                    {studentData?.transportations?.busId ? (
+                        <Trash className="h-4 w-4" />
+                    ) : (
+                        <Eye className="h-4 w-4" />
+                    )}
                 </Toggle>
             </h4>
             {strokeToggle && ( // Only show transportation fields if toggle is pressed
@@ -55,12 +59,12 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                         <Label>Bus Number</Label>
                         <Select
                             name="busId"
-                            value={studentData.transportation.busId}
+                            value={studentData?.transportations?.busId}
                             onValueChange={(value) =>
                                 setStudentData((prev) => ({
                                     ...prev,
-                                    transportation: {
-                                        ...prev.transportation,
+                                    transportations: {
+                                        ...prev?.transportation,
                                         busId: value,
                                         pickupLocation: "", // Reset the stops when bus id changes
                                     },
@@ -71,9 +75,9 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                                 <SelectValue placeholder="Select bus" />
                             </SelectTrigger>
                             <SelectContent>
-                                {transports.map((bus) => (
-                                    <SelectItem key={bus._id} value={bus._id}>
-                                        Bus {bus.busNumber}{" "}
+                                {transports?.map((bus) => (
+                                    <SelectItem key={bus?._id} value={bus?._id}>
+                                        Bus {bus?.busNumber}{" "}
                                         {/* You can still display busNumber here */}
                                     </SelectItem>
                                 ))}
@@ -81,18 +85,18 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                         </Select>
                     </div>
 
-                    {studentData.transportation.busId && (
+                    {studentData?.transportations?.busId && (
                         <>
                             <div>
                                 <Label>Pickup Location</Label>
                                 <Select
                                     name="pickupLocation"
-                                    value={studentData.transportation.pickupLocation}
+                                    value={studentData?.transportations?.pickupLocation}
                                     onValueChange={(value) =>
                                         setStudentData((prev) => ({
                                             ...prev,
-                                            transportation: {
-                                                ...prev.transportation,
+                                            transportations: {
+                                                ...prev?.transportations,
                                                 pickupLocation: value,
                                             },
                                         }))
@@ -102,13 +106,15 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                                         <SelectValue placeholder="Select Pickup Location" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {getStopsForBus(studentData.transportation.busId).map(
+                                        {getStopsForBus(studentData?.transportations?.busId).map(
                                             (stop) => (
                                                 <SelectItem
-                                                    key={stop.stopNumber}
-                                                    value={stop.place + " " + "(" + stop.time + ")"}
+                                                    key={stop?.stopNumber}
+                                                    value={
+                                                        stop?.place + " " + "(" + stop?.time + ")"
+                                                    }
                                                 >
-                                                    {stop.place} ({stop.time})
+                                                    {stop?.place} ({stop?.time})
                                                 </SelectItem>
                                             ),
                                         )}
@@ -152,20 +158,20 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                     )}
                 </div>
             )}{" "}
-            {studentData.transportation.busId && (
+            {studentData?.transportations?.busId && (
                 <div>
                     <Label>Bus Fees</Label>
                     <Input
                         name="fees"
                         type="number"
                         className="w-full  "
-                        value={studentData.transportation.fees}
+                        value={studentData?.transportations?.fees}
                         onChange={(e) =>
                             setStudentData((prev) => ({
                                 ...prev,
-                                transportation: {
-                                    ...prev.transportation,
-                                    fees: e.target.value,
+                                transportations: {
+                                    ...prev?.transportations,
+                                    fees: e?.target.value,
                                 },
                             }))
                         }
