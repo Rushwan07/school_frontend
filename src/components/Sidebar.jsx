@@ -90,11 +90,11 @@ const Sidebar = () => {
             icon: <Award />,
         },
 
-        {
-            text: "Subjects",
-            link: "/admin/subjects",
-            icon: <ClipboardList />,
-        },
+        // {
+        //     text: "Subjects",
+        //     link: "/admin/subjects",
+        //     icon: <ClipboardList />,
+        // },
         {
             text: "Teachers",
             link: "/admin/teachers",

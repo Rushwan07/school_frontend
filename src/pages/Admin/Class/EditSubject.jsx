@@ -191,7 +191,9 @@ const EditSubjectCard = ({ subjects, setSubjects, teacher, classId }) => {
                     <div key={index} className="border p-4 rounded-lg mb-3">
                         <h4 className="font-bold">{subject?.name}</h4>
                         <p>Description: {subject.description}</p>
-                        <p>Teacher: {teacher.find((t) => t._id === subject.teacher)?.name}</p>
+                        {console.log(teacher)}
+                        {console.log(subject)}
+                        <p>Teacher: {teacher.find((t) => t?._id === subject?.teacherId)?.name}</p>
                         <ul>
                             {console.log(subject)}
                             {subject?.lessions?.map((lesson, idx) => (
