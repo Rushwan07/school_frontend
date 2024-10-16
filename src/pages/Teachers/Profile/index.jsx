@@ -22,6 +22,7 @@ import useFirebaseUpload from "@/hooks/use-firebaseUploads";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
+import { DatePickerWithRange } from "../Assignment/DateRangePicker";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Profile = () => {
@@ -86,6 +87,8 @@ const Profile = () => {
         }
     };
 
+    console.log("teacher", teacher);
+
     useEffect(() => {
         const getClass = async () => {
             try {
@@ -115,7 +118,7 @@ const Profile = () => {
         };
         getClass();
     }, []);
-    console.log("USer", teacher);
+    console.log("USer", teacher?.birthday);
     return (
         <Card>
             <CardHeader>
@@ -155,7 +158,7 @@ const Profile = () => {
                                     <Input
                                         label="Username"
                                         name="username"
-                                        value={teacher.username}
+                                        value={teacher?.username}
                                         onChange={handleChange}
                                         required
                                         className="mb-3"
@@ -163,7 +166,7 @@ const Profile = () => {
                                     <Input
                                         label="Name"
                                         name="name"
-                                        value={teacher.name}
+                                        value={teacher?.name}
                                         onChange={handleChange}
                                         required
                                         className="mb-3"
@@ -171,21 +174,21 @@ const Profile = () => {
                                     <Input
                                         label="Email"
                                         name="email"
-                                        value={teacher.email}
+                                        value={teacher?.email}
                                         onChange={handleChange}
                                         className="mb-3"
                                     />
                                     <Input
                                         label="Phone"
                                         name="phone"
-                                        value={teacher.phone}
+                                        value={teacher?.phone}
                                         onChange={handleChange}
                                         className="mb-3"
                                     />
                                     <Textarea
                                         label="Address"
                                         name="address"
-                                        value={teacher.address}
+                                        value={teacher?.address}
                                         onChange={handleChange}
                                         className="mb-3"
                                         required
@@ -199,7 +202,7 @@ const Profile = () => {
                                     />
                                     <Select
                                         label="Sex"
-                                        value={teacher.sex}
+                                        value={teacher?.sex}
                                         onValueChange={(value) =>
                                             setProfile((prev) => ({ ...prev, sex: value }))
                                         }
@@ -217,10 +220,11 @@ const Profile = () => {
                                         label="Birthday"
                                         type="date"
                                         name="birthday"
-                                        value={teacher?.birthday}
+                                        value={teacher?.birthday} 
                                         onChange={handleChange}
                                         className="mb-3"
                                     />
+
                                     <DialogFooter>
                                         <Button type="submit">Update Profile</Button>
                                     </DialogFooter>

@@ -1,17 +1,17 @@
 import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
+import axios from "axios";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 const Transportations = () => {
-    const [activities, setActivities] = useState([
-        {
-            id: 1,
-            name: "vilson",
-            busNo: "5",
-            startingPlace: "starting 1",
-            endingPlace: "Ending 2",
-            fees: "50",
-        },
-    ]);
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
+    const [loading, setLoading] = useState(false);
+    const [activities, setActivities] = useState([]);
 
     const [classes, setClasses] = useState([
         {
@@ -43,12 +43,41 @@ const Transportations = () => {
             key={item.id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
         >
-            <td className=" text-center gap-4 py-4 px-6">{item?.name}</td>
-            <td className="text-center">{item?.busNo}</td>
-            <td className=" text-center">{item?.startingPlace}</td>
-            <td className="hidden md:table-cell text-center">{item?.endingPlace}</td>
+            <td className=" text-center gap-4 py-4 px-6">{item?.driverName}</td>
+            <td className="text-center">{item?.busNumber}</td>
+            <td className=" text-center">{item?.stops.map((item) => item?.place).join(",")}</td>
+            <td className="hidden md:table-cell text-center">{item?.stops.map((item) => item?.stopNumber).join(",")}</td>
         </tr>
     );
+
+    useEffect(() => {
+        const get = async () => {
+            try {
+                const res = await axios.get(BASE_URL + "/transports/", {
+                    headers: { token: token },
+                });
+                setActivities(res?.data?.data?.transport);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        get();
+    }, []);
+    console.log(activities);
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
