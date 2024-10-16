@@ -7,16 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Subjects = () => {
-    const [subjects, setSubjects] = useState([
-        {
-            id: 1,
-            name: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "Class A",
-            lessions: "5",
-            teacher: "teacher's name",
-        },
-    ]);
+    const [subjects, setSubjects] = useState([]);
     const { user, token } = useSelector((state) => {
         const user = state?.user?.user;
         return user || {};
@@ -27,19 +18,23 @@ const Subjects = () => {
     const columns = [
         { header: "Subject name", accessor: "Subject name" },
         { header: "class", accessor: "class" },
-        { header: "Lessions", accessor: "Lessions" },
+        // { header: "Lessions", accessor: "Lessions" },
         { header: "Teacher", accessor: "Teacher" },
     ];
     //
     useEffect(() => {
         const getSubjects = async () => {
             try {
-                const res = await axios.get(BASE_URL + "/subjects/student-subject", {
-                    headers: { token: token },
-                });
-                console.log(res?.data?.data);
+                const res = await axios.get(
+                    BASE_URL + "/subjects/subject-class/" + user?.classId?._id,
+                    {
+                        headers: { token: token },
+                    },
+                );
+                console.log(res?.data?.data?.subjects);
+                console.log(user?.classId);
 
-                // setSubjects(res?.data?.data);
+                setSubjects(res?.data?.data?.subjects);
             } catch (error) {
                 console.log(error);
                 if (error?.response?.data?.message)
@@ -71,9 +66,9 @@ const Subjects = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
-            <td className=" text-center">{item?.lessions}</td>
-            <td className="hidden md:table-cell text-center">{item?.teacher}</td>
+            <td className="text-center">{user?.classId?.name}</td>
+            {/* <td className=" text-center">{item?.lessions}</td> */}
+            <td className="hidden md:table-cell text-center">{item?.teacherId?.name}</td>
         </tr>
     );
     return (

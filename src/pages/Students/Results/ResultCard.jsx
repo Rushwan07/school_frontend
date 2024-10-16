@@ -14,8 +14,9 @@ const ResultCard = ({ handleViewResults, examId, exam, studentId }) => {
     console.log(exam);
 
     // Filter the results to show only for the specific student
-    const studentResults = exam?.results?.filter((result) => result?.studentId === studentId);
-
+    const studentResults = exam?.results?.find((result) => result?.studentId === studentId);
+    console.log(exam?.results);
+    console.log(studentResults);
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>
@@ -29,14 +30,12 @@ const ResultCard = ({ handleViewResults, examId, exam, studentId }) => {
 
                 {/* Display subject names and marks (or grades) for the specific student */}
                 <div className="space-y-4">
-                    {studentResults?.length > 0 ? (
-                        studentResults?.map((result) => (
+                    {studentResults ? (
+                        studentResults?.subjects?.map((result) => (
                             <div key={result._id} className="border-b py-2">
-                                <p className="font-semibold">
-                                    Subject: {result?.subjects[0]?.subjectId?.name}
-                                </p>
-                                <p>Mark: {result?.subjects[0]?.mark}</p>
-                                <p>Grade: {result?.subjects[0]?.grade}</p>
+                                <p className="font-semibold">Subject: {result?.subjectId?.name}</p>
+                                <p>Mark: {result?.mark}</p>
+                                <p>Grade: {result?.grade}</p>
                             </div>
                         ))
                     ) : (
