@@ -49,6 +49,32 @@ const Exams = () => {
     ];
 
     const [loading, setLoading] = useState(false);
+
+    const handleDelete = async (id) => {
+        setLoading(true);
+        try {
+            const res = await axios.delete(BASE_URL + "/exams/" + id);
+
+            setExams((prev) => prev.filter((exam) => exam._id != id));
+        } catch (error) {
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         const getClass = async () => {
             try {
@@ -94,14 +120,15 @@ const Exams = () => {
                 </div>
             </td>
             <td className="text-center">{item?.classId?.name}</td>
+            {console.log(item?.subjects)}
             <td className=" text-center">{item?.subjects?.[0]?.date?.split("T")[0]}</td>
             <td className="hidden md:table-cell text-center">
                 {item?.subjects?.[item?.subjects?.length - 1]?.date?.split("T")[0]}
             </td>
 
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
-                <EditExam classes={classes} />
-                <Button variant="destructive" size="icon">
+                <EditExam classes={classes} setExams={setExams} item={item} /> &nbsp;&nbsp;&nbsp;
+                <Button variant="destructive" size="icon" onClick={() => handleDelete(item?._id)}>
                     <Trash2Icon size={"20"} />
                 </Button>
             </td>

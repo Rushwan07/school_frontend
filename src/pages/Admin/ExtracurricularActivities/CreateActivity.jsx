@@ -33,13 +33,13 @@ const CreateAssignment = ({ classes, setActivities }) => {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [classId, setClassId] = useState("");
+    const [classId, setClassId] = useState("--");
     const [fees, setFees] = useState("");
     const [date, setDate] = useState("");
 
     const handleSubmit = async () => {
         console.log({ name, description, classId, date, fees });
-
+        setLoading(true);
         try {
             const res = await axios.post(BASE_URL + "/activitys", {
                 name,
@@ -100,7 +100,7 @@ const CreateAssignment = ({ classes, setActivities }) => {
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
+                        <SelectItem value="--">Select all</SelectItem>
                         {classes?.map((value) => (
                             <SelectItem key={value?._id} value={value?._id}>
                                 {value?.name}

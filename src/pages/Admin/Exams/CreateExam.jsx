@@ -49,7 +49,7 @@ const CreateAssignment = ({ classes, setExams }) => {
                 classId,
                 subjects: subjectDates,
             });
-
+            console.log(res?.data?.data);
             setExams((prev) => [...prev, res?.data?.data?.exam]);
         } catch (error) {
             console.log(error);

@@ -1,25 +1,32 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-
-// DatePicker Component
-export function DatePicker({ setDate, subjectId, updateSubjectDate }) {
+export function DatePicker({ setDate, subjectId, updateSubjectDate, date }) {
     const [selectedDate, setSelectedDate] = useState(null);
 
     const toLocalISODate = (date) => {
-        return date.toLocaleDateString("en-CA"); // 'en-CA' outputs in 'YYYY-MM-DD' format
+        return date.toLocaleDateString("en-CA");
     };
+
+    useEffect(() => {
+        if (date) {
+            const parsedDate = parseISO(date);
+            setSelectedDate((prevDate) =>
+                prevDate?.toISOString() === parsedDate.toISOString() ? prevDate : parsedDate,
+            );
+        }
+    }, [date]);
 
     useEffect(() => {
         if (selectedDate) {
             const formattedDate = toLocalISODate(selectedDate);
-            setDate(formattedDate);
-            updateSubjectDate(subjectId, formattedDate); // Update the date for the specific subject
+            setDate(formattedDate); // Only call setDate if the selectedDate changes
+            updateSubjectDate(subjectId, formattedDate); // Only update if necessary
         }
-    }, [selectedDate]);
+    }, [selectedDate, setDate, updateSubjectDate, subjectId]);
 
     return (
         <div>

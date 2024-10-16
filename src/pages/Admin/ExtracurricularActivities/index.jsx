@@ -44,6 +44,34 @@ const ExtracurricularActivities = () => {
         };
         getStudents();
     }, []);
+
+    const handleDelete = async (id) => {
+        setLoading(true);
+        try {
+            const res = await axios.delete(BASE_URL + "/activitys/" + id);
+
+            console.log(res?.data?.data?.extraCurricularActivity);
+
+            setActivities((prev) => prev.filter((exam) => exam._id != id));
+        } catch (error) {
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const columns = [
         { header: "Activity name", accessor: "Activity name" },
         { header: "Class", accessor: "Class" },
@@ -72,7 +100,7 @@ const ExtracurricularActivities = () => {
 
             <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
                 <EditActivity />
-                <Button variant="destructive" size="icon">
+                <Button variant="destructive" size="icon" onClick={() => handleDelete(item?._id)}>
                     <Trash2Icon size={"20"} />
                 </Button>
             </td>
