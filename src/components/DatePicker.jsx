@@ -1,25 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns"; // Added parseISO to handle ISO date strings
 import { CalendarIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-export function DatePicker({ setDate }) {
+export function DatePicker({ setDate, date }) {
     const [selectedDate, setSelectedDate] = useState(null);
 
     const toLocalISODate = (date) => {
-        return date.toLocaleDateString("en-CA"); // 'en-CA' outputs in 'YYYY-MM-DD' format
+        return date.toLocaleDateString("en-CA");
     };
+
+    useEffect(() => {
+        if (date) {
+            const parsedDate = parseISO(date);
+            setSelectedDate(parsedDate);
+        }
+    }, [date]);
 
     useEffect(() => {
         if (selectedDate) {
             setDate(toLocalISODate(selectedDate));
         }
-    }, [selectedDate]);
+    }, [selectedDate, setDate]);
+
     return (
         <div>
             <Popover>

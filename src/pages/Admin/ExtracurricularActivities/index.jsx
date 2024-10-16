@@ -99,7 +99,8 @@ const ExtracurricularActivities = () => {
             <td className="hidden md:table-cell text-center">{item?.duedate?.split("T")[0]}</td>
 
             <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
-                <EditActivity />
+                <EditActivity classes={classes} setActivities={setActivities} item={item} />{" "}
+                &nbsp;&nbsp;
                 <Button variant="destructive" size="icon" onClick={() => handleDelete(item?._id)}>
                     <Trash2Icon size={"20"} />
                 </Button>
