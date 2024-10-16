@@ -45,7 +45,10 @@ const CreateAssignment = ({ setAssignments }) => {
         startDate: "",
         dueDate: "",
     });
+
     const handleSubmit = async () => {
+        console.log(data);
+
         setLoading(true);
         try {
             console.log(data);
@@ -54,6 +57,13 @@ const CreateAssignment = ({ setAssignments }) => {
             });
             console.log(res?.data?.data?.assignment);
             setAssignments((prev) => [...prev, res?.data?.data?.assignment]);
+            setData({
+                subjectId: "",
+                description: "",
+                classId: "",
+                startDate: "",
+                dueDate: "",
+            });
             setDialogOpen(false);
         } catch (error) {
             console.error("An error occurred:", error);
@@ -76,7 +86,7 @@ const CreateAssignment = ({ setAssignments }) => {
                 // const res2 = await axios.get(BASE_URL + "/subjects/", {
                 //     headers: { token: token },
                 // });
-
+                console.log(res?.data?.data);
                 setClasses(res?.data?.data?.class);
             } catch (error) {
                 console.log(error);
@@ -112,14 +122,21 @@ const CreateAssignment = ({ setAssignments }) => {
                 <Label>Class</Label>
                 <Select
                     value={data.classId}
-                    onValue
-                    onValueChange={(e) => setData((prev) => ({ ...prev, classId: e }))}
+                    onValueChange={(e) => {
+                        // Find the selected class
+                        const selectedClass = classes.find((c) => c._id === e);
+
+                        // Set the subjects for the selected class
+                        setSubjects(selectedClass?.subjectsId || []);
+
+                        // Update the selected classId in the data state
+                        setData((prev) => ({ ...prev, classId: e }));
+                    }}
                 >
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
                         {classes?.map((value) => (
                             <SelectItem key={value?._id} value={value?._id}>
                                 {value?.name}
@@ -127,26 +144,23 @@ const CreateAssignment = ({ setAssignments }) => {
                         ))}
                     </SelectContent>
                 </Select>
-                <Label>Subject </Label>
+
+                <Label>Subject</Label>
                 <Select
                     value={data.subjectId}
-                    onValue
                     onValueChange={(e) => setData((prev) => ({ ...prev, subjectId: e }))}
                 >
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select Subject" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
-                        {classes.map((classItem) =>
-                            classItem.subjectsId.map((subject) => (
-                                <SelectItem key={subject._id} value={subject._id}>
-                                    {subject.name}
-                                </SelectItem>
-                            )),
-                        )}
+                        {subjects?.map((subject) => (
+                            <SelectItem key={subject._id} value={subject._id}>
+                                {subject.name}
+                            </SelectItem>
+                        ))}
                     </SelectContent>
-                </Select>{" "}
+                </Select>
                 <Label>Title</Label>
                 <Input
                     placeholder="Title"
@@ -162,8 +176,8 @@ const CreateAssignment = ({ setAssignments }) => {
                 />
                 <Label>Date</Label>
                 <DatePickerWithRange setData={setData} />
-                <Label>Due Date</Label>
-                <DatePickerWithRange setData={setData} />
+                {/* <Label>Due Date</Label>
+                <DatePickerWithRange setData={setData} /> */}
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
                         {loading ? "Saving..." : "Save"}

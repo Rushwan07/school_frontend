@@ -92,7 +92,7 @@ const Students = () => {
                     transports={transports}
                     classLists={classLists}
                 />
-                <ViewStudentDetails />
+                <ViewStudentDetails item={item} />
             </td>
         </tr>
     );

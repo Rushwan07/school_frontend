@@ -121,7 +121,7 @@ const CreateAnouncementDialog = ({ setAnounceMents }) => {
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
+                        <SelectItem value="--">Select all</SelectItem>
                         {classes?.map((value) => (
                             <SelectItem key={value?._id} value={value?._id}>
                                 {value?.name}

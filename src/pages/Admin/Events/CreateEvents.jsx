@@ -36,7 +36,7 @@ const CreateEvent = ({ setEvents }) => {
 
     const [eventName, setEventName] = useState("");
     const [description, setDescription] = useState("");
-    const [classId, setClassId] = useState("");
+    const [classId, setClassId] = useState("--");
     const [date, setDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
@@ -82,17 +82,42 @@ const CreateEvent = ({ setEvents }) => {
         try {
             const res = await axios.post(
                 BASE_URL + "/events",
-                { eventName, description, classId, date, startTime, endTime },
+                {
+                    eventName,
+                    description,
+                    classId,
+                    date,
+                    startTime: startTime.trim(),
+                    endTime: endTime.trim(),
+                },
                 {
                     headers: { token: token },
                 },
             );
             console.log(res?.data?.data?.event);
             setEvents((prev) => [...prev, res?.data?.data?.event]);
+            setEventName("");
+            setDescription("");
+            setClassId("");
+            setDate("");
+            setStartTime("");
+            setEndTime("");
 
             setDialogOpen(false);
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
         } finally {
             setLoading(false);
         }
@@ -128,7 +153,7 @@ const CreateEvent = ({ setEvents }) => {
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
+                        <SelectItem value="--">Select all</SelectItem>
                         {classes?.map((value) => (
                             <SelectItem key={value?._id} value={value?._id}>
                                 {value?.name}

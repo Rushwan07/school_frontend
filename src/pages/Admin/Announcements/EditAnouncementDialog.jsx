@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Dialog,
     DialogContent,
@@ -20,28 +20,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
-
-const CreateAnouncementDialog = ({ item, setAnounceMents }) => {
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { toast } from "@/hooks/use-toast";
+const EditAnouncementDialog = ({ item, setAnounceMents }) => {
+    const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [data, setData] = useState({
@@ -50,7 +32,6 @@ const CreateAnouncementDialog = ({ item, setAnounceMents }) => {
         classId: "",
     });
     const handleSubmit = async () => {
-        let updatedFleet;
         setLoading(true);
         try {
             const res = await axios.put(BASE_URL + "/anouncements/" + item._id, data, {
@@ -70,6 +51,36 @@ const CreateAnouncementDialog = ({ item, setAnounceMents }) => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                console.log("working fine");
+                const res = await axios.get(BASE_URL + "/classes", {
+                    withCredentials: true,
+                });
+
+                setClasses(res?.data?.data?.class);
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -97,7 +108,7 @@ const CreateAnouncementDialog = ({ item, setAnounceMents }) => {
                 />
                 <Label>Class</Label>
                 <Select
-                    value={data.classId}
+                    value={data.classId || "--"}
                     onValue
                     onValueChange={(e) => setData((prev) => ({ ...prev, classId: e }))}
                 >
@@ -106,7 +117,9 @@ const CreateAnouncementDialog = ({ item, setAnounceMents }) => {
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
+                        <SelectItem value="--" default={true}>
+                            Select all
+                        </SelectItem>
                         {classes?.map((value) => (
                             <SelectItem key={value?._id} value={value?._id}>
                                 {value?.name}
@@ -125,4 +138,4 @@ const CreateAnouncementDialog = ({ item, setAnounceMents }) => {
     );
 };
 
-export default CreateAnouncementDialog;
+export default EditAnouncementDialog;

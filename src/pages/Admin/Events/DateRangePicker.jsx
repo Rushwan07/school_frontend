@@ -4,30 +4,48 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { toast } from "@/hooks/use-toast";
 
 export function DatePickerWithRange({ className, dates, setData }) {
-    const [date, setDate] = React.useState({
-        from: new Date(),
-        to: addDays(new Date(), 20),
+    // Convert the incoming ISO date to local date for display
+    const toLocalDate = (isoDate) => {
+        return new Date(isoDate);
+    };
+
+    // Set initial default date if dates are provided
+    const [date, setDate] = React.useState(() => {
+        if (dates?.startDate && dates?.dueDate) {
+            return {
+                from: toLocalDate(dates.startDate),
+                to: toLocalDate(dates.dueDate),
+            };
+        }
+        return undefined;
     });
 
+    // Utility to convert date to 'YYYY-MM-DD' format
     const toLocalISODate = (date) => {
         return date.toLocaleDateString("en-CA"); // 'en-CA' outputs in 'YYYY-MM-DD' format
     };
 
+    // Handle date change and update the parent state
     React.useEffect(() => {
         if (date?.from && date?.to) {
-            console.log({
-                startDate: toLocalISODate(date.from), // Keep in local time
-                dueDate: toLocalISODate(date.to),
-            });
+            console.log("Date selected successfully");
+
             setData((prev) => ({
                 ...prev,
                 startDate: toLocalISODate(date.from), // Keep in local time
                 dueDate: toLocalISODate(date.to),
             }));
+
+            toast({
+                title: `Date selected successfully`,
+                description: `From: ${toLocalISODate(date.from)} 
+                To: ${toLocalISODate(date.to)}`,
+            });
         }
-    }, [date]);
+    }, [date, setData]);
 
     return (
         <div className={`grid gap-2 ${className}`}>
@@ -36,7 +54,7 @@ export function DatePickerWithRange({ className, dates, setData }) {
                     <Button
                         id="date"
                         variant="outline"
-                        className={`w-full  justify-start text-left font-normal ${
+                        className={`w-full justify-start text-left font-normal ${
                             !date ? "text-muted-foreground" : ""
                         }`}
                     >

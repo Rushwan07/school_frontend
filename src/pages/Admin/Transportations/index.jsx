@@ -11,24 +11,36 @@ const Transportations = () => {
     const [loading, setLoading] = useState(false);
     const [transports, setTransports] = useState([]);
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    const deleteTransportation = async (transportationId) => {
+        console.log(transportationId);
+
+        setLoading(true);
+        try {
+            const res = await axios.delete(BASE_URL + `/transports/${transportationId}`);
+
+            setTransports((prev) => {
+                const val = prev.filter((trans) => trans._id !== transportationId);
+
+                return val;
+            });
+        } catch (error) {
+            console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         const getTransports = async () => {
@@ -81,7 +93,11 @@ const Transportations = () => {
 
             <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
                 <EditTransportation item={item} setTransports={setTransports} />
-                <Button variant="destructive" size="icon">
+                <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => deleteTransportation(item?._id)}
+                >
                     <Trash2Icon size={"20"} />
                 </Button>
             </td>

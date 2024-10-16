@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { PenBox, Plus } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -21,85 +21,96 @@ import { Button } from "@/components/ui/button";
 
 import { DatePickerWithRange } from "./DateRangePicker";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 import axios from "axios";
+import { useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const EditAssignment = ({ item, setAssignments }) => {
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const [subjects, setSubjects] = useState([
-        {
-            _id: "abcd",
-            name: "Maths",
-        },
-        {
-            _id: "abcd2",
-            name: "Maths",
-        },
-        {
-            _id: "abcddfd",
-            name: "Maths",
-        },
-    ]);
+    const [subjects, setSubjects] = useState([]);
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    const [classes, setClasses] = useState([]);
 
-    const [data, setData] = useState({
-        subjectId: "",
-        description: "",
-        classId: "",
-        startDate: "",
-        dueDate: "",
-    });
+    const [data, setData] = useState(item);
 
     const handleSubmit = async () => {
+        console.log(data);
+
         setLoading(true);
         try {
-            const res = await axios.put(BASE_URL + "/assignments/" + item._id, data, {
-                withCredentials: true,
+            console.log(data);
+            const res = await axios.put(BASE_URL + "/assignments/" + item?._id, data, {
+                headers: { token: token },
             });
-
+            console.log(res?.data?.data?.assignment);
             setAssignments((prev) =>
                 prev.map((assignment) =>
-                    assignment._id === item._id ? { ...assignment, ...data } : assignment,
+                    assignment._id === res?.data?.data?.assignment._id
+                        ? res?.data?.data?.assignment
+                        : assignment,
                 ),
             );
 
             setDialogOpen(false);
         } catch (error) {
             console.error("An error occurred:", error);
+            toast({
+                variant: "destructive",
+                title: error?.response?.data?.message,
+            });
         } finally {
             setLoading(false);
         }
     };
 
-    console.log(item);
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                console.log("working fine");
+                const res = await axios.get(BASE_URL + "/classes", {
+                    headers: { token: token },
+                });
+                // const res2 = await axios.get(BASE_URL + "/subjects/", {
+                //     headers: { token: token },
+                // });
+                console.log(res?.data?.data);
+                setClasses(res?.data?.data?.class);
+                res?.data?.data?.class.map((cls) => {
+                    if (cls._id == item?.classId._id) setSubjects(cls?.subjectsId);
+                });
+            } catch (error) {
+                console.log(error);
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
 
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             {" "}
             <DialogTrigger>
-                <Button size={"icon"} variant={"outline"} onClick={() => setData(item)}>
-                    <PenBox />
-                </Button>
+                <Edit />
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -107,15 +118,22 @@ const EditAssignment = ({ item, setAssignments }) => {
                 </DialogHeader>
                 <Label>Class</Label>
                 <Select
-                    value={data.classId}
-                    onValue
-                    onValueChange={(e) => setData((prev) => ({ ...prev, classId: e }))}
+                    value={data?.classId?._id ? data?.classId?._id : data?.classId}
+                    onValueChange={(e) => {
+                        // Find the selected class
+                        const selectedClass = classes.find((c) => c._id === e);
+
+                        // Set the subjects for the selected class
+                        setSubjects(selectedClass?.subjectsId || []);
+
+                        // Update the selected classId in the data state
+                        setData((prev) => ({ ...prev, classId: e }));
+                    }}
                 >
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
                         {classes?.map((value) => (
                             <SelectItem key={value?._id} value={value?._id}>
                                 {value?.name}
@@ -123,24 +141,23 @@ const EditAssignment = ({ item, setAssignments }) => {
                         ))}
                     </SelectContent>
                 </Select>
-                <Label>Subject </Label>
+
+                <Label>Subject</Label>
                 <Select
-                    value={data.subjectId}
-                    onValue
+                    value={data.subjectId?._id ? data.subjectId?._id : data?.subjectId}
                     onValueChange={(e) => setData((prev) => ({ ...prev, subjectId: e }))}
                 >
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select Subject" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value=" ">Select all</SelectItem>
-                        {subjects?.map((value) => (
-                            <SelectItem key={value?._id} value={value?._id}>
-                                {value?.name}
+                        {subjects?.map((subject) => (
+                            <SelectItem key={subject._id} value={subject._id}>
+                                {subject.name}
                             </SelectItem>
                         ))}
                     </SelectContent>
-                </Select>{" "}
+                </Select>
                 <Label>Title</Label>
                 <Input
                     placeholder="Title"
@@ -156,6 +173,8 @@ const EditAssignment = ({ item, setAssignments }) => {
                 />
                 <Label>Date</Label>
                 <DatePickerWithRange setData={setData} />
+                {/* <Label>Due Date</Label>
+                <DatePickerWithRange setData={setData} /> */}
                 <DialogFooter className="sm:justify-end">
                     <Button onClick={handleSubmit} disabled={loading}>
                         {loading ? "Saving..." : "Save"}

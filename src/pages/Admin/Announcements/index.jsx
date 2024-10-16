@@ -86,8 +86,8 @@ const AnnouncementListPage = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.classId}</td>
-            <td className="hidden md:table-cell">{item?.createdAt}</td>
+            <td className="text-center">{item?.classId?.name || "All class"}</td>
+            <td className="hidden md:table-cell">{item?.createdAt?.split("T")[0]}</td>
             <td className="flex items-center gap-2 py-3 ">
                 <EditAnouncementDialog item={item} setAnounceMents={setAnounceMents} />
 

@@ -23,9 +23,9 @@ import { Label } from "@/components/ui/label";
 import ParentForm from "./ParentForm";
 import { Eye } from "lucide-react";
 
-const ViewStudentDetails = ({ onSubmit, loading }) => {
+const ViewStudentDetails = ({ item }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
-
+    console.log(item);
     const parentData = {
         name: "John Doe",
         email: "john@example.com",
@@ -66,31 +66,31 @@ const ViewStudentDetails = ({ onSubmit, loading }) => {
                     <div className="space-y-2">
                         <div className="flex justify-between">
                             <p className="font-semibold">Reg No:</p>
-                            <p>{studentData.regno || "N/A"}</p>
+                            <p>{item.regno || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Name:</p>
-                            <p>{studentData.name || "N/A"}</p>
+                            <p>{item.name || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Blood Type:</p>
-                            <p>{studentData.bloodType || "N/A"}</p>
+                            <p>{item.bloodType || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Address:</p>
-                            <p>{studentData.address || "N/A"}</p>
+                            <p>{item.address || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Sex:</p>
-                            <p>{studentData.sex || "N/A"}</p>
+                            <p>{item.sex || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Class:</p>
-                            <p>{studentData.classId || "N/A"}</p>
+                            <p>{item.classId?.name || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Birthday:</p>
-                            <p>{new Date(studentData.birthday).toLocaleDateString() || "N/A"}</p>
+                            <p>{new Date(item.birthday).toLocaleDateString() || "N/A"}</p>
                         </div>
                     </div>
                 </div>
@@ -101,19 +101,19 @@ const ViewStudentDetails = ({ onSubmit, loading }) => {
                     <div className="space-y-2">
                         <div className="flex justify-between">
                             <p className="font-semibold">Name:</p>
-                            <p>{parentData.name || "N/A"}</p>
+                            <p>{item?.parentId?.name || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Email:</p>
-                            <p>{parentData.email || "N/A"}</p>
+                            <p>{item?.parentId?.email || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Phone:</p>
-                            <p>{parentData.phone || "N/A"}</p>
+                            <p>{item?.parentId?.phone || "N/A"}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="font-semibold">Address:</p>
-                            <p>{parentData.address || "N/A"}</p>
+                            <p>{item?.parentId?.address || "N/A"}</p>
                         </div>
                     </div>
                 </div>
@@ -124,24 +124,19 @@ const ViewStudentDetails = ({ onSubmit, loading }) => {
                     <div className="space-y-2">
                         <div className="flex justify-between">
                             <p className="font-semibold">Pickup Location:</p>
-                            <p>{studentData.transportation?.pickupLocation || "N/A"}</p>
+                            <p>{item.transportations?.pickupLocation || "N/A"}</p>
                         </div>
-                        <div className="flex justify-between">
-                            <p className="font-semibold">Drop-off Location:</p>
-                            <p>{studentData.transportation?.dropOffLocation || "N/A"}</p>
-                        </div>
+
                         <div className="flex justify-between">
                             <p className="font-semibold">Bus Number:</p>
-                            <p>{studentData.transportation?.busNumber || "N/A"}</p>
+                            <p>{studentData.transportations?.busNumber || "N/A"}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Dialog Footer with Close Button */}
                 <div className="mt-4 flex justify-end">
-                    <Button onClick={() => setDialogOpen(false)} disabled={loading}>
-                        Close
-                    </Button>
+                    <Button onClick={() => setDialogOpen(false)}>Close</Button>
                 </div>
             </DialogContent>
         </Dialog>

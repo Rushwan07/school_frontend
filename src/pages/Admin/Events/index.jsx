@@ -80,11 +80,14 @@ const Events = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.classId}</td>
-            <td className=" text-center">{item?.startDate}</td>
-            <td className="hidden md:table-cell text-center">{item?.duedate}</td>
-            <td className="hidden md:table-cell text-center">{item?.startTime}</td>
-            <td className="hidden md:table-cell text-center">{item?.endTime}</td>
+            {console.log(item)}
+            <td className="text-center">{item?.classId?.name || "All class"}</td>
+            <td className=" text-center">{item?.dates[0]?.split("T")[0]}</td>
+            <td className="hidden md:table-cell text-center">
+                {item?.dates[item?.dates.length - 1]?.split("T")[0]}
+            </td>
+            <td className="hidden md:table-cell text-center">{item?.startTime || "Full day"}</td>
+            <td className="hidden md:table-cell text-center">{item?.endTime || "Full day"}</td>
 
             <td className="flex hidden md:table-cell items-center justify-center  text-center">
                 <EditEvent item={item} setEvents={setEvents} /> &nbsp;

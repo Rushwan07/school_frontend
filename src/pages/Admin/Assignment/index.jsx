@@ -79,10 +79,10 @@ const Assignments = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.classId}</td>
-            <td className="text-center">{item?.subjectId}</td>
-            <td className="hidden md:table-cell text-center">{item?.startDate}</td>
-            <td className="hidden md:table-cell text-center">{item?.dueDate}</td>
+            <td className="text-center">{item?.classId?.name}</td>
+            <td className="text-center">{item?.subjectId?.name}</td>
+            <td className="hidden md:table-cell text-center">{item?.startDate?.split("T")[0]}</td>
+            <td className="hidden md:table-cell text-center">{item?.dueDate?.split("T")[0]}</td>
 
             <td className="flex items-center gap-2 py-3 ">
                 <EditAssignment item={item} setAssignments={setAssignments} />
