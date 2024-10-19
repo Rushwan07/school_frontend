@@ -61,9 +61,9 @@ const Subjects = () => {
     const columns = [
         { header: "Subject name", accessor: "Subject name" },
         { header: "class", accessor: "class" },
-        { header: "Lessions", accessor: "Lessions" },
+        // { header: "Lessions", accessor: "Lessions" },
         { header: "Teacher", accessor: "Teacher" },
-        { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
+        // { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
 
     const renderRow = (item) => (
@@ -73,22 +73,24 @@ const Subjects = () => {
         >
             <td className="flex items-center gap-4 py-4 px-6">
                 <div>
-                    <p className="font-semibold">{item?.name}</p>
-                    <p className="text-xs text-gray-500">{item?.description}</p>
+                    <p className="font-semibold">
+                        {item?.subjectsId?.map((item) => item.name).join(",")}
+                    </p>
+                    {/* <p className/="text-xs text-gray-500">{item?.description}</p> */}
                 </div>
             </td>
-            <td className="text-center">{item?.classId?.name}</td>
-            <td className=" text-center">{item?.lessions}</td>
-            <td className="hidden md:table-cell text-center">{item?.teacherId?.name}</td>
+            <td className="text-center">{item?.name}</td>
+            {/* <td className=" text-center">{item?.lessions}</td> */}
+            <td className="md:table-cell text-center">{item?.teacherId?.name}</td>
 
-            <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
+            {/* <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
                 <button className="btn btn-sm btn-outline-primary rounded-full ">
                     <i className="fa fa-edit" aria-hidden="true"></i> Edit
                 </button>
                 <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
                     <i className="fa fa-trash" aria-hidden="true"></i> Delete
                 </button>
-            </td>
+            </td> */}
         </tr>
     );
     return (

@@ -1,15 +1,16 @@
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ConfirmationAlert from "./ConfirmationAlert";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useToast } from "@/hooks/use-toast";
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-const StudentFees = () => {
-    // This would ideally come from an API based on the logged-in student
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+const StudentFees = () => {
     const { user, token } = useSelector((state) => {
         const user = state?.user?.user;
         return user || {};
@@ -17,104 +18,92 @@ const StudentFees = () => {
     const { toast } = useToast();
 
     const [loading, setLoading] = useState(false);
-    const [fees, setFees] = useState([
-        {
-            class: "9th A",
-            year: "2024-2025",
-            total: "20000",
-            status: "Unpaid",
-            _id: "4",
-        },
-        {
-            class: "8th A",
-            year: "2024-2025",
-            total: "20000",
-            _id: "4",
+    const [fees, setFees] = useState([]);
 
-            status: "Paid",
-        },
-        {
-            class: "7th A",
-            year: "2024-2025",
-            total: "20000",
-            _id: "4",
-            status: "Paid",
-        },
-    ]);
-
+    // Define the columns for the table
     const columns = [
-        // { header: "Reg no", accessor: "Reg no" },
-        // { header: "Student name", accessor: "Student name" },
-        { header: "Class", accessor: "Class", style: "hidden md:table-cell" },
-        { header: "Year", accessor: "year", style: "hidden md:table-cell" },
-        // { header: "Base Fees", accessor: "Base Fees", style: "hidden md:table-cell" },
-        // {
-        //     header: "Transportation Fees",
-        //     accessor: "Transportation Fees",
-        //     style: "hidden md:table-cell",
-        // },
-        {
-            header: "Total Fees",
-            accessor: "Total Fees",
-        },
-        // { header: "Due date", accessor: "Due date", style: "hidden md:table-cell" },
-        { header: "Status", accessor: "Status" },
+        { header: "Class", accessor: "classId", style: "hidden md:table-cell" },
+        { header: "Total Fees", accessor: "totalFees" },
+        { header: "Status", accessor: "isPaid" },
         { header: "Action", accessor: "action" },
     ];
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        const getFeesDetails = async () => {
+            setLoading(true);
+            try {
+                const res = await axios.get(BASE_URL + "/fees/student-fees", {
+                    headers: { token: token },
+                });
+                setFees(res?.data?.data?.feesDetails);
+            } catch (error) {
+                const errorMessage =
+                    error?.response?.data?.message || "Uh oh! Something went wrong.";
+                toast({ variant: "destructive", title: errorMessage });
+            } finally {
+                setLoading(false);
+            }
+        };
+        getFeesDetails();
+    }, [token, toast]);
 
     const handlePayFees = (id) => {
-        console.log(id);
         navigate(`checkout?regNo=${user?.regno}&${id}`);
     };
 
-    // useEffect(() => {
-    //     const getFeesDetails = async () => {
-    //         try {
-    //             const res = await axios.get(BASE_URL + "/fees/student-fees", {
-    //                 headers: { token: token },
-    //             });
+    const handleDownload = (item) => {
+        const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.text("Fee Invoice", 14, 22);
+        doc.setFontSize(12);
+        doc.text(`Student Name: ${item?.studentId?.name}`, 14, 40);
+        doc.text(`Registration No: ${item?.studentId?.regno}`, 14, 50);
+        doc.text(`Class: ${item?.classId?.name}`, 14, 60);
 
-    //             console.log("Feess", res?.data?.data?.feesDetails);
-    //             setFees(res?.data?.data?.feesDetails[0]);
-    //         } catch (error) {
-    //             console.log(error);
-    //             if (error?.response?.data?.message)
-    //                 toast({
-    //                     variant: "destructive",
-    //                     title: error?.response?.data?.message,
-    //                 });
-    //             else {
-    //                 toast({
-    //                     variant: "destructive",
-    //                     title: "Uh oh! Something went wrong.",
-    //                     description: "There was a problem with your request.",
-    //                 });
-    //             }
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     getFeesDetails();
-    // }, []);
+        const invoiceData = [
+            { "Fee Head": "Base Fees", Amount: item?.baseFees },
+            { "Fee Head": "Transportation Fees", Amount: item?.transportationFees },
+            { "Fee Head": "Total Fees", Amount: item?.totalFees },
+            { "Fee Head": "Payment Status", Amount: item?.isPaid ? "Paid" : "Unpaid" },
+        ];
+
+        const tableColumn = ["Fee Head", "Amount"];
+        const tableRows = invoiceData.map((fee) => [fee["Fee Head"], fee.Amount]);
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 80,
+            styles: {
+                fillColor: [255, 255, 255],
+                textColor: [0, 0, 0],
+                fontSize: 10,
+            },
+            headStyles: {
+                fillColor: [0, 123, 255],
+                textColor: [255, 255, 255],
+                fontSize: 12,
+            },
+            margin: { top: 30 },
+        });
+
+        doc.save("fee_invoice.pdf");
+    };
 
     const renderRow = (item) => (
         <tr
             className={`border-b border-gray-200 shadow-md rounded text-sm ${
-                item?.status === "Paid"
-                    ? "bg-green-200 hover:bg-green-100"
-                    : "bg-red-200 hover:bg-red-100"
+                item?.isPaid ? "bg-green-200 hover:bg-green-100" : "bg-red-200 hover:bg-red-100"
             }`}
         >
-            <td className="text-center">{item?.class}</td>
-            <td className="gap-4 py-4 px-6 text-center">{item?.year}</td>
-            <td className="text-center hidden md:table-cell">{item?.total}</td>
-            <td className="text-center ">{item?.status}</td>
-            {/* <td className="hidden md:table-cell text-center">{fees?.date?.split("T")[0]}</td> */}
+            <td className="text-center">{item?.classId?.name}</td>
+            <td className="text-center hidden md:table-cell">{item?.totalFees}</td>
+            <td className="text-center">{item?.isPaid ? "Paid" : "Unpaid"}</td>
             <td className="text-center hidden md:table-cell">
-                {item?.status === "Paid" ? (
-                    <Button className="bg-green-500">Download</Button>
+                {item?.isPaid ? (
+                    <Button className="bg-green-500" onClick={() => handleDownload(item)}>
+                        Download
+                    </Button>
                 ) : (
                     <Button onClick={() => handlePayFees(item._id)}>Pay Fees</Button>
                 )}

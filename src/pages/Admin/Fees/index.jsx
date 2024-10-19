@@ -43,7 +43,7 @@ const Fees = () => {
     useEffect(() => {
         const getFeesDetails = async () => {
             try {
-                const res = await axios.get(BASE_URL + "/fees ", {
+                const res = await axios.get(BASE_URL + "/fees/student-fees ", {
                     withCredentials: true,
                 });
                 console.log(res?.data?.data?.feesDetails);
