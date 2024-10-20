@@ -28,6 +28,7 @@ const StudentFees = () => {
         { header: "Action", accessor: "action" },
     ];
 
+    const navigate = useNavigate();
     useEffect(() => {
         const getFeesDetails = async () => {
             setLoading(true);
