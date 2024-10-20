@@ -108,9 +108,9 @@ const ViewStudentDetails = ({ teacherData }) => {
                         <Label>Image:</Label>
                         {teacherData?.img ? (
                             <img
-                                src={URL.createObjectURL(teacherData?.img)}
+                                src={teacherData?.img}
                                 alt="Teacher Image"
-                                className="w-16 h-16 rounded-full"
+                                className="w-16 h-16 mt-2 rounded-full object-cover"
                             />
                         ) : (
                             <p>N/A</p>

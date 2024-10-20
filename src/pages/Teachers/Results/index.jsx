@@ -1,11 +1,18 @@
 import { Input } from "@/components/ui/input";
 import { ArrowDownAZ, Plus, SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import { useSelector } from "react-redux";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Results = () => {
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     const [exams, setExams] = useState([
         {
             id: 1,
@@ -17,39 +24,7 @@ const Results = () => {
             subject: "subject",
         },
     ]);
-    const [subjects, setSubjects] = useState([
-        {
-            _id: "abcd",
-            name: "Maths",
-        },
-        {
-            _id: "abcd2",
-            name: "Maths",
-        },
-        {
-            _id: "abcddfd",
-            name: "Maths",
-        },
-    ]);
-
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    const [loading, setLoading] = useState(false);
 
     const columns = [
         { header: "Exam name", accessor: "Exam name" },
@@ -59,24 +34,55 @@ const Results = () => {
 
         { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
+
+    useEffect(() => {
+        const getClass = async () => {
+            try {
+                const ress = await axios.get(BASE_URL + "/exams/teacher-exams", {
+                    headers: { token: token },
+                });
+                console.log(ress.data.data);
+
+                setExams(ress?.data?.data?.exam);
+            } catch (error) {
+                if (error?.response?.data?.message)
+                    toast({
+                        variant: "destructive",
+                        title: error?.response?.data?.message,
+                    });
+                else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        getClass();
+    }, []);
+
+    console.log("exam", exams);
     const renderRow = (item) => (
         <tr
-            key={item.id}
+            key={item._id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
         >
             <td className="flex items-center gap-4 py-4 px-6">
                 <div>
-                    <p className="font-semibold">{item?.examname}</p>
+                    <p className="font-semibold">{item?.name
+}</p>
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
+            <td className="text-center">{item?.classId?.name}</td>
             <td className=" text-center">{item?.startDate}</td>
             <td className="hidden md:table-cell text-center">{item?.endDate}</td>
-
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
                 <Button variant="outline" className="hover:bg-green-300" asChild>
-                    <Link to={`/staffs/results/${item?.id}`}>View result</Link>
+                    <Link to={`/admin/results/${item?.classId?._id}/${item?._id}`}>Add result</Link>
                 </Button>
                 {/* <button className="btn btn-sm btn-outline-primary rounded-full ">
                     <i className="fa fa-edit" aria-hidden="true"></i> Edit

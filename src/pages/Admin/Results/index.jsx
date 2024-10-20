@@ -6,8 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
+import { useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Results = () => {
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     const [exams, setExams] = useState([
         {
             id: 1,
@@ -34,7 +39,7 @@ const Results = () => {
         const getClass = async () => {
             try {
                 const ress = await axios.get(BASE_URL + "/exams/admin-exams", {
-                    withCredentials: true,
+                    headers: { token: token },
                 });
                 console.log(ress.data.data);
 
