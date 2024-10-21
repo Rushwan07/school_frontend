@@ -33,7 +33,7 @@ const StudentFees = () => {
         const getFeesDetails = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(BASE_URL + "/fees/student-fees", {
+                const res = await axios.get(BASE_URL + "/fees/std", {
                     headers: { token: token },
                 });
                 setFees(res?.data?.data?.feesDetails);
@@ -49,7 +49,7 @@ const StudentFees = () => {
     }, [token, toast]);
 
     const handlePayFees = (id) => {
-        navigate(`checkout?regNo=${user?.regno}&${id}`);
+        navigate(`checkout/${id}`);
     };
 
     const handleDownload = (item) => {
@@ -61,10 +61,17 @@ const StudentFees = () => {
         doc.text(`Registration No: ${item?.studentId?.regno}`, 14, 50);
         doc.text(`Class: ${item?.classId?.name}`, 14, 60);
 
+        // Create the invoice data
+        const feesData =
+            item?.fees?.map((i) => ({
+                "Fee Head": i.name,
+                Amount: i?.fee,
+            })) || []; // Default to an empty array if item.fees is undefined
+
+        // Combine fees data with total and payment status
         const invoiceData = [
-            { "Fee Head": "Base Fees", Amount: item?.baseFees },
-            { "Fee Head": "Transportation Fees", Amount: item?.transportationFees },
-            { "Fee Head": "Total Fees", Amount: item?.totalFees },
+            ...feesData,
+            { "Fee Head": "Total Fees", Amount: item?.total },
             { "Fee Head": "Payment Status", Amount: item?.isPaid ? "Paid" : "Unpaid" },
         ];
 
@@ -98,7 +105,7 @@ const StudentFees = () => {
             }`}
         >
             <td className="text-center">{item?.classId?.name}</td>
-            <td className="text-center hidden md:table-cell">{item?.totalFees}</td>
+            <td className="text-center hidden md:table-cell">{item?.total}</td>
             <td className="text-center">{item?.isPaid ? "Paid" : "Unpaid"}</td>
             <td className="text-center hidden md:table-cell">
                 {item?.isPaid ? (
@@ -111,7 +118,7 @@ const StudentFees = () => {
             </td>
         </tr>
     );
-
+    console.log(fees);
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
