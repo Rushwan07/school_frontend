@@ -5,30 +5,10 @@ import React, { useEffect, useState } from "react";
 import ConfirmationAlert from "./ConfirmationAlert";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
+import CreateFees from "./CreateFees";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Fees = () => {
-    const [students, setStudents] = useState([
-        {
-            id: 1,
-            regNo: 342,
-            name: "Subin",
-
-            class: "Class A",
-            date: "2023-10-01",
-            fees: "50",
-            isPaid: false,
-        },
-        {
-            id: 1,
-            regNo: 342,
-            name: "Subin",
-
-            class: "Class A",
-            date: "2023-10-01",
-            fees: "50",
-            isPaid: true,
-        },
-    ]);
+    const [students, setStudents] = useState([]);
 
     const columns = [
         { header: "Reg no", accessor: "Reg no" },
@@ -43,7 +23,7 @@ const Fees = () => {
     useEffect(() => {
         const getFeesDetails = async () => {
             try {
-                const res = await axios.get(BASE_URL + "/fees/student-fees ", {
+                const res = await axios.get(BASE_URL + "/fees/", {
                     withCredentials: true,
                 });
                 console.log(res?.data?.data?.feesDetails);
@@ -78,7 +58,7 @@ const Fees = () => {
             <td className="text-center">{item?.studentId?.regno}</td>
             <td className=" gap-4 py-4 px-6 text-center">{item?.studentId?.name}</td>
             <td className="text-center hidden flex md:table-cell">{item?.classId?.name}</td>
-            <td className=" text-center hidden flex md:table-cell">{item?.totalFees}</td>
+            <td className=" text-center hidden flex md:table-cell">{item?.total}</td>
 
             <td className="flex md:table-cell items-center justify-center gap-2 text-center">
                 {item?.isPaid ? (
@@ -89,7 +69,7 @@ const Fees = () => {
                     <ConfirmationAlert
                         name={item?.studentId?.name}
                         regNo={item?.studentId?.regno}
-                        fees={item?.totalFees}
+                        fees={item?.fees}
                         className={item?.classId?.name}
                     />
                 )}
@@ -113,6 +93,7 @@ const Fees = () => {
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
+                        <CreateFees setFees={setStudents} />
                     </div>
                 </div>
             </div>

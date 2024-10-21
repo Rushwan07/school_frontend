@@ -47,7 +47,8 @@ const ConfirmationAlert = ({ name, regNo, fees, className }) => {
                                 <strong>Class:</strong> {className}
                             </p>
                             <p>
-                                <strong>Fees:</strong> {fees}
+                                <strong>Fees:</strong>{" "}
+                                {fees?.map((fee) => `${fee.name}: (${fee.fee})`).join(", ")}
                             </p>
                         </div>
                         This action cannot be undone.

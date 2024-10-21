@@ -246,7 +246,7 @@ function App() {
                     element: <StudentClass />,
                 },
                 {
-                    path: "fees/checkout",
+                    path: "fees/checkout/:id",
                     element: <StudentCheckout />,
                 },
                 {
