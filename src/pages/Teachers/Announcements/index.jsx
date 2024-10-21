@@ -89,7 +89,7 @@ const AnnouncementListPage = () => {
                 </div>
             </td>
             <td>{item?.classId?.name || "All Class"}</td>
-            <td className="hidden md:table-cell">{item?.createdAt}</td>
+            <td className="hidden md:table-cell">{item?.createdAt?.split("T")[0]}</td>
         </tr>
     );
 
