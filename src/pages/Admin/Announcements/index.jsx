@@ -19,7 +19,19 @@ const AnnouncementListPage = () => {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
     const [anouncements, setAnounceMents] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredAnouncements, setFilteredAnouncements] = useState(anouncements);
 
+    useEffect(() => {
+        const filtered = anouncements.filter(
+            (item) =>
+                item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.classId?.name &&
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase())),
+        );
+        setFilteredAnouncements(filtered);
+    }, [searchTerm, anouncements]);
     const columns = [
         { header: "Title", accessor: "title", className: "text-center " },
         { header: "Class", accessor: "class", className: "text-center" },
@@ -90,7 +102,6 @@ const AnnouncementListPage = () => {
             <td className="hidden md:table-cell">{item?.createdAt?.split("T")[0]}</td>
             <td className="flex items-center gap-2 py-3 ">
                 <EditAnouncementDialog item={item} setAnounceMents={setAnounceMents} />
-
                 <Button onClick={() => handleRemove(item?._id)} variant="destructive" size="icon">
                     <Trash2Icon size={"20"} />
                 </Button>
@@ -106,9 +117,11 @@ const AnnouncementListPage = () => {
                     <Input
                         type="text"
                         placeholder="Search announcements"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         className="border rounded px-3 py-2"
                     />
-                    <div className="flex items-center gap-4 self-end ">
+                    <div className="flex items-center gap-4 self-end">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <SlidersHorizontal />
                         </button>
@@ -130,7 +143,8 @@ const AnnouncementListPage = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{anouncements?.map(renderRow)}</tbody>
+                <tbody>{filteredAnouncements?.map(renderRow)}</tbody>{" "}
+                {/* Use filteredAnnouncements */}
             </table>
         </div>
     );

@@ -8,36 +8,9 @@ import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Exams = () => {
-    const [exams, setExams] = useState([
-        {
-            id: 1,
-            examname: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "first class",
-            startDate: "2023-10-06",
-            endDate: "2023-10-01",
-            subject: "subject",
-        },
-    ]);
+    const [exams, setExams] = useState([]);
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    const [classes, setClasses] = useState([]);
 
     const columns = [
         { header: "Exam name", accessor: "Exam name" },
@@ -49,6 +22,20 @@ const Exams = () => {
     ];
 
     const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredExams, setFilteredExams] = useState(exams);
+
+    useEffect(() => {
+        const filtered = exams.filter(
+            (item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.description &&
+                    item.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.classId?.name &&
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase())),
+        );
+        setFilteredExams(filtered);
+    }, [searchTerm, exams]);
 
     const handleDelete = async (id) => {
         setLoading(true);
@@ -143,6 +130,8 @@ const Exams = () => {
                         type="text"
                         placeholder="Search exams   "
                         className="border rounded px-3 py-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -169,7 +158,7 @@ const Exams = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{exams?.map(renderRow)}</tbody>
+                <tbody>{filteredExams?.map(renderRow)}</tbody>
             </table>
         </div>
     );

@@ -13,19 +13,21 @@ const Results = () => {
         const user = state?.user?.user;
         return user || {};
     });
-    const [exams, setExams] = useState([
-        {
-            id: 1,
-            examname: "Maths",
-            description: " This is an important update for Class AThis is  ",
-            class: "first class",
-            startDate: "2023-10-06",
-            endDate: "2023-10-01",
-            subject: "subject",
-        },
-    ]);
+    const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredExams, setFilteredExams] = useState(exams);
 
+    useEffect(() => {
+        const filtered = exams.filter((item) => {
+            const matchesExamName = item?.name?.toLowerCase().includes(searchTerm?.toLowerCase());
+            const matchesClassName = item?.classId?.name
+                ?.toLowerCase()
+                .includes(searchTerm?.toLowerCase());
+            return matchesExamName || matchesClassName;
+        });
+        setFilteredExams(filtered);
+    }, [searchTerm, exams]);
     const columns = [
         { header: "Exam name", accessor: "Exam name" },
         { header: "class", accessor: "class" },
@@ -76,7 +78,7 @@ const Results = () => {
                 </div>
             </td>
             <td className="text-center">{item?.classId?.name}</td>
-            <td className=" text-center">{item?.subjects?.[0]?.date?.split("T")[0]}</td>
+            <td className="text-center">{item?.subjects?.[0]?.date?.split("T")[0]}</td>
             <td className="hidden md:table-cell text-center">
                 {item?.subjects?.[item?.subjects?.length - 1]?.date?.split("T")[0]}
             </td>
@@ -84,15 +86,10 @@ const Results = () => {
                 <Button variant="outline" className="hover:bg-green-300" asChild>
                     <Link to={`/admin/results/${item?.classId?._id}/${item?._id}`}>Add result</Link>
                 </Button>
-                {/* <button className="btn btn-sm btn-outline-primary rounded-full ">
-                    <i className="fa fa-edit" aria-hidden="true"></i> Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger rounded-full ml-2 ">
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                </button> */}
             </td>
         </tr>
     );
+
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
@@ -102,6 +99,8 @@ const Results = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)} // Update search term on input change
                     />
                     <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -117,18 +116,18 @@ const Results = () => {
 
             <table className="table-auto w-full mx-auto shadow-md rounded">
                 <thead>
-                    <tr className="bg-gray-100 text-center  text-xs font-semibold">
+                    <tr className="bg-gray-100 text-center text-xs font-semibold">
                         {columns?.map((column) => (
                             <th
                                 key={column.header}
-                                className={`px-6 py-3 max-w-[200px] ${column.style} `}
+                                className={`px-6 py-3 max-w-[200px] ${column.style}`}
                             >
                                 {column?.header}
                             </th>
                         ))}
                     </tr>
                 </thead>
-                <tbody>{exams?.map(renderRow)}</tbody>
+                <tbody>{filteredExams?.map(renderRow)}</tbody> {/* Use filtered exams */}
             </table>
         </div>
     );

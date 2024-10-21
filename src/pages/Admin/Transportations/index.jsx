@@ -10,7 +10,22 @@ import axios from "axios";
 const Transportations = () => {
     const [loading, setLoading] = useState(false);
     const [transports, setTransports] = useState([]);
+    const [searchTerm, setSearchTerm] = useState(""); // State for search term
+    const [filteredTransports, setFilteredTransports] = useState(transports); // State for filtered transports
 
+    // Filtering logic based on search term
+    useEffect(() => {
+        const filtered = transports.filter(
+            (item) =>
+                item?.driverName?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by driver name
+                item?.busNumber?.toString()?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by bus number
+                item?.stops[0]?.place?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by first stop
+                item?.stops[item?.stops?.length - 1]?.place
+                    ?.toLowerCase()
+                    .includes(searchTerm.toLowerCase()), // Filter by last stop
+        );
+        setFilteredTransports(filtered);
+    }, [searchTerm, transports]);
     const deleteTransportation = async (transportationId) => {
         console.log(transportationId);
 
@@ -84,14 +99,14 @@ const Transportations = () => {
             key={item._id}
             className="border-b border-gray-200 bg-white shadow-md rounded even:bg-slate-50 text-sm hover:bg-gray-100"
         >
-            <td className=" text-center gap-4 py-4 px-6">{item?.driverName}</td>
+            <td className="text-center gap-4 py-4 px-6">{item?.driverName}</td>
             <td className="text-center">{item?.busNumber}</td>
-            <td className=" text-center">{item?.stops[0]?.place}</td>
+            <td className="text-center">{item?.stops[0]?.place}</td>
             <td className="hidden md:table-cell text-center">
                 {item?.stops[item?.stops?.length - 1]?.place}
             </td>
 
-            <td className=" hidden flex md:table-cell items-center justify-center gap-2 text-center">
+            <td className="hidden flex md:table-cell items-center justify-center gap-2 text-center">
                 <EditTransportation item={item} setTransports={setTransports} />
                 <Button
                     variant="destructive"
@@ -103,6 +118,7 @@ const Transportations = () => {
             </td>
         </tr>
     );
+
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
@@ -112,6 +128,8 @@ const Transportations = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        value={searchTerm} // Set value to the search term
+                        onChange={(e) => setSearchTerm(e.target.value)} // Update search term on input change
                     />
                     <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -127,18 +145,18 @@ const Transportations = () => {
 
             <table className="table-auto w-full mx-auto shadow-md rounded">
                 <thead>
-                    <tr className="bg-gray-100 text-center  text-xs font-semibold">
+                    <tr className="bg-gray-100 text-center text-xs font-semibold">
                         {columns?.map((column) => (
                             <th
                                 key={column.header}
-                                className={`px-6 py-3 max-w-[200px] ${column.style} `}
+                                className={`px-6 py-3 max-w-[200px] ${column.style}`}
                             >
                                 {column?.header}
                             </th>
                         ))}
                     </tr>
                 </thead>
-                <tbody>{transports?.map(renderRow)}</tbody>
+                <tbody>{filteredTransports?.map(renderRow)}</tbody> {/* Use filtered transports */}
             </table>
         </div>
     );
