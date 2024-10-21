@@ -14,21 +14,6 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 
 export const description = "A bar chart displaying student attendance";
 
-const chartData = [
-    { month: "January", attendance: 86 },
-    { month: "February", attendance: 92 },
-    { month: "March", attendance: 88 },
-    { month: "April", attendance: 78 },
-    { month: "May", attendance: 85 },
-    { month: "June", attendance: 90 },
-    { month: "January", attendance: 86 },
-    { month: "February", attendance: 92 },
-    { month: "March", attendance: 88 },
-    { month: "April", attendance: 78 },
-    { month: "May", attendance: 85 },
-    { month: "June", attendance: 90 },
-];
-
 const chartConfig = {
     attendance: {
         label: "Attendance",
@@ -36,12 +21,12 @@ const chartConfig = {
     },
 };
 
-const Chart = () => {
+const Chart = ({ chartData }) => {
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Student Attendance</CardTitle>
-                <CardDescription>January - June 2024</CardDescription>
+                <CardDescription>January - December 2024</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
@@ -60,11 +45,11 @@ const Chart = () => {
                 </ChartContainer>
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
-                <div className="flex gap-2 font-medium leading-none">
+                {/* <div className="flex gap-2 font-medium leading-none">
                     Attendance improved by 4% this month <TrendingUp className="h-4 w-4" />
-                </div>
+                </div> */}
                 <div className="leading-none text-muted-foreground">
-                    Showing student attendance for the last 6 months
+                    Showing student attendance for the current year
                 </div>
             </CardFooter>
         </Card>
