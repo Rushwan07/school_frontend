@@ -29,8 +29,6 @@ const Results = () => {
     const columns = [
         { header: "Exam name", accessor: "Exam name" },
         { header: "class", accessor: "class" },
-        { header: "Start Date", accessor: "Start Date" },
-        { header: "End Date", accessor: "End Date" },
 
         { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
@@ -72,17 +70,17 @@ const Results = () => {
         >
             <td className="flex items-center gap-4 py-4 px-6">
                 <div>
-                    <p className="font-semibold">{item?.name
-}</p>
+                    <p className="font-semibold">{item?.name}</p>
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
             <td className="text-center">{item?.classId?.name}</td>
-            <td className=" text-center">{item?.startDate}</td>
-            <td className="hidden md:table-cell text-center">{item?.endDate}</td>
+
             <td className="flex hidden md:table-cell items-center justify-center gap-2 text-center">
                 <Button variant="outline" className="hover:bg-green-300" asChild>
-                    <Link to={`/admin/results/${item?.classId?._id}/${item?._id}`}>Add result</Link>
+                    <Link to={`/staffs/results/${item?.classId?._id}/${item?._id}`}>
+                        Add result
+                    </Link>
                 </Button>
                 {/* <button className="btn btn-sm btn-outline-primary rounded-full ">
                     <i className="fa fa-edit" aria-hidden="true"></i> Edit

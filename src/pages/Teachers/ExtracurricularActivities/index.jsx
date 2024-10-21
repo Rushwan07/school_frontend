@@ -31,9 +31,10 @@ const ExtracurricularActivities = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.classId?.name}</td>
+            {console.log(item)}
+            <td className="text-center">{item?.classId?.name || "All class"}</td>
             <td className=" text-center">{item?.fees}</td>
-            <td className="hidden md:table-cell text-center">{item?.duedate}</td>
+            <td className="hidden md:table-cell text-center">{item?.duedate?.split("T")[0]}</td>
         </tr>
     );
     useEffect(() => {
