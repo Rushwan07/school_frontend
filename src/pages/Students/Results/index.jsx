@@ -60,13 +60,13 @@ const StudentExamResult = () => {
                     </div>
                 </td>
                 <td className="text-center text-xs hidden md:table-cell">{exam?.classId?.name}</td>
-                <td className="text-center">
+                <td className="text-center flex justify-center h-full py-6 items-center gap-2">
                     {exam?.subjects?.map((subject) => (
                         <div key={subject._id}>
-                            <p className="font-semibold">{subject?.subjectId?.name}</p>
-                            <p className="text-xs text-gray-500">
+                            <p className="font-semibold">{subject?.subjectId?.name},</p>
+                            {/* <p className="text-xs text-gray-500">
                                 {subject?.subjectId?.description}
-                            </p>
+                            </p> */}
                         </div>
                     ))}
                 </td>

@@ -17,7 +17,7 @@ const Subjects = () => {
     const [loading, setLoading] = useState(false);
     const columns = [
         { header: "Subject name", accessor: "Subject name" },
-        { header: "class", accessor: "class" },
+        { header: "class", accessor: "class", style: "hidden md:table-cell text-center" },
         // { header: "Lessions", accessor: "Lessions" },
         { header: "Teacher", accessor: "Teacher" },
     ];
@@ -66,9 +66,9 @@ const Subjects = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{user?.classId?.name}</td>
+            <td className="  hidden md:table-cell text-center">{user?.classId?.name}</td>
             {/* <td className=" text-center">{item?.lessions}</td> */}
-            <td className="hidden md:table-cell text-center">{item?.teacherId?.name}</td>
+            <td className="  text-center">{item?.teacherId?.name}</td>
         </tr>
     );
     return (

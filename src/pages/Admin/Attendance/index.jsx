@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import StudentList from "./StudentList";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
+import EditAttendanceList from "./EditAttendance";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Attendance = () => {
@@ -13,9 +14,9 @@ const Attendance = () => {
     const columns = [
         { header: "Class", accessor: "Class" },
         { header: "Capacity", accessor: "Capacity" },
-        { header: "	Supervisor", accessor: "	Supervisor" },
+        { header: "	Supervisor", accessor: "	Supervisor", style: "hidden md:table-cell" },
 
-        { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
+        { header: "Actions", accessor: "Actions" },
     ];
 
     useEffect(() => {
@@ -56,10 +57,14 @@ const Attendance = () => {
         >
             <td className="text-center py-4">{item?.name}</td>
             <td className="text-center">{item?.capacity}</td>
-            <td className="text-center">{item?.teacherId?.name}</td>
+            <td className="text-center hidden md:table-cell ">{item?.teacherId?.name}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
-                <StudentList classId={item} setSlassLists={setSlassLists} />
+                {item?.attendanceId ? (
+                    <EditAttendanceList classId={item} setSlassLists={setSlassLists} />
+                ) : (
+                    <StudentList classId={item} setSlassLists={setSlassLists} />
+                )}
 
                 {/* <button className="btn btn-sm btn-outline-danger rounded-full ml-2 flex justify-center items-center gap-1 ">
                     <Trash size={18} /> Delete

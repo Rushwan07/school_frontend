@@ -34,7 +34,7 @@ const ResultCard = ({ handleViewResults, examId, exam, studentId }) => {
                         studentResults?.subjects?.map((result) => (
                             <div key={result._id} className="border-b py-2">
                                 <p className="font-semibold">Subject: {result?.subjectId?.name}</p>
-                                <p>Mark: {result?.mark}</p>
+                                {/* <p>Mark: {result?.mark}</p> */}
                                 <p>Grade: {result?.grade}</p>
                             </div>
                         ))

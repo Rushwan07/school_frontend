@@ -35,7 +35,7 @@ const PieChartComponent = ({ user }) => {
         <Card className="flex flex-col">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Student Attendance</CardTitle>
-                <CardDescription>Your attendance is low</CardDescription>
+                {/* <CardDescription>Your attendance is low</CardDescription> */}
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
