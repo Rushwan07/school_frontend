@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import CreateFees from "./CreateFees";
 import { useSelector } from "react-redux";
+import EditFees from "./EditFees";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Fees = () => {
     const [students, setStudents] = useState([]);
@@ -22,6 +23,7 @@ const Fees = () => {
         { header: "Fees", accessor: "Fees", style: "hidden md:table-cell" },
 
         { header: "Status", accessor: "Status" },
+        { header: "Action", accessor: "Action" },
     ];
     const [loading, setLoading] = useState(false);
     useEffect(() => {
@@ -74,7 +76,8 @@ const Fees = () => {
                         name={item?.studentId?.name}
                         regNo={item?.studentId?.regno}
                         basefees={item?.baseFees}
-                        totalfees={item?.totalFees}
+                        totalfees={item?.total}
+                        fees={item?.fees}
                         transportationFees={item?.transportationFees}
                         className={item?.classId?.name}
                         feesId={item?._id}
@@ -82,6 +85,9 @@ const Fees = () => {
                         token={token}
                     />
                 )}
+            </td>
+            <td className=" text-center hidden flex md:table-cell">
+                <EditFees fees={item} setFees={students} />{" "}
             </td>
         </tr>
     );

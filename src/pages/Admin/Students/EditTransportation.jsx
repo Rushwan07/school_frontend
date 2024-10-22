@@ -26,6 +26,7 @@ const TransportationComponent = ({ setStudentData, studentData, transports }) =>
                 },
             }));
         }
+        console.log("??????>>>>>>>>>>", studentData);
     };
 
     // Extract all bus ids and stops

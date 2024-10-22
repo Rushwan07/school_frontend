@@ -25,6 +25,7 @@ const ConfirmationAlert = ({
     feesId,
     setStudents,
     token,
+    fees,
 }) => {
     const [loading, setLoading] = useState(false);
 
@@ -80,17 +81,15 @@ const ConfirmationAlert = ({
                             <p>
                                 <strong>Class:</strong> {className}
                             </p>
-                            <p>
-                                <strong>Base Fees:</strong>
-                                {basefees || "--"}
-                            </p>
-                            <p>
-                                <strong>Transportation Fees:</strong>
-                                {transportationFees || "--"}
-                            </p>
-                            <p>
-                                <strong>Total Fees:</strong>
-                                {totalfees || "--"}
+                   
+                            {fees?.map((item) => (
+                                <p>
+                                    <strong>{item.name}:</strong>
+                                    {item.fee || "--"}
+                                </p>
+                            ))}
+                              <p>
+                                <strong>Total fees:</strong> {totalfees}
                             </p>
                         </div>
                         This action cannot be undone.
