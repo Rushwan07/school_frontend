@@ -6,10 +6,14 @@ import ConfirmationAlert from "./ConfirmationAlert";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import CreateFees from "./CreateFees";
+import { useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Fees = () => {
     const [students, setStudents] = useState([]);
-
+    const { user, token } = useSelector((state) => {
+        const user = state?.user?.user;
+        return user || {};
+    });
     const columns = [
         { header: "Reg no", accessor: "Reg no" },
         { header: "Student name", accessor: "Student name" },
@@ -58,8 +62,8 @@ const Fees = () => {
             <td className="text-center">{item?.studentId?.regno}</td>
             <td className=" gap-4 py-4 px-6 text-center">{item?.studentId?.name}</td>
             <td className="text-center hidden flex md:table-cell">{item?.classId?.name}</td>
-            <td className=" text-center hidden flex md:table-cell">{item?.total}</td>
-
+            <td className=" text-center hidden flex md:table-cell">{item?.totalFees}</td>
+            {console.log(item)}
             <td className="flex md:table-cell items-center justify-center gap-2 text-center">
                 {item?.isPaid ? (
                     <>
@@ -69,8 +73,13 @@ const Fees = () => {
                     <ConfirmationAlert
                         name={item?.studentId?.name}
                         regNo={item?.studentId?.regno}
-                        fees={item?.fees}
+                        basefees={item?.baseFees}
+                        totalfees={item?.totalFees}
+                        transportationFees={item?.transportationFees}
                         className={item?.classId?.name}
+                        feesId={item?._id}
+                        setStudents={setStudents}
+                        token={token}
                     />
                 )}
             </td>

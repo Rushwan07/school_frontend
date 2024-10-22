@@ -12,7 +12,18 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Class = () => {
     const [classLists, setSlassLists] = useState([]);
     const [loading, setLoading] = useState(false);
-
+    const [searchTerm, setSearchTerm] = useState(""); // State to track the search input
+    const [filteredClassLists, setFilteredClassLists] = useState(classLists); // State to store filtered class lists
+    useEffect(() => {
+        const filtered = classLists.filter(
+            (item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.teacherId?.name &&
+                    item.teacherId.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.capacity && item.capacity.toString().includes(searchTerm)),
+        );
+        setFilteredClassLists(filtered);
+    }, [searchTerm, classLists]);
     useEffect(() => {
         const getClass = async () => {
             try {
@@ -79,6 +90,8 @@ const Class = () => {
                         type="text"
                         placeholder="Search classes"
                         className="border rounded px-3 py-2"
+                        value={searchTerm} // Bind input value to searchTerm
+                        onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm on input change
                     />
                     <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -105,7 +118,7 @@ const Class = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{classLists?.map(renderRow)}</tbody>
+                <tbody>{filteredClassLists?.map(renderRow)}</tbody>
             </table>
         </div>
     );

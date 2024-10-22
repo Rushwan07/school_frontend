@@ -216,7 +216,7 @@ function App() {
                     element: <StaffTransportations />,
                 },
                 {
-                    path: "results/:examId",
+                    path: "results/:classId/:examId",
                     element: <StaffSingleExamResult />,
                 },
             ],

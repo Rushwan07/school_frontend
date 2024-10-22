@@ -14,11 +14,6 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 
 export const description = "A pie chart displaying the count of boys and girls";
 
-const chartData = [
-    { category: "Boys", count: 275, fill: "var(--color-boys)" },
-    { category: "Girls", count: 225, fill: "var(--color-girls)" },
-];
-
 const chartConfig = {
     boys: {
         label: "Boys",
@@ -30,7 +25,7 @@ const chartConfig = {
     },
 };
 
-const PieChartComponent = () => {
+const PieChartComponent = ({ chartData }) => {
     return (
         <Card className="flex flex-col">
             <CardHeader className="items-center pb-0">
@@ -57,9 +52,7 @@ const PieChartComponent = () => {
                 </ChartContainer>
             </CardContent>
             <CardFooter className="flex-col gap-2 text-sm">
-                <div className="flex items-center gap-2 font-medium leading-none">
-                    Boys count is higher by 5.2% this year <TrendingUp className="h-4 w-4" />
-                </div>
+                <div className="flex items-center gap-2 font-medium leading-none"></div>
                 <div className="leading-none text-muted-foreground">
                     Showing gender distribution for 2024
                 </div>

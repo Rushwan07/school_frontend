@@ -88,8 +88,8 @@ const AnnouncementListPage = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td>{item?.classId?.name}</td>
-            <td className="hidden md:table-cell">{item?.createdAt}</td>
+            <td>{item?.classId?.name || "All Class"}</td>
+            <td className="hidden md:table-cell">{item?.createdAt?.split("T")[0]}</td>
         </tr>
     );
 

@@ -18,7 +18,18 @@ const Attendance = () => {
 
         { header: "Actions", accessor: "Actions" },
     ];
-
+    const [searchTerm, setSearchTerm] = useState(""); // State to track the search input
+    const [filteredClassLists, setFilteredClassLists] = useState(classLists); // State to store filtered class lists
+    useEffect(() => {
+        const filtered = classLists.filter(
+            (item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.teacherId?.name &&
+                    item.teacherId.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.capacity && item.capacity.toString().includes(searchTerm)),
+        );
+        setFilteredClassLists(filtered);
+    }, [searchTerm, classLists]);
     useEffect(() => {
         const getClass = async () => {
             try {
@@ -51,7 +62,7 @@ const Attendance = () => {
     const renderRow = (item) => (
         <tr
             key={item._id}
-            className={`border-b  border-gray-200   rounded  text-sm   ${
+            className={`border-b  border-gray-200 rounded text-sm ${
                 item?.attendanceId && "bg-green-200"
             }`}
         >
@@ -65,13 +76,10 @@ const Attendance = () => {
                 ) : (
                     <StudentList classId={item} setSlassLists={setSlassLists} />
                 )}
-
-                {/* <button className="btn btn-sm btn-outline-danger rounded-full ml-2 flex justify-center items-center gap-1 ">
-                    <Trash size={18} /> Delete
-                </button> */}
             </td>
         </tr>
     );
+
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
@@ -81,6 +89,8 @@ const Attendance = () => {
                         type="text"
                         placeholder="Search classes"
                         className="border rounded px-3 py-2"
+                        value={searchTerm} // Bind input value to searchTerm
+                        onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm on input change
                     />
                     <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -95,7 +105,7 @@ const Attendance = () => {
             {/* LIST */}
             <table className="table-auto w-full mx-auto shadow-md rounded">
                 <thead>
-                    <tr className="bg-gray-100 text-center  text-xs font-semibold">
+                    <tr className="bg-gray-100 text-center text-xs font-semibold">
                         {columns?.map((column) => (
                             <th
                                 key={column.header}
@@ -106,7 +116,7 @@ const Attendance = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{classLists?.map(renderRow)}</tbody>
+                <tbody>{filteredClassLists?.map(renderRow)}</tbody> {/* Use filteredClassLists */}
             </table>
         </div>
     );

@@ -17,7 +17,20 @@ const Teachers = () => {
         { header: "Gender", accessor: "sex", style: "hidden md:table-cell" },
         { header: "Actions", accessor: "Actions" },
     ];
+    const [searchTerm, setSearchTerm] = useState(""); // State for search term
+    const [filteredTeachers, setFilteredTeachers] = useState(teachers); // State for filtered teachers
 
+    // Filtering logic based on search term
+    useEffect(() => {
+        console.log(teachers);
+        const filtered = teachers.filter(
+            (item) =>
+                item?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item?.email?.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
+                item?.phone?.toLowerCase().includes(searchTerm.toLocaleLowerCase()),
+        );
+        setFilteredTeachers(filtered);
+    }, [searchTerm, teachers]);
     useEffect(() => {
         const getTeachers = async () => {
             try {
@@ -39,7 +52,9 @@ const Teachers = () => {
             <td className="text-center py-4 px-6">{item?.name}</td>
 
             <td className="text-center hidden md:table-cell">
-                {item?.subjects.length > 0 ? item?.subjects?.map((sub) => sub?.name) : "--"}
+                {item?.subjects.length > 0
+                    ? item?.subjects?.map((sub) => sub?.name).join(", ") // Join subjects into a single string
+                    : "--"}
             </td>
             <td className="text-center">{item?.phone}</td>
             <td className="hidden md:table-cell text-center">{item?.email}</td>
@@ -59,6 +74,8 @@ const Teachers = () => {
                         type="text"
                         placeholder="Search by teacher name"
                         className="border rounded px-3 py-2"
+                        value={searchTerm} // Set value to the search term
+                        onChange={(e) => setSearchTerm(e.target.value)} // Update search term on input change
                     />
                     <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -84,7 +101,7 @@ const Teachers = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{teachers?.map(renderRow)}</tbody>
+                <tbody>{filteredTeachers?.map(renderRow)}</tbody> {/* Use filtered teachers */}
             </table>
         </div>
     );

@@ -104,13 +104,20 @@ const Exams = () => {
         >
             <td className="flex items-center gap-4 py-4 px-6">
                 <div>
-                    <p className="font-semibold">{item?.title}</p>
+                    <p className="font-semibold">{item?.name}</p>
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.class}</td>
-            <td className="hidden md:table-cell text-center">{item?.subjectName}</td>
-            <td className="hidden md:table-cell text-center">{item?.startDate}</td>
+            <td className="text-center">{item?.classId.name}</td>
+            <td className="hidden md:table-cell text-center flex ">
+                {item?.subjects?.map((sub) => (
+                    <span> {sub.subjectId.name}, &nbsp;</span>
+                ))}
+            </td>
+            {console.log(item?.subjects?.[0]?.date)}
+            <td className="hidden md:table-cell text-center">
+                {item?.subjects?.[0]?.date?.split("T")[0]}
+            </td>
             {/* <td className="hidden md:table-cell text-center">{item?.time}</td> */}
         </tr>
     );
@@ -149,16 +156,16 @@ const Exams = () => {
                     </tr>
                 </thead>
                 <tbody>
-  {exam && exam.length > 0 ? (
-    exam.map(renderRow)
-  ) : (
-    <tr>
-      <td colSpan="100%" className="text-center">
-        No exams available
-      </td>
-    </tr>
-  )}
-</tbody>
+                    {exam && exam.length > 0 ? (
+                        exam.map(renderRow)
+                    ) : (
+                        <tr>
+                            <td colSpan="100%" className="text-center">
+                                No exams available
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
             </table>
         </div>
     );

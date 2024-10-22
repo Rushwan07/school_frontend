@@ -15,8 +15,6 @@ const Events = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(false);
 
-   
-
     useEffect(() => {
         const get = async () => {
             try {
@@ -60,15 +58,15 @@ const Events = () => {
         >
             <td className="flex items-center gap-4 py-4 px-6">
                 <div>
-                    <p className="font-semibold">{item?.eventname}</p>
+                    <p className="font-semibold">{item?.name}</p>
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            <td className="text-center">{item?.classId?.name}</td>
-            <td className=" text-center">{item?.dates[0]}</td>
+            <td className="text-center">{item?.classId?.name || "All class"}</td>
+            <td className=" text-center">{item?.dates[0]?.split("T")[0]}</td>
             {/* <td className="hidden md:table-cell text-center">{item?.duedate}</td> */}
-            <td className="hidden md:table-cell text-center">{item?.startTime}</td>
-            <td className="hidden md:table-cell text-center">{item?.endTime}</td>
+            <td className="hidden md:table-cell text-center">{item?.startTime || "Full day"}</td>
+            <td className="hidden md:table-cell text-center">{item?.endTime || "Full day"}</td>
         </tr>
     );
     return (

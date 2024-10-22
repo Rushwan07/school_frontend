@@ -15,6 +15,21 @@ const Events = () => {
         const user = state?.user?.user;
         return user || {};
     });
+    const [searchTerm, setSearchTerm] = useState(""); // State to track the search input
+    const [filteredEvents, setFilteredEvents] = useState(events); // State to store filtered events
+
+    // Filter events based on search term
+    useEffect(() => {
+        const filtered = events.filter(
+            (item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.description &&
+                    item.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.classId?.name &&
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase())),
+        );
+        setFilteredEvents(filtered);
+    }, [searchTerm, events]);
 
     useEffect(() => {
         const getAssignments = async () => {
@@ -80,16 +95,15 @@ const Events = () => {
                     <p className="text-xs text-gray-500">{item?.description}</p>
                 </div>
             </td>
-            {console.log(item)}
             <td className="text-center">{item?.classId?.name || "All class"}</td>
-            <td className=" text-center">{item?.dates[0]?.split("T")[0]}</td>
+            <td className="text-center">{item?.dates[0]?.split("T")[0]}</td>
             <td className="hidden md:table-cell text-center">
                 {item?.dates[item?.dates.length - 1]?.split("T")[0]}
             </td>
             <td className="hidden md:table-cell text-center">{item?.startTime || "Full day"}</td>
             <td className="hidden md:table-cell text-center">{item?.endTime || "Full day"}</td>
 
-            <td className="flex hidden md:table-cell items-center justify-center  text-center">
+            <td className="flex hidden md:table-cell items-center justify-center text-center">
                 <EditEvent item={item} setEvents={setEvents} /> &nbsp;
                 <Button variant="destructive" size="icon">
                     <Trash2Icon
@@ -102,7 +116,7 @@ const Events = () => {
             </td>
         </tr>
     );
-    console.log(events);
+
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
@@ -112,6 +126,8 @@ const Events = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        value={searchTerm} // Bind input value to searchTerm
+                        onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm on input change
                     />
                     <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -127,7 +143,7 @@ const Events = () => {
 
             <table className="table-auto w-full mx-auto shadow-md rounded">
                 <thead>
-                    <tr className="bg-gray-100 text-center  text-xs font-semibold">
+                    <tr className="bg-gray-100 text-center text-xs font-semibold">
                         {columns?.map((column) => (
                             <th
                                 key={column.header}
@@ -138,7 +154,7 @@ const Events = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{events?.map(renderRow)}</tbody>
+                <tbody>{filteredEvents?.map(renderRow)}</tbody> {/* Use filteredEvents */}
             </table>
         </div>
     );

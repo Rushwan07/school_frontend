@@ -70,7 +70,7 @@ const Grade = () => {
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
                 <h1 className="text-lg font-semibold hidden md:block">All Grades</h1>
-                <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                {/* <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                     <Input
                         type="text"
                         placeholder="Search grade"
@@ -82,10 +82,10 @@ const Grade = () => {
                         </button>
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
-                        </button>
-                        <CreateGrade setGrade={setGrade} />
-                    </div>
-                </div>
+                        </button> */}
+                <CreateGrade setGrade={setGrade} />
+                {/* </div>
+                </div> */}
             </div>
             {/* LIST */}
             <table className="table-auto w-full mx-auto shadow-md rounded">
