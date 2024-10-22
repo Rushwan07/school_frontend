@@ -129,7 +129,7 @@ const ViewStudentDetails = ({ item }) => {
 
                         <div className="flex justify-between">
                             <p className="font-semibold">Bus Number:</p>
-                            <p>{studentData.transportations?.busNumber || "N/A"}</p>
+                            <p>{item.transportations?.busNumber || "N/A"}</p>
                         </div>
                     </div>
                 </div>

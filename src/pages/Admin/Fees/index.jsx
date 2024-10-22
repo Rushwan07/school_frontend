@@ -64,7 +64,7 @@ const Fees = () => {
             <td className="text-center">{item?.studentId?.regno}</td>
             <td className=" gap-4 py-4 px-6 text-center">{item?.studentId?.name}</td>
             <td className="text-center hidden flex md:table-cell">{item?.classId?.name}</td>
-            <td className=" text-center hidden flex md:table-cell">{item?.totalFees}</td>
+            <td className=" text-center hidden flex md:table-cell">{item?.total}</td>
             {console.log(item)}
             <td className="flex md:table-cell items-center justify-center gap-2 text-center">
                 {item?.isPaid ? (
