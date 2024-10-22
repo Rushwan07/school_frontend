@@ -134,12 +134,6 @@ const Exams = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <div className="flex items-center gap-4 self-end ">
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <SlidersHorizontal />
-                        </button>
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <ArrowDownAZ />
-                        </button>
                         <CreateExam classes={classes} setExams={setExams} />
                     </div>
                 </div>

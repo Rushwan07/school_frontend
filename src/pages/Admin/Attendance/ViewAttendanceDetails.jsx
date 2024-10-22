@@ -22,7 +22,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const EditAttendanceList = ({ classId, setSlassLists }) => {
+const EditAttendanceList = ({ classId, setSlassLists, date }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [students, setStudents] = useState([]);
@@ -34,11 +34,12 @@ const EditAttendanceList = ({ classId, setSlassLists }) => {
     useEffect(() => {
         const getAttendance = async () => {
             try {
+                if (!date) return;
                 setLoading(true);
                 const res = await axios.get(
-                    BASE_URL + "/attendances/class-attendance/" + classId._id,
+                    BASE_URL + "/attendances/class-attendance/" + classId._id + "?date=" + date,
                 );
-                console.log(res?.data?.data?.attendance[0].students);
+                console.log(res?.data?.data?.attendance[0]?.students);
                 const initialStudents = res?.data?.data?.attendance[0].students.map((student) => ({
                     regno: student.studentId.regno, // Student's registration number
                     _id: student.studentId._id, // Student's unique ID
@@ -47,6 +48,7 @@ const EditAttendanceList = ({ classId, setSlassLists }) => {
                 }));
                 setStudents(initialStudents);
             } catch (error) {
+                console.log(error);
                 if (error?.response?.data?.message)
                     toast({
                         variant: "destructive",
@@ -65,48 +67,6 @@ const EditAttendanceList = ({ classId, setSlassLists }) => {
         };
         getAttendance();
     }, [dialogOpen, classId]);
-
-    const handleSubmit = async () => {
-        console.log({ classId: classId._id, students: students });
-
-        setLoading(true);
-        try {
-            const res = await axios.post(
-                BASE_URL + "/attendances/create-attendance/",
-                { classId: classId._id, students: students },
-                {
-                    headers: { token: token },
-                },
-            );
-            console.log(res?.data?.data?.attendance?._id);
-
-            // Properly updating the array immutably
-            setSlassLists((prev) => {
-                return prev.map((val) => {
-                    if (val._id === classId._id) {
-                        // Return a new object with the updated attendanceId
-                        return {
-                            ...val,
-                            attendanceId: res?.data?.data?.attendance?._id,
-                        };
-                    }
-                    // If classId doesn't match, return the original object
-                    return val;
-                });
-            });
-
-            setDialogOpen(false);
-        } catch (error) {
-            console.error("An error occurred:", error);
-
-            toast({
-                variant: "destructive",
-                title: error?.response?.data?.message,
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleEdit = async () => {
         console.log({ classId: classId._id, students: students });
@@ -152,19 +112,7 @@ const EditAttendanceList = ({ classId, setSlassLists }) => {
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>
-                <button className="btn btn-sm btn-outline-primary rounded-full flex justify-center items-center gap-1">
-                    {classId?.attendanceId ? (
-                        <>
-                            <Edit size={18} />
-                            Edit
-                        </>
-                    ) : (
-                        <>
-                            <Pencil size={18} />
-                            Add attendance
-                        </>
-                    )}
-                </button>
+                <Button variant="secondary">View</Button>
             </DialogTrigger>
             <DialogContent className="max-h-[80vh] overflow-x-hidden overflow-y-auto">
                 <DialogHeader>
@@ -192,45 +140,16 @@ const EditAttendanceList = ({ classId, setSlassLists }) => {
                                 <td className="p-3">{student.name}</td>
                                 <td className="p-3">{student.regno}</td>
                                 <td className="p-3">
-                                    <Select
-                                        onValueChange={(e) => {
-                                            setStudents((prev) =>
-                                                prev.map((val) =>
-                                                    val.regno === student.regno
-                                                        ? {
-                                                              ...val,
-                                                              present:
-                                                                  e === "true" ? "true" : "false",
-                                                          }
-                                                        : val,
-                                                ),
-                                            );
-                                        }}
-                                        value={student.present.toString()}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Present" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="true">Present</SelectItem>
-                                            <SelectItem value="false">Absent</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    {student.present == "true" ? "Present" : "Absent"}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 <DialogFooter className="sm:justify-end">
-                    {classId?.attendanceId ? (
-                        <Button onClick={handleEdit} disabled={loading}>
-                            {loading ? "Saving..." : "Save"}
-                        </Button>
-                    ) : (
-                        <Button onClick={handleSubmit} disabled={loading}>
-                            {loading ? "Saving..." : "Save"}
-                        </Button>
-                    )}
+                    <Button onClick={() => setDialogOpen(false)} disabled={loading}>
+                        Close
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

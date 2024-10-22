@@ -5,11 +5,14 @@ import StudentList from "./StudentList";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import EditAttendanceList from "./EditAttendance";
+import { DatePicker } from "./DobCalendar";
+import ViewAttendanceDetails from "./ViewAttendanceDetails";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Attendance = () => {
     const [classLists, setSlassLists] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [date, setDate] = useState(new Date());
 
     const columns = [
         { header: "Class", accessor: "Class" },
@@ -62,19 +65,30 @@ const Attendance = () => {
     const renderRow = (item) => (
         <tr
             key={item._id}
-            className={`border-b  border-gray-200 rounded text-sm ${
-                item?.attendanceId && "bg-green-200"
+            className={`border-b border-gray-200 rounded text-sm ${
+                item?.attendanceId &&
+                !new Date(date).toDateString() === new Date().toDateString() &&
+                "bg-green-200"
             }`}
         >
             <td className="text-center py-4">{item?.name}</td>
             <td className="text-center">{item?.capacity}</td>
-            <td className="text-center hidden md:table-cell ">{item?.teacherId?.name}</td>
+            <td className="text-center hidden md:table-cell">{item?.teacherId?.name}</td>
 
             <td className="flex items-center justify-center h-full py-4 gap-2 text-center">
-                {item?.attendanceId ? (
-                    <EditAttendanceList classId={item} setSlassLists={setSlassLists} />
+                {/* Check if the selected date is today */}
+                {new Date(date).toDateString() === new Date().toDateString() ? (
+                    item?.attendanceId ? (
+                        <EditAttendanceList classId={item} setSlassLists={setSlassLists} />
+                    ) : (
+                        <StudentList classId={item} setSlassLists={setSlassLists} />
+                    )
                 ) : (
-                    <StudentList classId={item} setSlassLists={setSlassLists} />
+                    <ViewAttendanceDetails
+                        classId={item}
+                        setSlassLists={setSlassLists}
+                        date={date}
+                    />
                 )}
             </td>
         </tr>
@@ -92,24 +106,19 @@ const Attendance = () => {
                         value={searchTerm} // Bind input value to searchTerm
                         onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm on input change
                     />
-                    <div className="flex items-center gap-4 self-end ">
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <SlidersHorizontal />
-                        </button>
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <ArrowDownAZ />
-                        </button>
+                    <div className="flex items-center gap-4 self-end">
+                        <DatePicker setDate={setDate} />
                     </div>
                 </div>
             </div>
-            {/* LIST */}
+
             <table className="table-auto w-full mx-auto shadow-md rounded">
                 <thead>
                     <tr className="bg-gray-100 text-center text-xs font-semibold">
                         {columns?.map((column) => (
                             <th
                                 key={column.header}
-                                className={`px-6 py-3 max-w-[200px] ${column.style} `}
+                                className={`px-6 py-3 max-w-[200px] ${column.style}`}
                             >
                                 {column?.header}
                             </th>

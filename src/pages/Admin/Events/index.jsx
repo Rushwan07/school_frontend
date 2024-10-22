@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import { useSelector } from "react-redux";
+import { DatePicker } from "./DobCalendar";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Events = () => {
@@ -15,22 +16,33 @@ const Events = () => {
         const user = state?.user?.user;
         return user || {};
     });
+    const [date, setDate] = useState(null);
     const [searchTerm, setSearchTerm] = useState(""); // State to track the search input
     const [filteredEvents, setFilteredEvents] = useState(events); // State to store filtered events
 
     // Filter events based on search term
     useEffect(() => {
-        const filtered = events.filter(
-            (item) =>
+        const filtered = events.filter((item) => {
+            const matchesSearchTerm =
                 item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 (item.description &&
                     item.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
                 (item.classId?.name &&
-                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase())),
-        );
-        setFilteredEvents(filtered);
-    }, [searchTerm, events]);
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
+            // Check if a date is selected and if the event's date matches the selected date
+            const matchesDate =
+                !date || // If no date is selected, match all events
+                item.dates.some(
+                    (eventDate) =>
+                        new Date(eventDate).toDateString() === new Date(date).toDateString(),
+                );
+
+            return matchesSearchTerm && matchesDate; // Both search and date must match
+        });
+
+        setFilteredEvents(filtered);
+    }, [searchTerm, date, events]);
     useEffect(() => {
         const getAssignments = async () => {
             try {
@@ -130,12 +142,8 @@ const Events = () => {
                         onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm on input change
                     />
                     <div className="flex items-center gap-4 self-end ">
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <SlidersHorizontal />
-                        </button>
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
-                            <ArrowDownAZ />
-                        </button>
+                        <DatePicker setDate={setDate} />
+
                         <CreateEvents setEvents={setEvents} />
                     </div>
                 </div>
