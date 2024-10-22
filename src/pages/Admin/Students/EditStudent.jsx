@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Select,
     SelectContent,
@@ -25,11 +25,13 @@ import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 import TransportationComponent from "./EditTransportation";
+import useFirebaseUpload from "@/hooks/use-firebaseUploads";
 
 const EditStudentForm = ({ setStudents, transports, classLists, item }) => {
     console.log(item);
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [file, setFile] = useState(null);
     const [date, setDate] = useState();
     const [parentData, setParentData] = useState(
         item?.parentId || {
@@ -63,9 +65,23 @@ const EditStudentForm = ({ setStudents, transports, classLists, item }) => {
         setStudentData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // const handleFileChange = (e) => {
+    //     setStudentData((prev) => ({ ...prev, img: e.target.files[0] }));
+    // };
+
     const handleFileChange = (e) => {
-        setStudentData((prev) => ({ ...prev, img: e.target.files[0] }));
+        setLoading(true);
+        setFile(e.target.files[0]);
     };
+
+    const { progress, error, downloadURL } = useFirebaseUpload(file);
+
+    useEffect(() => {
+        if (downloadURL) {
+            setStudentData((prev) => ({ ...prev, img: downloadURL }));
+            setLoading(false);
+        }
+    }, [downloadURL]);
 
     const handleSubmit = async () => {
         console.log(studentData);

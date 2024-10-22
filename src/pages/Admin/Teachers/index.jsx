@@ -17,10 +17,8 @@ const Teachers = () => {
         { header: "Gender", accessor: "sex", style: "hidden md:table-cell" },
         { header: "Actions", accessor: "Actions" },
     ];
-    const [searchTerm, setSearchTerm] = useState(""); // State for search term
-    const [filteredTeachers, setFilteredTeachers] = useState(teachers); // State for filtered teachers
-
-    // Filtering logic based on search term
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredTeachers, setFilteredTeachers] = useState(teachers);
     useEffect(() => {
         console.log(teachers);
         const filtered = teachers.filter(

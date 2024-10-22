@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Select,
     SelectContent,
@@ -25,10 +25,12 @@ import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 import TransportationComponent from "./Transportation";
+import useFirebaseUpload from "@/hooks/use-firebaseUploads";
 
 const StudentForm = ({ setStudents, transports, classLists }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [file, setFile] = useState(null);
     const [date, setDate] = useState();
     const [parentData, setParentData] = useState({
         name: "", // New field for Parent Name
@@ -58,10 +60,22 @@ const StudentForm = ({ setStudents, transports, classLists }) => {
         setStudentData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // const handleFileChange = (e) => {
+    //     setStudentData((prev) => ({ ...prev, img: e.target.files[0] }));
+    // };
     const handleFileChange = (e) => {
-        setStudentData((prev) => ({ ...prev, img: e.target.files[0] }));
+        setLoading(true);
+        setFile(e.target.files[0]);
     };
 
+    const { progress, error, downloadURL } = useFirebaseUpload(file);
+
+    useEffect(() => {
+        if (downloadURL) {
+            setStudentData((prev) => ({ ...prev, img: downloadURL }));
+            setLoading(false);
+        }
+    }, [downloadURL]);
     const handleSubmit = async () => {
         console.log(studentData);
         console.log(date);
@@ -102,6 +116,7 @@ const StudentForm = ({ setStudents, transports, classLists }) => {
                 phone: "",
                 address: "",
             });
+            setDialogOpen(false);
         } catch (error) {
             console.log(error);
             if (error?.response?.data?.message)
@@ -118,34 +133,9 @@ const StudentForm = ({ setStudents, transports, classLists }) => {
             }
         } finally {
             setLoading(false);
-            setDialogOpen(false);
         }
     };
-    //data should send in this format
-    // {
-    //     "student":{
-    //          "regno": "101",
-    //          "name": "student",
-    //          "address": "123 Main Street, Anytown, USA",
-    //          "img": "https://example.com/student.jpg",
-    //          "bloodType": "A+",
-    //          "sex": "MALE",
-    //          "classId": "6704ec91fee39a5e6ebd0162",
-    //          "birthday": "2024-10-04"
-    //      },
-    //      "parent":{
-    //          "address":"address for the parent",
-    //          "email":"parent@gmail.com",
-    //          "name":"test parent",
-    //          "phone": "8973927483"
-    //      },
-    //      "transport":{
-    //          "pickupLocation":"",
-    //          "dropOffLocation":"",
-    //          "busId":"",
-    //          "fees":500
-    //      }
-    //    }
+
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>

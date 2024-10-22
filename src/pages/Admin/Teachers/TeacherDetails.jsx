@@ -23,33 +23,18 @@ import { Label } from "@/components/ui/label";
 
 import { Plus } from "lucide-react";
 import { DatePicker } from "./DobCalendar";
-import Multiselect from "multiselect-react-dropdown";
 
 import axios from "axios";
+import useFirebaseUpload from "@/hooks/use-firebaseUploads";
+import { toast } from "@/hooks/use-toast";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const TeacherForm = ({ setTeachers }) => {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [date, setDate] = useState();
-    const [subjects, setSubjects] = useState([
-        { _id: 1, name: "Mathematics" },
-        { _id: 2, name: "Science" },
-        { _id: 3, name: "History" },
-        { _id: 4, name: "Geography" },
-        { _id: 5, name: "English" },
-        { _id: 6, name: "Physical Education" },
-    ]);
-    const [classes, setClasses] = useState([
-        { _id: 1, name: "class one" },
-        { _id: 2, name: "class two" },
-        { _id: 3, name: "class three" },
-        { _id: 4, name: "class four" },
-        { _id: 5, name: "class fine" },
-        { _id: 6, name: "class six " },
-    ]);
-    const [selectedSubjects, setSelectedSubjects] = useState([]);
-    const [selectedClasses, setSelectedClasses] = useState([]);
+
+    const [file, setFile] = useState(null);
 
     const [teacherData, setTeacherData] = useState({
         username: "",
@@ -72,10 +57,21 @@ const TeacherForm = ({ setTeachers }) => {
     };
 
     const handleFileChange = (e) => {
-        setTeacherData((prev) => ({ ...prev, img: e.target.files[0] }));
+        setLoading(true);
+        setFile(e.target.files[0]);
     };
 
+    const { progress, error, downloadURL } = useFirebaseUpload(file);
+
+    useEffect(() => {
+        if (downloadURL) {
+            setTeacherData((prev) => ({ ...prev, img: downloadURL }));
+            setLoading(false);
+        }
+    }, [downloadURL]);
+
     const handleSubmit = async () => {
+        console.log(teacherData);
         try {
             setLoading(true);
             const res = await axios.post(BASE_URL + "/teachers", {
@@ -104,6 +100,18 @@ const TeacherForm = ({ setTeachers }) => {
             setDialogOpen(false);
         } catch (error) {
             console.log(error);
+            if (error?.response?.data?.message)
+                toast({
+                    variant: "destructive",
+                    title: error?.response?.data?.message,
+                });
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+            }
         } finally {
             setLoading(false);
         }
@@ -261,6 +269,7 @@ const TeacherForm = ({ setTeachers }) => {
                     </div>
                     <div>
                         <Label>Image</Label>
+
                         <Input name="img" type="file" onChange={handleFileChange} />
                     </div>
                 </div>
