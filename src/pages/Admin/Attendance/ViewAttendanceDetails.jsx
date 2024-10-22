@@ -34,7 +34,7 @@ const EditAttendanceList = ({ classId, setSlassLists, date }) => {
     useEffect(() => {
         const getAttendance = async () => {
             try {
-                if (!date) return;
+                if (new Date(date).toDateString() === new Date().toDateString()) return;
                 setLoading(true);
                 const res = await axios.get(
                     BASE_URL + "/attendances/class-attendance/" + classId._id + "?date=" + date,
