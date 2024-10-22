@@ -126,7 +126,7 @@ const Transportations = () => {
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                     <Input
                         type="text"
-                        placeholder="Search events"
+                        placeholder="Search transportation"
                         className="border rounded px-3 py-2"
                         value={searchTerm} // Set value to the search term
                         onChange={(e) => setSearchTerm(e.target.value)} // Update search term on input change

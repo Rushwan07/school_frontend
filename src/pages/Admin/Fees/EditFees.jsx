@@ -89,12 +89,9 @@ const EditFees = ({ fees, setFees }) => {
 
             console.log("error");
 
-            toast({
-                variant: "success",
-                title: "Fee record updated successfully!",
-            });
             resetForm();
         } catch (error) {
+            console.log(error);
             toast({
                 variant: "destructive",
                 title: error?.response?.data?.message || "Uh oh! Something went wrong.",
