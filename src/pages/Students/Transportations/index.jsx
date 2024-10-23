@@ -8,6 +8,22 @@ import axios from "axios";
 const Transportations = () => {
     const [loading, setLoading] = useState(false);
     const [transports, setTransports] = useState([]);
+    const [searchTerm, setSearchTerm] = useState(""); // State for search term
+    const [filteredTransports, setFilteredTransports] = useState(transports); // State for filtered transports
+
+    // Filtering logic based on search term
+    useEffect(() => {
+        const filtered = transports.filter(
+            (item) =>
+                item?.driverName?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by driver name
+                item?.busNumber?.toString()?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by bus number
+                item?.stops[0]?.place?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by first stop
+                item?.stops[item?.stops?.length - 1]?.place
+                    ?.toLowerCase()
+                    .includes(searchTerm.toLowerCase()), // Filter by last stop
+        );
+        setFilteredTransports(filtered);
+    }, [searchTerm, transports]);
 
     useEffect(() => {
         const getTransports = async () => {
@@ -66,15 +82,17 @@ const Transportations = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <div className="flex items-center gap-4 self-end ">
+                    {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <SlidersHorizontal />
                         </button>
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -91,7 +109,7 @@ const Transportations = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{transports?.map(renderRow)}</tbody>
+                <tbody>{filteredTransports?.map(renderRow)}</tbody>
             </table>
         </div>
     );

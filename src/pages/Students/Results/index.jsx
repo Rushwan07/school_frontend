@@ -19,6 +19,19 @@ const StudentExamResult = () => {
     });
     const { toast } = useToast();
 
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredExams, setFilteredExams] = useState(exams);
+
+    useEffect(() => {
+        const filtered = exams.filter((item) => {
+            const matchesExamName = item?.name?.toLowerCase().includes(searchTerm?.toLowerCase());
+            const matchesClassName = item?.classId?.name
+                ?.toLowerCase()
+                .includes(searchTerm?.toLowerCase());
+            return matchesExamName || matchesClassName;
+        });
+        setFilteredExams(filtered);
+    }, [searchTerm, exams]);
     useEffect(() => {
         const getExams = async () => {
             try {
@@ -114,15 +127,17 @@ const StudentExamResult = () => {
                         type="text"
                         placeholder="Search exam"
                         className="border rounded px-3 py-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <div className="flex items-center gap-4 self-end ">
+                    {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <SlidersHorizontal />
                         </button>
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -138,7 +153,7 @@ const StudentExamResult = () => {
                             <th className="px-6 py-3">Action</th>
                         </tr>
                     </thead>
-                    <tbody>{exams?.map(renderRow)}</tbody>
+                    <tbody>{filteredExams?.map(renderRow)}</tbody>
                 </table>
             )}
         </div>
