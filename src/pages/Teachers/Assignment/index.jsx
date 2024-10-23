@@ -15,6 +15,19 @@ const Assignments = () => {
         return user || {};
     });
     const [assignments, setAssignments] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredAssignments, setFilteredAssignments] = useState(assignments);
+    useEffect(() => {
+        const filtered = assignments.filter(
+            (item) =>
+                item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item?.subjectId?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.classId?.name &&
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase())),
+        );
+        setFilteredAssignments(filtered);
+    }, [searchTerm, assignments]);
 
     useEffect(() => {
         const getAssignments = async () => {
@@ -101,6 +114,7 @@ const Assignments = () => {
                         type="text"
                         placeholder="Search assignments"
                         className="border rounded px-3 py-2"
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <div className="flex items-center gap-4 self-end ">
                         {/* <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -127,7 +141,7 @@ const Assignments = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{assignments?.map(renderRow)}</tbody>
+                <tbody>{filteredAssignments?.map(renderRow)}</tbody>
             </table>
         </div>
     );

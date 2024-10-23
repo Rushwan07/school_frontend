@@ -58,6 +58,20 @@ const Exams = () => {
     };
 
     const [exam, setExam] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredExams, setFilteredExams] = useState(exam);
+
+    useEffect(() => {
+        const filtered = exam.filter(
+            (item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.description &&
+                    item.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.classId?.name &&
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase())),
+        );
+        setFilteredExams(filtered);
+    }, [searchTerm, exam]);
 
     const columns = [
         { header: "Title", accessor: "tile", style: "hidden md:table-cell" },
@@ -131,6 +145,7 @@ const Exams = () => {
                         type="text"
                         placeholder="Search Exam"
                         className="border rounded px-3 py-2"
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -157,7 +172,7 @@ const Exams = () => {
                 </thead>
                 <tbody>
                     {exam && exam.length > 0 ? (
-                        exam.map(renderRow)
+                        filteredExams.map(renderRow)
                     ) : (
                         <tr>
                             <td colSpan="100%" className="text-center">

@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import Announcements from "@/pages/Students/Announcement";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const AnnouncementListPage = () => {

@@ -14,6 +14,33 @@ const Events = () => {
 
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [date, setDate] = useState(null);
+
+    const [filteredEvents, setFilteredEvents] = useState(events);
+
+    useEffect(() => {
+        const filtered = events.filter((item) => {
+            const matchesSearchTerm =
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.description &&
+                    item.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.classId?.name &&
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+            // Check if a date is selected and if the event's date matches the selected date
+            const matchesDate =
+                !date || // If no date is selected, match all events
+                item.dates.some(
+                    (eventDate) =>
+                        new Date(eventDate).toDateString() === new Date(date).toDateString(),
+                );
+
+            return matchesSearchTerm && matchesDate; // Both search and date must match
+        });
+
+        setFilteredEvents(filtered);
+    }, [searchTerm, date, events]);
 
     useEffect(() => {
         const get = async () => {
@@ -78,6 +105,7 @@ const Events = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm on input change
                     />
                     {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -103,7 +131,7 @@ const Events = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{events?.map(renderRow)}</tbody>
+                <tbody>{filteredEvents?.map(renderRow)}</tbody>
             </table>
         </div>
     );

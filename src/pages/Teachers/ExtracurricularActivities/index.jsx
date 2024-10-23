@@ -14,6 +14,22 @@ const ExtracurricularActivities = () => {
     });
     const [loading, setLoading] = useState(false);
 
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredActivity, setFilteredActivity] = useState(activities);
+
+    useEffect(() => {
+        console.log(activities);
+        const filtered = activities.filter(
+            (item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.description &&
+                    item.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.classId?.name &&
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase())),
+        );
+        setFilteredActivity(filtered);
+    }, [searchTerm, activities]);
+
     const columns = [
         { header: "Activity name", accessor: "Activity name" },
         { header: "Class", accessor: "Class" },
@@ -73,6 +89,8 @@ const ExtracurricularActivities = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -101,7 +119,7 @@ const ExtracurricularActivities = () => {
                 <tbody>
                     {" "}
                     {activities && activities.length > 0 ? (
-                        activities.map(renderRow)
+                        filteredActivity.map(renderRow)
                     ) : (
                         <tr>
                             <td colSpan="100%" className="text-center">

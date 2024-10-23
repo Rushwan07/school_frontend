@@ -14,6 +14,21 @@ const Subjects = () => {
         return user || {};
     });
     const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredSubjects, setFilteredSubjects] = useState(subjects);
+
+    useEffect(() => {
+        const filtered = subjects?.filter((item) => {
+            const matchesSubjectName = item?.name
+                ?.toLowerCase()
+                .includes(searchTerm?.toLowerCase());
+            const matchesClassName = item?.classId?.name
+                ?.toLowerCase()
+                .includes(searchTerm?.toLowerCase());
+            return matchesSubjectName || matchesClassName;
+        });
+        setFilteredSubjects(filtered);
+    }, [searchTerm, subjects]);
     // const [subjects, setSubjects] = useState([
     //     {
     //         _id: "abcd",
@@ -102,6 +117,8 @@ const Subjects = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -127,7 +144,7 @@ const Subjects = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{renderRow(subjects)}</tbody>
+                <tbody>{filteredSubjects?.map(renderRow)}</tbody>
             </table>
         </div>
     );

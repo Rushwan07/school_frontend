@@ -18,6 +18,19 @@ const Attendance = () => {
         { header: "Actions", accessor: "Actions", style: "hidden md:table-cell" },
     ];
 
+    const [searchTerm, setSearchTerm] = useState(""); // State to track the search input
+    const [filteredClassLists, setFilteredClassLists] = useState(classLists); // State to store filtered class lists
+    useEffect(() => {
+        const filtered = classLists.filter(
+            (item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.teacherId?.name &&
+                    item.teacherId.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.capacity && item.capacity.toString().includes(searchTerm)),
+        );
+        setFilteredClassLists(filtered);
+    }, [searchTerm, classLists]);
+
     useEffect(() => {
         const getClass = async () => {
             try {
@@ -76,6 +89,7 @@ const Attendance = () => {
                         type="text"
                         placeholder="Search classes"
                         className="border rounded px-3 py-2"
+                        onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm on input change
                     />
                     {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -101,7 +115,7 @@ const Attendance = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{classLists?.map(renderRow)}</tbody>
+                <tbody>{filteredClassLists?.map(renderRow)}</tbody>
             </table>
         </div>
     );

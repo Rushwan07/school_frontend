@@ -8,31 +8,17 @@ import { useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const AnnouncementListPage = () => {
+    const [searchTerm, setSearchTerm] = useState("");
+
+
     const { user, token } = useSelector((state) => {
         const user = state?.user?.user;
         return user || {};
     });
     const [anouncements, setAnounceMents] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [filteredAnouncements, setFilteredAnouncements] = useState(anouncements);
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
 
     const [data, setData] = useState({
         title: "",
@@ -45,6 +31,17 @@ const AnnouncementListPage = () => {
         { header: "Class", accessor: "class" },
         { header: "Date", accessor: "date", className: "hidden md:table-cell" },
     ];
+
+    useEffect(() => {
+        const filtered = anouncements.filter(
+            (item) =>
+                item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.classId?.name &&
+                    item.classId.name.toLowerCase().includes(searchTerm.toLowerCase())),
+        );
+        setFilteredAnouncements(filtered);
+    }, [searchTerm, anouncements]);
 
     useEffect(() => {
         const get = async () => {
@@ -102,6 +99,8 @@ const AnnouncementListPage = () => {
                         type="text"
                         placeholder="Search announcements"
                         className="border rounded px-3 py-2"
+                        onChange={(e) => setSearchTerm(e.target.value)}
+
                     />
                     {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -124,7 +123,7 @@ const AnnouncementListPage = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{anouncements?.map(renderRow)}</tbody>
+                <tbody>{filteredAnouncements?.map(renderRow)}</tbody>
             </table>
         </div>
     );

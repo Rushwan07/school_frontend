@@ -26,6 +26,20 @@ const Results = () => {
     ]);
     const [loading, setLoading] = useState(false);
 
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredExams, setFilteredExams] = useState(exams);
+
+    useEffect(() => {
+        const filtered = exams.filter((item) => {
+            const matchesExamName = item?.name?.toLowerCase().includes(searchTerm?.toLowerCase());
+            const matchesClassName = item?.classId?.name
+                ?.toLowerCase()
+                .includes(searchTerm?.toLowerCase());
+            return matchesExamName || matchesClassName;
+        });
+        setFilteredExams(filtered);
+    }, [searchTerm, exams]);
+
     const columns = [
         { header: "Exam name", accessor: "Exam name" },
         { header: "class", accessor: "class" },
@@ -100,6 +114,8 @@ const Results = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <div className="flex items-center gap-4 self-end ">
                         {/* <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -126,7 +142,7 @@ const Results = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{exams?.map(renderRow)}</tbody>
+                <tbody>{filteredExams?.map(renderRow)}</tbody>
             </table>
         </div>
     );

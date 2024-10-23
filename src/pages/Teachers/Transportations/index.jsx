@@ -11,26 +11,24 @@ const Transportations = () => {
         return user || {};
     });
     const [loading, setLoading] = useState(false);
-    const [activities, setActivities] = useState([]);
+    // const [activities, setActivities] = useState([]);
+    const [transports, setTransports] = useState([]);
+    const [searchTerm, setSearchTerm] = useState(""); // State for search term
+    const [filteredTransports, setFilteredTransports] = useState(transports); // State for filtered transports
 
-    const [classes, setClasses] = useState([
-        {
-            _id: "sadfasdf",
-            name: "first class",
-        },
-        {
-            _id: "s3432adfasdf",
-            name: "first class",
-        },
-        {
-            _id: "sadfasdfasd",
-            name: "first class",
-        },
-        {
-            _id: "sadfaasdfasdf",
-            name: "first class",
-        },
-    ]);
+    // Filtering logic based on search term
+    useEffect(() => {
+        const filtered = transports.filter(
+            (item) =>
+                item?.driverName?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by driver name
+                item?.busNumber?.toString()?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by bus number
+                item?.stops[0]?.place?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by first stop
+                item?.stops[item?.stops?.length - 1]?.place
+                    ?.toLowerCase()
+                    .includes(searchTerm.toLowerCase()), // Filter by last stop
+        );
+        setFilteredTransports(filtered);
+    }, [searchTerm, transports]);
 
     const columns = [
         { header: "  Driver name", accessor: " Driver name" },
@@ -46,7 +44,9 @@ const Transportations = () => {
             <td className=" text-center gap-4 py-4 px-6">{item?.driverName}</td>
             <td className="text-center">{item?.busNumber}</td>
             <td className=" text-center">{item?.stops.map((item) => item?.place).join(",")}</td>
-            <td className="hidden md:table-cell text-center">{item?.stops.map((item) => item?.stopNumber).join(",")}</td>
+            <td className="hidden md:table-cell text-center">
+                {item?.stops.map((item) => item?.stopNumber).join(",")}
+            </td>
         </tr>
     );
 
@@ -56,7 +56,7 @@ const Transportations = () => {
                 const res = await axios.get(BASE_URL + "/transports/", {
                     headers: { token: token },
                 });
-                setActivities(res?.data?.data?.transport);
+                setTransports(res?.data?.data?.transport);
             } catch (error) {
                 console.log(error);
                 if (error?.response?.data?.message)
@@ -77,7 +77,6 @@ const Transportations = () => {
         };
         get();
     }, []);
-    console.log(activities);
     return (
         <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
             <div className="flex items-center justify-between mb-5">
@@ -87,6 +86,8 @@ const Transportations = () => {
                         type="text"
                         placeholder="Search events"
                         className="border rounded px-3 py-2"
+                        value={searchTerm} // Set value to the search term
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -112,7 +113,7 @@ const Transportations = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{activities?.map(renderRow)}</tbody>
+                <tbody>{filteredTransports?.map(renderRow)}</tbody>
             </table>
         </div>
     );

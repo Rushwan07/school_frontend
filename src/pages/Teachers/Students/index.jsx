@@ -11,6 +11,20 @@ const Student = () => {
         return user || {};
     });
     const [loading, setLoading] = useState(false);
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredStudents, setFilteredStudents] = useState(students);
+
+    useEffect(() => {
+        const filtered = students.filter((item) => {
+            const matchesRegno = item?.regno?.toLowerCase().includes(searchTerm?.toLowerCase());
+            const matchesClass = item?.classId?.name
+                ?.toLowerCase()
+                .includes(searchTerm?.toLowerCase());
+            return matchesRegno || matchesClass;
+        });
+        setFilteredStudents(filtered);
+    }, [searchTerm, students]);
     const columns = [
         { header: "Name", accessor: "name", style: "hidden md:table-cell" },
         { header: "RegNo", accessor: "reg" },
@@ -86,6 +100,8 @@ const Student = () => {
                         type="text"
                         placeholder="Search by student roll No"
                         className="border rounded px-3 py-2"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     {/* <div className="flex items-center gap-4 self-end ">
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
@@ -110,7 +126,7 @@ const Student = () => {
                         ))}
                     </tr>
                 </thead>
-                <tbody>{students?.map(renderRow)}</tbody>
+                <tbody>{filteredStudents?.map(renderRow)}</tbody>
             </table>
         </div>
     );
