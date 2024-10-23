@@ -102,12 +102,12 @@ const Results = () => {
                         className="border rounded px-3 py-2"
                     />
                     <div className="flex items-center gap-4 self-end ">
-                        <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
+                        {/* <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <SlidersHorizontal />
                         </button>
                         <button className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-yellow-400">
                             <ArrowDownAZ />
-                        </button>
+                        </button> */}
                         {/* <CreateExam subjects={subjects} classes={classes} /> */}
                     </div>
                 </div>
